@@ -14,7 +14,8 @@
 常用命令：
 
 - `npm run dev` - 服务器预览（localhost:4000）
-- `hexo n [new blog]` - 新建文章
+- `hexo n [blog_name]` - 新建文章
+- `hexo n [page/draft/post] [page_name] ` - 新建页面/草稿/文章
 - `npm run deploy` - 清除缓存并
 
 ## 主题
