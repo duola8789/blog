@@ -25,3 +25,8 @@
 ```
 git clone https://github.com/theme-next/hexo-theme-next themes/next
 ```
+
+## 主题文件无法推送到自己的仓库的解决方法
+
+1. 将主题文件中的`.git`文件夹及相关文件夹删除
+2. 重新add，并推送
