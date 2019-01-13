@@ -66,6 +66,13 @@
         {% endif %}
 
         <div class="post-meta">
+         {% if post.top %}
+           <span class="post-top">
+             <i class="fa fa-thumb-tack"></i>
+             <font color=#e16060>置顶</font>
+             <span class="post-meta-divider">|</span>
+           </span>
+         {% endif %}
           <span class="post-time">
 
             {% set date_diff = date(post.date) != date(post.updated) %}
