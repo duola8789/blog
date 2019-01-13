@@ -30,3 +30,7 @@ git clone https://github.com/theme-next/hexo-theme-next themes/next
 
 1. 将主题文件中的`.git`文件夹及相关文件夹删除
 2. 重新add，并推送
+
+## 主页显示文章摘要
+
+在文章内部添加`<!-- more -->`，前面的部分即为摘要
