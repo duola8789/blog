@@ -1,6 +1,7 @@
 ---
 title: JS56 Generator 函数的异步应用
 top: false
+date: 2019-01-22 10:36:14
 tags:
 - Generator
 - ES6
