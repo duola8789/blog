@@ -681,6 +681,27 @@ function makeIterator (obj) {
 ```
 
 
+我们之所以能够使用上面的Generator函数，就是因为它的返回结果是一个Iterator对象，这个Iterator对象有`next`方法，每次遍历时都要调用这个方法，返回的记结果就是包含了`value`和`done`两个属性的值
+
+所以，我们不使用Generator函数，自己都构造返回一个具有`next`方法的对象也是可以的，`next`方法返回对象也需要包括了`value`和`done`连个属性，`value`属性是`for...of`的返回值，`done`用来标识遍历何时结束。
+
+
+```JS
+function makeIterator (obj) {
+  let keys = Object.getOwnPropertyNames(obj);
+  obj[Symbol.iterator] = function () {
+    let index = 0;
+    return {
+      next() {
+        const key = keys[index]
+        return { value: [key, obj[key]], done: index++ === keys.length }
+      }
+    }
+  }
+}
+```
+
+
 ### 第一次调用`next`方法就能够传值
 
 `next`的参数是赋值给==上一个==`yield`表达式返回值，所以在首次调用`next`传参是==无效==的。
