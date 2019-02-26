@@ -34,3 +34,7 @@ git clone https://github.com/theme-next/hexo-theme-next themes/next
 ## 主页显示文章摘要
 
 在文章内部添加`<!-- more -->`，前面的部分即为摘要
+
+## 评论系统
+
+[Valine](https://valine.js.org/)
