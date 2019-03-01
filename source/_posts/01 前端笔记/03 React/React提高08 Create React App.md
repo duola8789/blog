@@ -2,7 +2,7 @@
 title: React提高08 Create React App
 top: false
 date: 2019-03-01 09:38:04
-update: 2019-03-01 09:38:04
+update: 2019-03-01 14:45:40
 tags:
 - 脚手架
 - Create React App
@@ -120,6 +120,16 @@ npm run eject
 运行后，Create-React-App会将上面工具的配置文件复制到项目中，以后对配置文件进行修改后，项目式中会采用项目中复制修改后的配置文件
 
 要注意，这个操作是不可逆的。
+
+## CSS-Loader
+
+在新版本的Create React App中增加了对CSS Modules的支持，要求`react-scripts`版本高级2.0.0。
+
+CSS文件的命名形式为`[name].module.css`，对应的类名会通过添加后缀的形式来实现局部作用域，类名的格式是`[filename]\_[classname]\_\_[hash]`
+
+详情参考[文档](https://facebook.github.io/create-react-app/docs/adding-a-css-modules-stylesheet)。
+
+如果需要在老版本的Create React App中增加了对CSS Modules的支持，则首先需要先通过`eject`命令暴露配置文件，参考[这篇文章](https://medium.com/nulogy/how-to-use-css-modules-with-create-react-app-9e44bec2b5c2)。
 
 ## 参考
 
