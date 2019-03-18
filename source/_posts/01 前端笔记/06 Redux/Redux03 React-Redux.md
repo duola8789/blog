@@ -1,17 +1,19 @@
 ---
-title: Redux02 异步操作和中间件
+title: Redux03 React-Redux
 top: false
-date: 2019-03-07 10:00:42
-update: 2019-03-18 15:26:12
+date: 2019-03-18 16:26:02
+update: 2019-03-18 16:26:05
 tags:
 - React
 - Redux
-- 异步操作
 categories: Redux
 ---
 
-学习Redux中间件的概念，以及使用Redux中间件完成异步操作的方法。
+Redux一个为JavaScript应用而生的可预测的状态容器，可以有很多方式使用它，而React应用只是其中一种，所以它的API是高度抽象的，并非只针对React的。
 
+为了使用方便，Redux的作者封装了一个React的专用的库React-Redux，这个库时可选的，是否选用应该权衡一下，因为React-Redux虽然提供了便利，但是需要掌握额外的API，并且要遵守它的组件拆分规范。
+
+=
 <!-- more -->
 
 ## 同步和异步流程
@@ -374,6 +376,7 @@ const b = createAction('test2');
 b(100); 
 // {type: "test2", payload: 100}
 ```
+
 使用redux-action将上面的写法改为：
 
 ```JS

@@ -2,7 +2,7 @@
 title: Redux01 入门
 top: false
 date: 2019-03-05 15:43:29
-update: 2019-03-05 15:43:29
+update: 2019-03-18 15:11:26 
 tags:
 - React
 - Redux
@@ -213,7 +213,7 @@ function reducer(state, action) {
 }
 ```
 
-使用上面的ES7的对象展开进行拷贝时，只是浅拷贝，如果数据结构更复杂或者是潜逃的，那在处理State更新的时候可能要考虑一些不同的做法，可以考虑使用[ImmutableJS](https://immutable-js.github.io/immutable-js/)，Redux对此是全无预设方式的，记住它只是一个状态的容器。
+使用上面的ES7的对象展开进行拷贝时，只是浅拷贝，如果数据结构更复杂或者是嵌套的，那在处理State更新的时候可能要考虑一些不同的做法，可以考虑使用[ImmutableJS](https://immutable-js.github.io/immutable-js/)，Redux对此是全无预设方式的，记住它只是一个状态的容器。
 
 
 任何时候，与某个View对应的State总是一个不变的对象
@@ -240,7 +240,7 @@ const reducer3 = function (state = {}, action) {
 
 ### Subscribe
 
-现在，用户在View曾，通过`dispatch`发出了一个Action到Stroe，触发了对应的Reducer返回了一个新的State，但是这个State和View之间还需要关联起来，才能让视图进行封信
+现在，用户在View层，通过`dispatch`发出了一个Action到Stroe，触发了对应的Reducer返回了一个新的State，但是这个State和View之间还需要关联起来，才能让视图进行封信
 
 通过`store.subscribe`可以设置监听函数，一旦State发生变化，设置的监听函数就会自动执行
 
@@ -275,7 +275,7 @@ Store设对象提供了三种基本方法：
 
 Store对象是由Redux提供的`createStore`方法创造的，这个方法除了接受一个Reducer作为第一个参数外，还接受第二个参数，表示State的初始状态，==这个状态会覆盖Reducer函数的默认参数==
 
-下面是`createStore`的简单实现，利用了闭包的原理（也证明，如果生命两个Store对象，其中保存的State对象是相互独立的）
+下面是`createStore`的简单实现，利用了闭包的原理（也证明，如果声明两个Store对象，其中保存的State对象是相互独立的）
 
 ```JS
 const createStore = reducer => {
@@ -409,7 +409,7 @@ let newState = reducer(previousState, atcion)
 // 3. 如果返回的新的State发生了变化，Store就会调用监听函数
 store.subscribe(listener)
 
-// 4. 监听函数listener中可以通过getState获取最新的State，在这里可以出发重新渲染View
+// 4. 监听函数listener中可以通过getState获取最新的State，在这里可以触发重新渲染View
 function listener () {
   const newState = store.getState();
   component.setState(newState)
