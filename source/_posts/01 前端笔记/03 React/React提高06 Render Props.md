@@ -2,6 +2,7 @@
 title: React提高06 Render Props
 top: false
 date: 2019-01-25 16:07:43
+update: 2019-03-19 14:43:49
 tags:
 - React
 - 坑
@@ -14,7 +15,7 @@ categories: React
 
 <!-- more -->
 
-## 与HOC的关系
+## HOC
 
 HOC的出现是为了实现代码的复用，是一种React中的编程范式，基本的形式是：
 
@@ -35,7 +36,7 @@ const ResultComponent = HOC(BaseComponent)
 
 ## 一个HOC的例子
 
-[Demo的Github地址在这里](https://github.com/duola8789/react-practice)。
+[Demo的Github地址在这里](https://github.com/duola8789/react-learning/blob/master/src/components/demo6/index.js)。
 
 一个响应鼠标事件的HOC的例子：
 
@@ -163,7 +164,7 @@ const withMouse = Component => {
     render() {
       return (
         <Mouse render={mouse => (
-          <Component {...Tthis.props} mouse={mouse} />
+          <Component {...this.props} mouse={mouse} />
         )} />
       )
     }
@@ -171,6 +172,46 @@ const withMouse = Component => {
 }
 ```
 但是我现在也没有具体的实践经验，是否在各种复杂的场下，Render Prop代替HOC都是更优的，还是需要实践慢慢总结证明。
+
+## 与HOC的实现方式的区别
+
+假设包含能够复用的逻辑的公共组件是A，需要继承的个性组件是B，HOC的实现是将用一个函数的形式，B为参数，作为`render`的内容组合至A中，返回包含B的A，也就是最终的组件：
+
+```
+const HOCFactory = B => {
+  return <A />
+}
+// B组合至A中返回
+class A extends from React.Component {
+  render() {
+    return <B />
+  }
+}
+```
+
+而Render Props方式的实现是，在A中渲染的是`this.props.render`函数的返回值，最终的组件形成是在使用A时，为A传入一个`render`参数，它的返回值就是B的内容（通过Prop传进A的内部进行渲染）
+
+```
+// A 
+class A extends from React.Component {
+  render() {
+    return (
+      <A>
+        {this.props.render(this.state)}
+      </A>
+    )
+  }
+}
+
+// 最终组件
+class App extends from React.Component {
+  render() {
+    return (
+      <A render={(state) => (<B>)} />
+    )
+  }
+}
+```
 
 
 ## 参考
