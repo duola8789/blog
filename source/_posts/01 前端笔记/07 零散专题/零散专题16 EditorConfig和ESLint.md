@@ -2,7 +2,7 @@
 title: 零散专题16 EditorConfig和ESLint
 top: false
 date: 2017-12-05 10:33:30
-update: 2019-03-20 16:20:32
+update: 2019-03-21 09:12:28
 tags:
 - EditorConfig
 - ESLint
@@ -13,6 +13,7 @@ categories: 其他
 编程好帮手：EditorConfig + ESLint
 
 <!-- more -->
+
 ## EditorConfig
 
 为了保持项目中代码缩进风格的一致，可以使用EditorConfig来定义和维护一致的编码风格，例如范缩进风格，缩进大小，Tab长度以及字符集等。
@@ -250,6 +251,16 @@ module.exports = {
   ]
 }
 ```
+需要注意的是，如果使用的Create React App脚手架工具来搭建React项目，由于它将默认的构建配置封装了起来，而ESLint仅仅开启了最基本的规则，更重要的是默认情况下，ESLint仅仅会在IDE中对违反规则的情况进行提示，并不会在构建时在终端的输出进行终端和提示。
+
+如果这种情况可以满足需要，而只需要开启更多的规则，那么就可以在根目录下新建一个文件`.eslintrc.json`，然后添加：
+
+```JS
+{
+  "extends": "react-app"
+}
+```
+但是如果要起到更强制性的提示作用（中断构建、终端提示），Create React App建议使用[Prettier](https://github.com/prettier/prettier)代替ESLint。如果要使用ESLint，那么就需要使用`npm run eject`，将配置文件吐出，按照AlloyTeam的提示进行配置即可。
 
 ### ESlint对`Async`报错的解决方法
 
@@ -263,8 +274,10 @@ parserOptions: {
 
 
 ## 参考
-- http://blog.csdn.net/itpinpai/article/details/53887818
-- http://blog.csdn.net/qq_35809834/article/details/72758528
-- http://www.jianshu.com/p/2bcdce1dc8d4
-- https://eslint.org/docs/rules/
-- http://blog.csdn.net/whitehack/article/details/52422873
+
+- [rules@ESLint](https://eslint.org/)
+- [在WebStorm中使用editorConfig插件@CSDN](https://blog.csdn.net/itpinpai/article/details/53887818)
+- [ESLint与EditorConfig@CSDN](https://blog.csdn.net/qq_35809834/article/details/72758528)
+- [ESLint - 简介@简书](https://www.jianshu.com/p/2bcdce1dc8d4)
+- [Displaying Lint Output in the Editor@Create React App](https://facebook.github.io/create-react-app/docs/setting-up-your-editor#displaying-lint-output-in-the-editor)
+- [AlloyTeam/eslint-config-alloy@github](https://github.com/AlloyTeam/eslint-config-alloy)
