@@ -2,7 +2,7 @@
 title: React提高08 Create React App
 top: false
 date: 2019-03-01 09:38:04
-update: 2019-03-01 14:45:40
+update: 2019-03-21 13:51:57
 tags:
 - 脚手架
 - Create React App
@@ -12,7 +12,6 @@ categories: React
 一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。
 
 这里只对它进行简单的尝试和入门，如果需要进一步的学习，[官网在这里](https://facebook.github.io/create-react-app/)，[文档在这里](https://facebook.github.io/create-react-app/docs/getting-started)，也可以参考[这篇文章](https://juejin.im/post/59dcd87451882578c2084515)进行更高阶更深入的配置和学习。
-
 
 <!-- more -->
 
@@ -131,7 +130,186 @@ CSS文件的命名形式为`[name].module.css`，对应的类名会通过添加�
 
 如果需要在老版本的Create React App中增加了对CSS Modules的支持，则首先需要先通过`eject`命令暴露配置文件，参考[这篇文章](https://medium.com/nulogy/how-to-use-css-modules-with-create-react-app-9e44bec2b5c2)。
 
+## ESLint
+
+由于Create React App将默认的构建配置封装了起来，而ESLint仅仅开启了最基本的规则，更重要的是默认情况下，ESLint仅仅会在IDE中对违反规则的情况进行提示，并不会在构建时在终端的输出进行终端和提示。
+
+如果这种情况可以满足需要，而只需要开启更多的规则，那么就可以在根目录下新建一个文件`.eslintrc.json`，然后添加：
+
+```JS
+{
+  "extends": "react-app"
+}
+```
+
+但是如果要起到更强制性的提示作用（中断构建、终端提示），Create React App建议使用[Prettier](https://github.com/prettier/prettier)代替ESLint。如果要使用ESLint，那么就需要使用`npm run eject`，将配置文件吐出，按照AlloyTeam的提示进行配置即可，参考[这篇笔记](https://duola8789.github.io/2017/12/05/01%20%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/07%20%E9%9B%B6%E6%95%A3%E4%B8%93%E9%A2%98/%E9%9B%B6%E6%95%A3%E4%B8%93%E9%A2%9816%20EditorConfig%E5%92%8CESLint/)。
+
+## Ant Design按需引入
+
+安装antd：
+
+```BASH
+npm install antd -S
+```
+
+然后进行按需引入分为两种情况：
+
+（1）未eject出所有配置：
+
+参考[antd的文档](https://ant.design/docs/react/use-with-create-react-app-cn)，
+
+安装[react-app-rewired](https://github.com/timarney/react-app-rewired)和[customize-cra](https://github.com/arackaf/customize-cra)。
+
+```BASH
+npm install react-app-rewired customize-cra -D
+```
+然后修改`package.json`文件的启动命令：
+
+```
+"scripts": {
+  "start": "react-app-rewired start",
+  "build": "react-app-rewired build",
+  "test": "react-app-rewired test",
+}
+```
+然后安装[babel-plugin-import](https://github.com/ant-design/babel-plugin-import)
+
+```BASH
+npm install babel-plugin-import -D
+```
+
+然后在根目录下创建`config-overrides.js`，用来修改默认配置：
+
+```JS
+const { override, fixBabelImports } = require('customize-cra');
+
+module.exports = override(
+  fixBabelImports('import', {
+    libraryName: 'antd',
+    libraryDirectory: 'es',
+    style: 'css', // true
+  }),
+);
+```
+
+然后按按照下面的格式按需引入模块：
+
+```JS
+import { Button } from 'antd';
+```
+
+（2）已经eject出所有配置文件：
+
+这个时候直接按照[babel-plugin-import文档](https://github.com/ant-design/babel-plugin-import)的说明配置即可。
+
+安装`babel-plugin-import`：
+
+```BASH
+npm install babel-plugin-import -D
+```
+然后在`package.json`中找到`babel`选项，修改为：
+
+```
+"babel": {
+  "presets": [
+    "react-app"
+  ],
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "style": "css"
+      }
+    ]
+  ]
+}
+```
+
+引入方式与上面相同：
+
+```JS
+import { Button } from 'antd';
+```
+
+## 配置Less
+
+首先安装`less`和`less-loader`：
+
+```
+npm install less less-loader -D
+```
+
+然后同样分为是否eject配置两种情况：
+
+（1）未eject出所有配置，仍遵循上面的步骤，安装`react-app-rewired`和`customize-cra`,修改`package.json`中的启动脚本。
+
+然后修改`config-overrides.js`文件：
+
+```JS
+const { override, fixBabelImports, addLessLoader } = require('customize-cra');
+
+module.exports = override(
+  fixBabelImports('import', {
+    libraryName: 'antd',
+    libraryDirectory: 'es',
+    style: true, 
+  }),
+  addLessLoader({
+    javascriptEnabled: true,
+    modifyVars: { '@primary-color': '#1DA57A' },
+  }),
+);
+```
+这里利用了`less-loader`的`modifyVars`来进行主题配置，变量和其他配置方式可以参考[配置主题](https://ant.design/docs/react/customize-theme-cn)文档。
+
+（2）已经eject出所有配置的情况，参考[这篇文章](https://juejin.im/post/5c3d67066fb9a049f06a8323)：
+
+在`config`目录下的`webpack.config.js`文件，找到`// style files regexes`注释位置，添加：
+
+```JS
+// 添加 less 解析规则
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
+```
+
+然后找到`rules`属性，在其中添加less解析配置：
+
+```JS
+// Less 解析配置
+{
+  test: lessRegex,
+  // exclude: lessModuleRegex,
+  use: getStyleLoaders(
+    {
+      importLoaders: 2,
+      sourceMap: isEnvProduction && shouldUseSourceMap,
+    },
+    'less-loader'
+  ),
+  sideEffects: true,
+},
+{
+  test: lessModuleRegex,
+  use: getStyleLoaders(
+    {
+      importLoaders: 2,
+      sourceMap: isEnvProduction && shouldUseSourceMap,
+      modules: true,
+      getLocalIdent: getCSSModuleLocalIdent
+    },
+    'less-loader'
+  ),
+},
+```
+
+要注意的是，新添加的`less-loader`必须在`file-loader`的前面才能生效，因为Webpack在解析Loader是从右至左进行的（从下到上），只有先经过`file-loader`对文件路径的处理，`less`文件才能够被正确引入。
+
+
 ## 参考
 
 - [Docs@Create React App](https://facebook.github.io/create-react-app/docs/documentation-intro)
 - [从React脚手架工具学习React项目的最佳实践（上）：前端基础配置@掘金](https://juejin.im/post/59dcd87451882578c2084515)
+- [在create-react-app中使用@Ant Design](https://ant.design/docs/react/use-with-create-react-app-cn)
+- [ant-design/babel-plugin-import@github](https://github.com/ant-design/babel-plugin-import)
+- [在 Create React App 中启用 Sass 和 Less@掘进](https://juejin.im/post/5c3d67066fb9a049f06a8323)
