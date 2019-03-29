@@ -2,7 +2,7 @@
 title: React提高08 Create React App
 top: false
 date: 2019-03-01 09:38:04
-update: 2019-03-21 13:51:57
+update: 2019-03-29 15:29:22
 tags:
 - 脚手架
 - Create React App
@@ -14,6 +14,10 @@ categories: React
 这里只对它进行简单的尝试和入门，如果需要进一步的学习，[官网在这里](https://facebook.github.io/create-react-app/)，[文档在这里](https://facebook.github.io/create-react-app/docs/getting-started)，也可以参考[这篇文章](https://juejin.im/post/59dcd87451882578c2084515)进行更高阶更深入的配置和学习。
 
 <!-- more -->
+
+一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。
+
+这里只对它进行简单的尝试和入门，如果需要进一步的学习，[官网在这里](https://facebook.github.io/create-react-app/)，[文档在这里](https://facebook.github.io/create-react-app/docs/getting-started)，也可以参考[这篇文章](https://juejin.im/post/59dcd87451882578c2084515)进行更高阶更深入的配置和学习。
 
 使用Create React App开发React应用不必再安装Webpack或者Babel，它们已经被内置在脚手架中了
 
@@ -305,6 +309,79 @@ const lessModuleRegex = /\.module\.less$/;
 
 要注意的是，新添加的`less-loader`必须在`file-loader`的前面才能生效，因为Webpack在解析Loader是从右至左进行的（从下到上），只有先经过`file-loader`对文件路径的处理，`less`文件才能够被正确引入。
 
+## 配置Alias
+
+在Vue中习惯了使用`@`来代替一连串的`..`表示的相对地址，这个功能是webpack提供的，需要在webpack中进行配置
+
+现在使用了React，也同样希望能够配置Alias来实现路径的更优雅的表示。如果已经eject处所有配置的情况下，直接在webpackd的配置文件下添加相关的代码即可：
+
+```JS
+module.exports = {
+  //...
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+    }
+  }
+};
+```
+但是如果在未eject的情况下，同样需要借助上面使用的`react-app-rewired`实现，首先在根目录建立一个`alias.js`文件，在这个文件中编写Alias的配置代码：
+
+```JS
+const path = require('path');
+
+module.exports = {
+  resolve: {
+    alias: {
+      '@': path.join(__dirname, 'src'),
+    },
+  },
+};
+```
+然后在`config-overrides.js`文件中引入并进行配置：
+
+```JS
+const { override, addWebpackAlias } = require('customize-cra');
+const alias = require('./alias');
+
+module.exports = override(
+  addWebpackAlias(alias.resolve.alias),
+);
+```
+重新编译后`@`就生效了。
+
+这时有两个问题要解决
+
+（1）IDE的点击跳转失效了
+
+Webstorm是可以识别webpack的配置文件，对Alias进行相应的处理，但是这里并没有eject出Webpack的配置文件，但是我们的`alias.js`文件就是按照Webpack的配置模块的格式来编写的，所以可以将`alias.js`作为配置文件，传递给Webstorm，这样IDE的文件跳转就正常了
+
+（2）ESLint的导入导出规则报错
+
+这是因为ESLint不能识别我们的Alias，这需要安装`eslint-import-resolver-webpack`这个插件，让ESLint使用Webpack的解析规则。
+
+首先安装
+
+```
+yarn add eslint-import-resolver-webpack -D
+```
+
+然后在`.eslintrc.js`中添加如下的配置：
+
+
+```JS
+module.exports = {
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "alias.js"
+      }
+    }
+  },
+}
+```
+同样使用`alias.js`来代替Webpack的配置文件，配置完之后ESLint也就能正常工作了。
+
 
 ## 参考
 
@@ -313,3 +390,8 @@ const lessModuleRegex = /\.module\.less$/;
 - [在create-react-app中使用@Ant Design](https://ant.design/docs/react/use-with-create-react-app-cn)
 - [ant-design/babel-plugin-import@github](https://github.com/ant-design/babel-plugin-import)
 - [在 Create React App 中启用 Sass 和 Less@掘进](https://juejin.im/post/5c3d67066fb9a049f06a8323)
+- [eslint-import-resolver-webpack@npm](https://www.npmjs.com/package/eslint-import-resolver-webpack)
+- [关于eslint-plugin-import无法识别webpack alias问题@JERMY'S BLOG](http://jeremyfan.name/blog/2018/08/22/2018-08-eslint-webpack-alias/)
+- [aze3ma/react-app-rewire-aliases@github](https://github.com/aze3ma/react-app-rewire-aliases)
+- [create-react-app 通过 react-app-rewired 添加 webpack 的 alias@OnlyLing](https://www.onlyling.com/archives/321)
+- [Resolve@Webpack](https://webpack.js.org/configuration/resolve/)
