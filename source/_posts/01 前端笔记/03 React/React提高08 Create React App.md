@@ -15,10 +15,6 @@ categories: React
 
 <!-- more -->
 
-一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。
-
-这里只对它进行简单的尝试和入门，如果需要进一步的学习，[官网在这里](https://facebook.github.io/create-react-app/)，[文档在这里](https://facebook.github.io/create-react-app/docs/getting-started)，也可以参考[这篇文章](https://juejin.im/post/59dcd87451882578c2084515)进行更高阶更深入的配置和学习。
-
 使用Create React App开发React应用不必再安装Webpack或者Babel，它们已经被内置在脚手架中了
 
 它提供的功能：
@@ -29,7 +25,6 @@ categories: React
 4. 提供了单元测试测试的接口支持
 5. 其他配置工具的默认配置（亦可以个性化配置）
 
-
 ## 快速开始
 
 ```BASH
@@ -37,8 +32,8 @@ npx create-react-app my-app
 cd my-app
 npm start
 ```
-React应用会运行在`http://localhost:3000/`，开发完成后使用`npm run build`打包
 
+React应用会运行在`http://localhost:3000/`，开发完成后使用`npm run build`打包
 
 ## 安装
 
@@ -382,6 +377,81 @@ module.exports = {
 ```
 同样使用`alias.js`来代替Webpack的配置文件，配置完之后ESLint也就能正常工作了。
 
+## 环境变量
+
+环境变量在构建期间嵌入。
+
+可以使用`process.env.NODE_ENV`来读取内置的环境变量，当运行`npm start`时，它等于`development`，当运行`npm test`时，它等于`test`，当运行`npm run build`时它等于`production`。不能手动覆盖`NODE_ENV`，这可以防止开发人员意外地将开发环境部署到生产环境中
+
+除了`process.env.NODE_ENV`之外也可以使用自定义的环境变量，自定义的环境变量必须以`REACT_APP_`开头。
+
+添加环境变量有两种方式：
+
+（1）在Shell中添加临时环境变量。
+
+操作系统不同，在Shell中定义环境变量的方法也不相同:
+
+```
+# Windows (cmd.exe)
+set "REACT_APP_SECRET_CODE=abcdef" && npm start
+
+# Linux, macOS (Bash)
+REACT_APP_SECRET_CODE=abcdef npm start
+```
+
+为了统一在不同的操作系统中的设置方法，可以使用`cross-env`这个库
+
+安装：
+
+```BASH
+npm install cross-env --save-dev
+```
+
+使用时只需要在原来的脚本前面加上`cross-env`就可以了
+
+```BASH
+cross-env NODE_ENV=development nodemon ./index.js
+```
+
+（2）在`.env`中添加开发环境变量
+
+在项目根目录中创建名为`.env`的文件，在文件创建以`REACT_APP_`开头的自定义环境变量。除了`NODE_ENV`之外的任何其他变量都将被会略
+
+==实际上，`NODE_ENV`是不能被覆盖的，也就意味着在`.env`中定义`NODE_ENV`也是同样被忽略的，在默认配置条件下，脚手架中的`NODE_ENV`是无法更改的。==
+
+
+`.env`文件应该提交到git进行管理（除了`.env&.local`之外）
+
+除了`.env`之外，还可以使用特殊的`.env`文件
+
+- `.env`：默认。
+- `.env.local`：本地覆盖。除`test`之外的所有环境都加载此文件。
+- `.env.development`, `.env.test`, `.env.production`：设置特定环境。
+- `.env.development.local`, `.env.test.local`,`.env.production.local`：设置特定环境的本地覆盖。
+
+如果使用一个新的自定义的`.env`文件，比如使用`.env.stage`的环境变量文件，需要在运行`npm`命令时使用`env-cmd`
+
+安装：
+
+```BASH
+npm install env-cmd --save-dev
+```
+使用时直接将`.env.stage`的路径引入即可，在`Package.json`文件中：
+
+```JS
+{
+  "scripts": {
+    "test": "env-cmd ./.env.stage npm run build"
+  }
+}
+```
+在命令行中：
+
+```BASH
+./node_modules/.bin/env-cmd ./.env.stage npm run build
+```
+
+这种情况下，`process.env.NODE_ENV`仍然是`production`，但加载的`.env`文件已经不再是`.env.build`，而是变为了`env.stage`
 
 ## 参考
 
@@ -395,3 +465,4 @@ module.exports = {
 - [aze3ma/react-app-rewire-aliases@github](https://github.com/aze3ma/react-app-rewire-aliases)
 - [create-react-app 通过 react-app-rewired 添加 webpack 的 alias@OnlyLing](https://www.onlyling.com/archives/321)
 - [Resolve@Webpack](https://webpack.js.org/configuration/resolve/)
+- [env-cmd@npm](https://www.npmjs.com/package/env-cmd)
