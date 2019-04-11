@@ -2,7 +2,7 @@
 title: 09 ES6标准入门(Promise对象)
 top: false
 date: 2018-04-17 14:14:38
-update: 2019-04-11 10:44:14
+updated: 2019-04-11 10:44:14
 tags:
 - Promise
 - es6

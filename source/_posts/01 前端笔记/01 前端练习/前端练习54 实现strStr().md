@@ -2,7 +2,7 @@
 title: 前端练习54 实现strStr()
 top: false
 date: 2019-02-22 10:23:14
-update: 2019-02-22 10:23:14
+updated: 2019-02-22 10:23:14
 tags:
 - 练习
 - 算法

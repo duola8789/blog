@@ -2,7 +2,7 @@
 title: Redux01 入门
 top: false
 date: 2019-03-05 15:43:29
-update: 2019-03-18 15:11:26 
+updated: 2019-03-18 15:11:26 
 tags:
 - React
 - Redux

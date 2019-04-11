@@ -2,7 +2,7 @@
 title: Webstorm10 快速插入当前时间
 top: false
 date: 2019-02-01 15:30:35
-update: 2019-02-01 15:30:35
+updated: 2019-02-01 15:30:35
 tags:
 - IDE
 - WebStorm

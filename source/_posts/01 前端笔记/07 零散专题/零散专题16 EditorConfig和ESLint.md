@@ -2,7 +2,7 @@
 title: 零散专题16 EditorConfig和ESLint
 top: false
 date: 2017-12-05 10:33:30
-update: 2019-03-21 09:12:28
+updated: 2019-03-21 09:12:28
 tags:
 - EditorConfig
 - ESLint

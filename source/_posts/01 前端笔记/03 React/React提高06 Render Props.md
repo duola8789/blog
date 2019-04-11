@@ -2,7 +2,7 @@
 title: React提高06 Render Props
 top: false
 date: 2019-01-25 16:07:43
-update: 2019-03-19 14:43:49
+updated: 2019-03-19 14:43:49
 tags:
 - React
 - 坑

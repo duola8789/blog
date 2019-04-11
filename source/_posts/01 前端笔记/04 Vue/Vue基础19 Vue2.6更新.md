@@ -2,7 +2,7 @@
 title: Vue基础19 Vue2.6更新
 top: false
 date: 2019-02-21 15:58:04
-update: 2019-02-21 15:58:04
+updated: 2019-02-21 15:58:04
 tags:
 - Vue
 - slot

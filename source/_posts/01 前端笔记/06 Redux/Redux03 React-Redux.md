@@ -2,7 +2,7 @@
 title: Redux03 React-Redux
 top: false
 date: 2019-03-18 16:26:02
-update: 2019-03-18 16:26:05
+updated: 2019-03-18 16:26:05
 tags:
 - React
 - Redux
