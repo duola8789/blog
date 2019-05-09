@@ -2,7 +2,7 @@
 title: React提高08 Create React App
 top: false
 date: 2019-03-01 09:38:04
-updated: 2019-04-08 11:06:46
+updated: 2019-05-09 15:23:41
 tags:
 - 脚手架
 - Create React App
@@ -157,14 +157,14 @@ npm install antd -S
 
 参考[antd的文档](https://ant.design/docs/react/use-with-create-react-app-cn)，
 
-安装[react-app-rewired](https://github.com/timarney/react-app-rewired)和[customize-cra](https://github.com/arackaf/customize-cra)。
+安装[react-app-rewired](https://github.com/timarney/react-app-rewired)和[customize-cra](https://github.com/arackaf/customize-cra)（CRA）。
 
 ```BASH
 npm install react-app-rewired customize-cra -D
 ```
 然后修改`package.json`文件的启动命令：
 
-```
+```JS
 "scripts": {
   "start": "react-app-rewired start",
   "build": "react-app-rewired build",
@@ -206,9 +206,10 @@ import { Button } from 'antd';
 ```BASH
 npm install babel-plugin-import -D
 ```
+
 然后在`package.json`中找到`babel`选项，修改为：
 
-```
+```JS
 "babel": {
   "presets": [
     "react-app"
@@ -320,7 +321,7 @@ module.exports = {
   }
 };
 ```
-但是如果在未eject的情况下，同样需要借助上面使用的`react-app-rewired`实现，首先在根目录建立一个`alias.js`文件，在这个文件中编写Alias的配置代码：
+但是如果在未eject的情况下，同样需要借助上面使用的`react-app-rewired`实现，首先在根目录建立一个`alias.js`文件，在这个文件中编写Alias的配置代码：`react-app-rewired`
 
 ```JS
 const path = require('path');
@@ -377,6 +378,46 @@ module.exports = {
 ```
 同样使用`alias.js`来代替Webpack的配置文件，配置完之后ESLint也就能正常工作了。
 
+## 配置webpack-bundle-analyzer
+
+首先需要安装：
+
+```BASH
+# NPM 
+npm install --save-dev webpack-bundle-analyzer
+# Yarn 
+yarn add -D webpack-bundle-analyzer
+```
+
+在未eject的情况下，同样可以使用`customize-cra`来添加webpack-bundle-analyzer的配置，在`cvonfig-overrides.js`中，引入`addBundleVisualizer`，进行配置：
+
+```JS
+const { override, addBundleVisualizer } = require('customize-cra');
+
+module.exports = override(
+  // 添加 webpack-bundle-analyzer
+  addBundleVisualizer({
+    analyzerMode: 'static',
+    reportFilename: 'report.html',
+  }, true),
+);
+```
+addBundleVisualizer接受两个参数，第一个对象是`webpack-bundle-analyzer`的配置项，可以[参考文档](https://www.npmjs.com/package/webpack-bundle-analyzer)。第二个选项用来配置自动开启，设置为`ture`就不需要在每次`build`时传入`--analyze`来开启分析了
+
+在已经eject了的情况下，在`webpack.config.js`做进行配置，将`webpack-bundle-analyzer`作为插件进行引入
+
+```JS
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+ 
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ]
+}
+```
+
+
+
 ## 环境变量
 
 环境变量在构建期间嵌入。
@@ -391,7 +432,7 @@ module.exports = {
 
 操作系统不同，在Shell中定义环境变量的方法也不相同:
 
-```
+```BASH
 # Windows (cmd.exe)
 set "REACT_APP_SECRET_CODE=abcdef" && npm start
 
@@ -466,3 +507,4 @@ npm install env-cmd --save-dev
 - [create-react-app 通过 react-app-rewired 添加 webpack 的 alias@OnlyLing](https://www.onlyling.com/archives/321)
 - [Resolve@Webpack](https://webpack.js.org/configuration/resolve/)
 - [env-cmd@npm](https://www.npmjs.com/package/env-cmd)
+- [webpack-contrib/webpack-bundle-analyzer@github](https://www.npmjs.com/package/webpack-bundle-analyzer)
