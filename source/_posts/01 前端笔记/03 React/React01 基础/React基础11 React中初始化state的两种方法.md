@@ -1,7 +1,7 @@
 ---
 title: React基础11 React中初始化state的两种方法
 top: false
-date:2019-05-12 17:43:13
+date: 2019-05-12 17:43:13
 updated: 2019-05-12 17:43:16
 tags:
 - state
