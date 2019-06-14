@@ -2,7 +2,7 @@
 title: 零散专题32 生成PDF
 top: false
 date: 2019-06-13 16:59:43
-updated: 2019-06-13 16:59:45
+updated: 2019-06-14 18:42:03
 tags:
 - PDF
 - PDFKit
@@ -507,6 +507,367 @@ doc.fontSize(20)
   );
 ```
 
+## pdfmake
+
+后来又发现了[PDFMake](https://github.com/bpampuch/pdfmake)，它是基于PDFKit的基础上做的封装，可以直接生成表格，神器一个，方便极了（本来想借着做项目的机会，在PDFKit的基础上封装一个做表格的轮子，这下省了）。文档在[这里](https://pdfmake.github.io/docs/)。
+
+它也支持浏览器端的使用，暂时先不管它，来看Node端的使用。
+
+### 安装
+
+```BASH
+npm i pdfmake -S
+```
+
+### 使用
+
+不想再像pdfKit把文档在过一遍了，[官网在这里](https://pdfmake.github.io/docs/)，[Gihutb的仓库里](https://github.com/bpampuch/pdfmake/tree/master/examples)上也给出了一系列的例子和结果展示，还有[可在线编辑的例子](http://pdfmake.org/playground.html)。官网的文档并不是很详细，具体的API和用法可以再上面的两个例子里找到。
+
+pdfmake基本上把pdfkit链式调用的API改为了面向对象（？）的API，其实就是传入一个大对象作为参数，然后就没有然后了，PDF就生成了。
+
+直接看例子吧，我要生成的DEMO是这样的：
+
+![](http://image.oldzhou.cn/FoO-Ir5HZ4L3pQ2-8mkztiE3BJpd)
+
+![](http://image.oldzhou.cn/FliCkx15NIvWJu8mTiqD5gdwPk8E)
+
+从上到下一点点来吧
+
+### 主流程
+
+它的使用方法和PDFKit类似，都是需要新建一个文档的实例，然后传入一个参数对象：
+
+```JS
+const fs = require('fs');
+const PdfPrinter = require('pdfmake');
+
+// 创建实例
+const printer = new PdfPrinter();
+
+// 参数对象
+const docDefinition = {}
+
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
+
+pdfDoc.pipe(fs.createWriteStream(`document-${Date.now()}.pdf`));
+pdfDoc.end();
+```
+
+按照这个流程就可以生成一个空白的PDF文档，我们要做的就是编辑`docDefinition`这个对象，添加PDF的内容，`docDefinition`中可以添加的属性有：
+
+```JS
+const docDefinition = {
+  content: [],
+  defaultStyle,
+  styles,
+  watermark
+};
+```
+`content`是一个数组，其中的每一个对象元素（或者是字符串）都代表要添加到PDF的一项内容，`defaultStyle`是文档的默认样式设置，`styles`是注册样式，定义在这个对象中的样式就可以直接在添加内容时的`style`属性使用，利用样式的复用，`watermark`用来给文档添加水印。
+
+这些这是我这个DEMO中用到的内容，可以根据实际情况改变。
+
+接下来要做的就是一些文档的准备工作。
+
+### 字体
+
+pdfMake默认支持的字体和PDFKit是相同的，也就是说也不支持中文字体，需要手动引入包含中文的字体（一般中文字体包都在10M以上，所以这也是这个方案在浏览器端使用的一个很难解决的问题）
+
+手动引入字体的方法是在新建实例的时候参数一个字体定义的对象，每一个属性对应一种字体，每个字体又有`bold`/`normal`/`italics`/`bolditalics`几种预设的分类，也是根据需要引入。
+
+```JS
+// 引入字体
+const fonts = {
+  sourceHan: {
+    normal: './fonts/Source-Han.otf',
+  },
+  PingFangSC: {
+    normal: './fonts/PingFang-SC-Regular.ttf',
+    bold: './fonts/PingFang-SC-Bold.ttf',
+  }
+};
+
+// 创建实例
+const printer = new PdfPrinter(font);
+```
+
+### 默认样式
+
+在`default`定义默认样式，会应用到全局，可以被单独定义的样式覆盖：
+
+```JS
+// 全局样式
+const defaultStyle = {
+  font: 'PingFangSC',
+  fontSize: 10,
+  color: FONT_COLOR,
+  lineHeight: 1.2
+};
+```
+
+### 注册预置样式
+
+实际上这个步骤应该是一边添加内容一边完成的，将能复用的样式提出来，放到这里，也便于后期维护：
+
+```JS
+// 预置样式
+const styles = {
+  tableTitle: { fontSize: 20, margin: [0, 20, 0, 10], bold: true },
+  tableHeader: { bold: true, fontSize: 12, color: TABLE_HEAD_COLOR },
+  dangerLabel: { lineHeight: 1, color: '#F14D58', background: '#F2E6E7' },
+  dangerText: { lineHeight: 1, color: '#F14D58' },
+  safeLabel: { lineHeight: 1, color: '#34BA3B', background: '#E1F8E9' },
+  safeText: { lineHeight: 1, color: '#34BA3B', }
+};
+```
+使用的时候只需要在`style`选项中使用属性名即可：
+
+```JS
+{ text: '检测项', style: 'tableHeader' }
+```
+
+### 水印
+
+可以使用`watermark`选项添加水印，可以定义的包括颜色、家族、透明度、文本等：
+
+```JS
+//  水印
+const watermark = {
+  text: '隐私信息管理平台',
+  color: '#EEE',
+  opacity: 0.1,
+  bold: true,
+};
+```
+
+水印的尺寸是不能直接设置的，它会默认从文档左下到右上，在版本更新之前，如果想要调整水印尺寸，那么有一个hack的办法，就是为水印的文本添加空格，用不可见的空格占据空间：
+
+```JS
+//  水印
+const watermark = {
+  text: '     隐私信息管理平台     ',
+  color: '#EEE',
+  opacity: 0.1,
+  bold: true,
+};
+```
+
+![](http://image.oldzhou.cn/FtDqgX2AtSt8RgemNVjVr_Q4vN8t)
+
+搞定这些后，来为文档添加具体的内容。
+
+### 标题
+
+首先生成最上方的标题中的文字
+
+```JS
+// 标题
+const titleIntro = {
+  text: '小米隐私信息管理平台',
+  fontSize: 28,
+  bold: true,
+  alignment: 'center',
+};
+```
+
+选项中设定了字体尺寸并且加粗，如果设定了加粗，但是导入的字体中没有设定加粗对应的字体就会报错，然后通过`alignment`设定文本居中。
+
+标题前面还有一个小图标，用文本来搞定，引入图片后，默认图片和标题会分行防止，解决方法就是对图片添加`absolutePosition`选项，相当于CSS的绝对定位，输入坐标值，就可以让图标脱离文档流，随意摆放：
+
+```JS
+// 标题图标
+const titleImage = {
+  image: './images/mi-logo.png',
+  width: 40,
+  absolutePosition: { x: 98, y: 40 }
+};
+```
+
+下方的报告名“隐私检测报告”和前面的标题设定基本一致，居中防止，但是为了设定上下间距需要设定`margin`选项
+
+```JS
+// 报告名
+const titleLineY = 10;
+const titleText = {
+  text: '隐私检测报告',
+  fontSize: 38,
+  alignment: 'center',
+  margin: [0, titleLineY],
+};
+```
+
+### 分割线
+
+标题下方还有一道分割线，需要使用`canvas`选项来画出这条线：
+
+```JS
+// 标题分割线
+const titleLine = {
+  canvas: [{
+    type: 'line',
+    x1: 0, y1: titleLineY,
+    x2: 500, y2: titleLineY,
+    lineColor: LINE_COLOR
+  }],
+  margin: [0, 0, 0, 20],
+};
+```
+
+通过更改`type`可以画出不同的图形，其余的设置都好理解。
+
+### 概览信息
+
+下面有一堆概览信息，由于原型图没有用列表形式的小点，说以不能直接使用`ul`选项，直接添加文字即可，将这部分内容放到一个数组中：
+
+```JS
+// 概览信息
+const data = {
+  id: '0de3a12b-20190611174750',
+  name: '浏览器',
+  appVersion: '8.9.2',
+  deviceName: 'chiron',
+  miuiVersion: 'MIUI 9 SPT-2019.05.15',
+  developer: '马化腾',
+};
+
+const id = `编号: ${data.id}`;
+const name = `软件名称: ${data.name}`;
+const appVersion = `版本号: ${data.appVersion}`;
+const deviceName = `测试机型: ${data.deviceName}`;
+const miuiVersion = `操作系统: ${data.miuiVersion}`;
+const developer = `开发者: ${data.developer}`;
+
+const overview = [id, name, appVersion, deviceName, miuiVersion, developer];
+```
+
+### 表格
+
+表格的标题没什么特别的：
+
+```JS
+// 隐私信息检测标题
+const privacyDetailTitle = {
+  text: '隐私信息将策详情',
+  style: 'tableTitle',
+};
+```
+
+表格的整体配置如下：
+
+```JS
+// 隐私信息监测表格
+const privacyDetailTable = {
+  table: {
+    headerRows: 1,
+    widths: ['*', '*', '*', '*', '*'],
+    body: [
+      privacyDetailTableHeader,
+      ...privacyDetailTableBody
+    ],
+  },
+  layout: tableLayout
+};
+```
+
+如果表格分页时，会自动将在新的页面上再次生成表格，可以通过`headerRows`定义表格的前多少行作为表头被复制到新的页面，`width`定义的是表格每一列的宽度，有以下几种取值形式：
+
+- `'*'`：会自动扩展占满剩余的宽度，在它其中的内容不会换行
+- `'auto'`：会根据内容自动确定宽度，其中的内容会换行，如果想不换行，需要设置`noWrap: true`
+- `50`：根据给定的数值确定宽度，注意是`Number`类型，不是字符串，否则会报错
+
+我的第一个表格希望这五列占满全部空间，并且平均分配，所以`widths`（注意有`s`）是`['*', '*', '*', '*', '*']`
+
+我将表头单独拿出来定义：
+
+```JS
+// 隐私信息监测表格-表头
+const privacyDetailTableHeader = [
+  { text: '检测项', style: 'tableHeader' },
+  { text: '是否读取', style: 'tableHeader' },
+  { text: '是否上传', style: 'tableHeader' },
+  { text: '是否明文上传', style: 'tableHeader' },
+  { text: '检测结果', style: 'tableHeader' }
+];
+```
+表头用`style`属性指定了使用我在前面注册的`tableHeader`的样式。
+
+具体表格内容则根据数据动态生成，我的DMO做了一些假数据，和表头一起放到`body`里面，构成了一个二维数组
+
+最后是`layout`选项，它用来定义表格单元格和表格的边框，它有几个预设值`noBorders`/`headerLineOnly`/`lightHorizontalLines`，也可以传入一个对象对表格的样式自定义：
+
+
+```JS
+// 表格样式
+const tableLayout = {
+  hLineWidth(i, node) {
+    return 1;
+  },
+  vLineWidth(i, node) {
+    return 1;
+  },
+  hLineColor(i, node) {
+    return LINE_COLOR;
+  },
+  vLineColor(i, node) {
+    return LINE_COLOR;
+  },
+  paddingLeft(i, node) {
+    return 5
+  },
+};
+```
+传入了一些方法，设定对应的样式，除此之外还可以设置`fillColor`等，具体的参考[官方的例子吧](https://github.com/bpampuch/pdfmake/blob/master/examples/tables.js)。
+
+这样就可以完成一个表格，另外一个表格知识宽度和内容不同。
+
+最后将所有内容放到生成`createPdfKitDocument`参数对象中：
+
+```JS
+// 参数对象
+const docDefinition = {
+  content: [
+    titleImage,
+    titleIntro,
+    titleText,
+    titleLine,
+    overview,
+    privacyDetailTitle,
+    privacyDetailTable,
+    permissionDetailTitle,
+    permissionDetailTable,
+  ],
+  defaultStyle,
+  styles,
+  watermark
+};
+
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
+```
+
+一份排版还算精美、代码复杂度也可以接受的PDF文档就生成了。
+
+不仅如此，pdfmake还可以包括了生成二维码等功能，确实非常方便。
+
+上面的完整的代码在[我的Github仓库中](https://github.com/duola8789/node-learning/tree/master/demo7)。
+
+
+## 总结
+
+PDFKit可以在Node环境和浏览器环境使用：
+
+- 优点：引入字体后支持中文，支持图片，支持缩放、旋转，生成的PDF文字可复制，功能比较强大，API与操作Canvas的API非常类似，有一些使用的方法帮助快速操作，可以生成可点击的链接；
+- 缺点是样式控制需要使用手动控制，不方便且繁琐，如果PDF的布局复杂时（有表格）样式控制也会很复杂。所以比较适合于布局简单的、没有复杂表格、布局以大块内容分割的PDF的生成，或者以现有的API抽象出生成表格等方法，便于复用。
+
+pdfmake是在PDFKit基础上封装的：
+
+- 优点：提供了直接绘制表格的API，功能比较强大，使用方便，还提供了添加水印、生成二维码等功能，生成较复杂的PDF的代码量可以接受
+- 缺点是调试比较麻烦，每次都需要生成PDF查看样式，样式语法错误一般也不会报错，知识不生效，还有就是如果样式多了维护还是有一点麻烦，可使用类似LESS编写样式的思路。
+
+总的来说，如果需要在Node服务端生成可复制的PDF文件，推荐使用pdfmake。
+
 ## 参考
 
 - [pdfKit](http://pdfkit.org/)
+- [pdfmake](https://pdfmake.github.io/docs/)
+- [bpampuch/pdfmake@Gtihub](https://github.com/bpampuch/pdfmake/tree/master/examples)
+- [playground@pdfmake](http://pdfmake.org/playground.html)
