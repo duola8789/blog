@@ -1,0 +1,7 @@
+deploy:
+  provider: pages
+  skip_cleanup: true
+  keep_history: true
+  committer_from_gh: true
+  on:
+    branch: master
