@@ -17,4 +17,5 @@ deploy:
     branch: master
 
 script:
-  - npm run deploy
+  - hexo clean
+  - hexo generate
