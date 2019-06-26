@@ -8,13 +8,16 @@ cache:
 
 script:
   - npm run generate
-  - npm run delpoy
 
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $github_token
+  github_token: ${github_token}
   keep_history: true
   committer_from_gh: true
   on:
     branch: master
+
+after_script:
+  - sed -i'' "s~git@github.com:~https://${github_token}@github.com/~" _config.yml
+  - npm run deploy
