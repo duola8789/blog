@@ -23,7 +23,7 @@ script:
 
 notifications:
   email:
-    - duola878@126.com
+    - duola8789@126.com
   slack:
     on_success: always
     on_failure: always
