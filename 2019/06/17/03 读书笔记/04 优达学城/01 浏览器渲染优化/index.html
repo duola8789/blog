@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="优达学城浏览器渲染优化的学习笔记。">
+<meta name="keywords" content="浏览器,渲染">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01 浏览器渲染优化">
+<meta property="og:url" content="http://oldzhou.cn/2019/06/17/03 读书笔记/04 优达学城/01 浏览器渲染优化/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="优达学城浏览器渲染优化的学习笔记。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/FudbKAurvDAYl3XAQ1ws99MQRR4Y">
+<meta property="og:image" content="http://image.oldzhou.cn/Fg_g3iOShZeSxJj3zvTLTQ9ITBfv">
+<meta property="og:image" content="http://image.oldzhou.cn/FkrTcDF9XRe2mxs-WD3dBmu4djF3">
+<meta property="og:image" content="http://image.oldzhou.cn/FlqbZqFknl-eGd6mxOUzxNpbKJAV">
+<meta property="og:image" content="http://image.oldzhou.cn/Fo4JB38IQNZuQxebowWCh7An8HrD">
+<meta property="og:image" content="http://image.oldzhou.cn/FvFzgYPdmYHE8zETbhRZTMkq97cB">
+<meta property="og:image" content="http://image.oldzhou.cn/Ft6AoQaIRFqm0suycJCswZ9lXG3u">
+<meta property="og:image" content="http://image.oldzhou.cn/FrxTsulTRc4yq4vzlFPExQSB6qzs">
+<meta property="og:image" content="http://image.oldzhou.cn/FqcjNyWYrlH9H4zO6-HaFK9p2Cha">
+<meta property="og:image" content="http://image.oldzhou.cn/FpyeCWCTdvsxVCVKwgKjZ6LvcK9e">
+<meta property="og:image" content="http://image.oldzhou.cn/Fno2A82-4C6tQBW0z61MCg4C6vP1">
+<meta property="og:image" content="http://image.oldzhou.cn/FjFkV4BzA5AVrNRjBIGULaEWfDEA">
+<meta property="og:image" content="http://image.oldzhou.cn/FiuhXr_vP41Qn-698hnw8jYD1___">
+<meta property="og:image" content="http://image.oldzhou.cn/Fgm7UM6Z3xP1Gk6NHKLh5XMgwYIR">
+<meta property="og:image" content="http://image.oldzhou.cn/FhPA0NQf_jt0jxD9yUAOUYbNkySy">
+<meta property="og:image" content="http://image.oldzhou.cn/FrC3LDOjC5ohtnz671V0UbD_oxYT">
+<meta property="og:image" content="http://image.oldzhou.cn/Fih95QnqMQw-abMCQXfSaI3H0erN">
+<meta property="og:image" content="http://image.oldzhou.cn/FukzjcgixMovmyKniKESuLDCjAQP">
+<meta property="og:image" content="http://image.oldzhou.cn/FuehaNogPab7tcgtvOfa73Y5Fo1x">
+<meta property="og:updated_time" content="2019-06-17T23:25:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="01 浏览器渲染优化">
+<meta name="twitter:description" content="优达学城浏览器渲染优化的学习笔记。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/FudbKAurvDAYl3XAQ1ws99MQRR4Y">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/06/17/03 读书笔记/04 优达学城/01 浏览器渲染优化/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>01 浏览器渲染优化 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/06/17/03 读书笔记/04 优达学城/01 浏览器渲染优化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">01 浏览器渲染优化
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-17 23:25:37 / 修改时间：23:25:40" itemprop="dateCreated datePublished" datetime="2019-06-17T23:25:37+00:00">2019-06-17</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/读书笔记/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/17/03 读书笔记/04 优达学城/01 浏览器渲染优化/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/06/17/03 读书笔记/04 优达学城/01 浏览器渲染优化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p> 优达学城浏览器渲染优化的学习笔记。</p>
+<a id="more"></a>
+<h2 id="第一课-关键渲染路径"><a href="#第一课-关键渲染路径" class="headerlink" title="第一课 关键渲染路径"></a>第一课 关键渲染路径</h2><p>Web网页应该尽量避免不稳定性。</p>
+<p>多数设备刷新屏幕的频率为每秒60帧，即60fps</p>
+<p>渲染流程</p>
+<ol>
+<li>生成DOM树，（Parse HTML）</li>
+<li>生成CSS树</li>
+<li>合并成为渲染树（Recalculate Styles），计算样式</li>
+<li>计算布局，生成盒模型（Layour/Reflow）</li>
+<li>将页面由矢量转为光栅（Paint）</li>
+<li>处理复合层（compositive layer）</li>
+</ol>
+<p>注意，复合层上方的元素也会变为单独的图层（隐式复合）</p>
+<p>对于样式改变，导致的渲染流程：</p>
+<p><img src="http://image.oldzhou.cn/FudbKAurvDAYl3XAQ1ws99MQRR4Y" alt=""></p>
+<p>对于JavaScript部分，指的是能够引起外观的变化，不仅可以通过JavaScript来改变页面外观，也可以使用CSS动画或者Web Animation API来实现。</p>
+<p>改变外观后可能会需要重新计算Style属性（比如媒体查询等），有可能不需要。</p>
+<p>改变的CSS属性不同，后续触发流程也不同。</p>
+<ol>
+<li>改变宽度、高度、位置等几何结构，会触发后续的Layout、Paint、Composite步骤</li>
+<li>改变背景图片、颜色、阴影等不涉及几何几何尺寸的属性，不会再触发Reflow，只会触发后续Paint、Composite步骤</li>
+<li>改变<code>transform</code>、<code>opacity</code>等会生成单独的图层的属性，不会再触发Reflow和Repaint，只需触发Composite步骤</li>
+</ol>
+<p>CSS属性的改变应该尽可能触发少量的工作，避免Reflow和Repaint，提高性能。</p>
+<h3 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h3><p>（1）第一题</p>
+<p><img src="http://image.oldzhou.cn/Fg_g3iOShZeSxJj3zvTLTQ9ITBfv" alt=""></p>
+<p>渲染树中只包含了最终显示在屏幕上的元素内容，它与DOM树并不完全相同，比如它不会包含<code>display:none</code>的元素，不会包含<code>&lt;head&gt;</code>标签中的元素。</p>
+<p>所以这道题目的答案是A，而其他的属性，虽然不会占据屏幕空间，但是还是属于页面的一部分，仍然会包含在渲染树中。</p>
+<p>（2）第二题</p>
+<p><img src="http://image.oldzhou.cn/FkrTcDF9XRe2mxs-WD3dBmu4djF3" alt=""></p>
+<p>无论是改变<code>body</code>还是改变其中内部的<code>div</code>的宽度，浏览器都会做出最坏的打算，就是需要对全部DOM元素的样式进行计算，对整个文档进行Reflow和Repaint。所以答案是C</p>
+<p>（3）第三题</p>
+<p>题目中是一个弹性部局的容器（flex），但改变容器的大小，内部元素的尺寸会随机发生变化。当新的页面渲染时，浏览器会经历那些步骤？</p>
+<p><img src="http://image.oldzhou.cn/FlqbZqFknl-eGd6mxOUzxNpbKJAV" alt=""></p>
+<p>弹性容器的尺寸发生变化，内部元素的尺寸会发生变化，但是它们的Style并没有发生变化（因为宽度都是弹性确定的，而非固定值，并且不涉及媒体查询短点改变样式的条件），所以不会重新计算Style，但是由于宽度发生了变化，所以后续的Layout、Paint、Composite都会执行。</p>
+<p>（4）第四题</p>
+<p><img src="http://image.oldzhou.cn/Fo4JB38IQNZuQxebowWCh7An8HrD" alt=""></p>
+<p>会触发Layout+Paint+Composite的属性很多，比如<code>margin</code>、<code>width</code>等</p>
+<p>触发Paint+Composite的属性有<code>color</code>、<code>background</code>等</p>
+<p>触发Composite的属性变<code>transform</code>、<code>opacity</code>等</p>
+<p>可以通过<a href="https://csstriggers.com/" target="_blank" rel="noopener">CSS Triggers</a>网站来查找CSS属性分别会触发哪些过程。</p>
+<h2 id="第二课-App-生命周期"><a href="#第二课-App-生命周期" class="headerlink" title="第二课 App 生命周期"></a>第二课 App 生命周期</h2><p>网络应用的生命周期包含了四个主要阶段：RAIL</p>
+<p>按照时间先后顺序：</p>
+<ol>
+<li>Load， 加载阶段，有大概1秒的时间来渲染网页，然后用户的关注级别降低，这个阶段要下载和加载关键资源</li>
+<li>Idle，闲置阶段，加载后进入闲置阶段。这时候适合执行不太重要的工作，确保在此之后出现的任何舞动都能及时作出响应，闲置时间在50毫秒左右，以便在用户开始交互时立刻停止闲置阶段</li>
+<li>Animations，动画阶段，例如用户滚动屏幕或者出现动画，只有16毫秒的时间来渲染一帧，这样才能保证60fps</li>
+<li>Responsiveness，响应阶段，人类大脑可以忍受100毫秒的停顿时间，更久的话就会让人觉得卡顿不流畅。这就意味着应用要以某种方式在100毫秒内对用户输入做出响应。</li>
+</ol>
+<h2 id="第三课-卡顿杀伤性武器"><a href="#第三课-卡顿杀伤性武器" class="headerlink" title="第三课 卡顿杀伤性武器"></a>第三课 卡顿杀伤性武器</h2><p>学习使用Chrome的Devtools中的性能分析面板Performance（以前的Timeline）</p>
+<p><img src="http://image.oldzhou.cn/FvFzgYPdmYHE8zETbhRZTMkq97cB" alt=""></p>
+<p>现在的面板和课程讲解中已经发生了很大声变化，但是大体思路是相同的，录制之后再中间的<code>Main</code>的下拉部分去分析什么导致的卡顿</p>
+<p>它是倒火焰图，上方的行为调用了下方的命令，不同的行为有不同的颜色表示，黄色是JavaScript脚本，紫色是重新计算样式，绿色是绘制</p>
+<p><img src="http://image.oldzhou.cn/Ft6AoQaIRFqm0suycJCswZ9lXG3u" alt=""></p>
+<p>可以找到哪个行为事件过长（大于16ms）导致卡顿，然后进行分析、优化</p>
+<h2 id="第四课-JavaScript"><a href="#第四课-JavaScript" class="headerlink" title="第四课 JavaScript"></a>第四课 JavaScript</h2><p>JavaScript运行时并不是我们编写的样子，而是通过JavaScript解释器提供的即时编译器，编译为更有效率的代码来执行的，所以编写代码时没有必要去做一些<code>while</code>和<code>for</code>谁更快之类的微优化。</p>
+<p>JavaScript是渲染管道的开始，后续有重新计算样式、重排、重绘、复合的过程。要想不卡顿需要达到60fps，所以每一帧只有16ms的时间，分配给JavaScript部分的也就只有10-12ms。所以在每一帧渲染开始时，应当尽早执行JavaScript函数，这样才能够有足够的时间完成后续的过程。</p>
+<p>在执行JavaScript动画时，应当使用<code>requestAnimationFrame</code>来代替<code>setTimeout</code>/<code>setInterval</code>，因为后者不会关注渲染管道的流程，而前者会自动的在每一帧开始时运行JavaScript函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">animate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"> <span class="comment">// do something here</span></span><br><span class="line"> requestAnimationFrame(anmiate)</span><br><span class="line">&#125;</span><br><span class="line">requestAnimationFrame(anmiate)</span><br></pre></td></tr></table></figure>
+<p>可以使用上节课提到的Chrome的<code>performance</code>面板分析JavaScript的运行时间和内存占用情况。JavaScript会自动进行内存回收，所以我们不必担心指针、删除对象、局部变量的内存占用问题。可以通过<code>performance</code>分析是否存在内存泄漏等情况。</p>
+<p><img src="http://image.oldzhou.cn/FrxTsulTRc4yq4vzlFPExQSB6qzs" alt=""></p>
+<p>当有大量耗时的计算任务时，可以考虑使用Web Worker，将耗时的任务移动到Web Worker线程进行计算，而主线程（Main Thread）负责渲染流畅的UI。</p>
+<p>Web Worker可以在不同于主窗口的线程下，完全独立的操作系统线程下手运行JavaScript。主线程与Web Worker线程之间通过<code>postMessage</code>和<code>onmessage</code>事件进行通信，各个Worker之间不能通信。</p>
+<p>主线程:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myWorker = <span class="keyword">new</span> Worker(<span class="string">'./scripts/worker.js'</span>);</span><br><span class="line">myWorker.postMessage(data)</span><br><span class="line">myWoker.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e.data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Worker线程 worker.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过importScipts导入其他脚本</span></span><br><span class="line">importScipts(<span class="string">'other.js'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e.data)</span><br><span class="line">  <span class="keyword">this</span>.postMessage(data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="第五课-样式和布局"><a href="#第五课-样式和布局" class="headerlink" title="第五课 样式和布局"></a>第五课 样式和布局</h2><p>重新计算样式（Recalculate Style）造成的性能代价与元素数量基本上是线性增长的关系。</p>
+<p>可以采用BEM规则来为CSS的类命名，更加模块化、可复用、可读性好，且新跟那个好（因为使用class选择器的关系）</p>
+<blockquote>
+<p>BEN中的B是Block，指一个UI构成单元，E是Element，是B的后代，M是Modifer，表达状态，比如three、current、active等。</p>
+<p>BEM使用连接符连接BEM，但不能使用相同的连接符连接BEM，例如使用<code>__</code>连接BE，使用<code>_</code>连接EM，使用<code>-</code>做连字符，比如<code>header__item-list_active</code></p>
+</blockquote>
+<p><img src="http://image.oldzhou.cn/FqcjNyWYrlH9H4zO6-HaFK9p2Cha" alt=""></p>
+<p>第二个CSS选择器是速度快的，它只使用了BEM规则的类选择器，不仅性能最好，而且可读性良好。</p>
+<p>选择器性能优化有时候不如良好的布局导致的节点数减少带来的性能提升更高。</p>
+<p>当在一个循环中，先访问一些尺寸、位置等会导致Layout的属性，然后再改变尺寸，重新计算样式计算，会导致强制布局，当反复如此，会出现布局抖动。</p>
+<p>应当尽量避免强制布局，在循环外读取属性，在循环内改变尺寸，不会造成强制布局。</p>
+<h2 id="第六课-合成和绘制"><a href="#第六课-合成和绘制" class="headerlink" title="第六课 合成和绘制"></a>第六课 合成和绘制</h2><p>可以使用Chrome的分析工具来分析页面的绘制过程，但是课程中的<code>Show paint rectangles</code>已经不再原来的位置了</p>
+<p>为了分析绘制过程，需要在开发者的工具的<code>More tools</code>里面找到<code>Rendering</code>，在打开的<code>Rendering</code>面板中勾选<code>Paint flasing</code>选项：</p>
+<p><img src="http://image.oldzhou.cn/FpyeCWCTdvsxVCVKwgKjZ6LvcK9e" alt=""></p>
+<p>勾选之后，它会告诉你绘制流程在页面上的什么地方发生了，何时发生了。当页面有元素被绘制时，对应的元素会显示为绿色：</p>
+<p><img src="http://image.oldzhou.cn/Fno2A82-4C6tQBW0z61MCg4C6vP1" alt=""></p>
+<p>还可以使用Paint Profiler来确定页面的那些区域被绘制了，何时绘制的。但是新版本的Chomre开启Paint很麻烦。首先勾选<code>Enable advanced paint instruments(slow)</code></p>
+<p><img src="http://image.oldzhou.cn/FjFkV4BzA5AVrNRjBIGULaEWfDEA" alt=""></p>
+<p>然后点击Record进行录制，录制结束后找到绿色的Paint块并点击：</p>
+<p><img src="http://image.oldzhou.cn/FiuhXr_vP41Qn-698hnw8jYD1___" alt=""></p>
+<p>点击之后再下方出现了<code>Paint Profiler</code>的选项：</p>
+<p><img src="http://image.oldzhou.cn/Fgm7UM6Z3xP1Gk6NHKLh5XMgwYIR" alt=""></p>
+<p>可以根据左侧的命令结合上方的新的时间线和右侧的绘制结果，查看每一刻的绘制情况和绘制命令。</p>
+<p>绘制之后的流程就是合成，就是将多个图层合并成为一个，当改变一个图层时，不会引起其他图层的绘制。</p>
+<p>看下面的练习题，左侧是一个导航栏，那些元素应该放在一个图层上？</p>
+<p><img src="http://image.oldzhou.cn/FhPA0NQf_jt0jxD9yUAOUYbNkySy" alt=""></p>
+<p>一起移动的元素，应该放在一个图层上。</p>
+<p>Chrome的性能分析记录中有两个与图层合成有关，一个是<code>Update Layer Tree</code>。当Chrome的引擎需要知道页面的哪个图层时就会出现该记录，查看元素的样式，弄清楚需要多少图层，另一个是<code>Compositie Layers</code>，浏览器将页面合成到一起发送给屏幕。</p>
+<p><strong>图层越多，图层管理和合成花费的时间就越多</strong>，所以需要在减少绘制时间和增加图层管理时间二者之间做出权衡。</p>
+<p>图层管理大多数情况下是浏览器自动完成的，但是当遇到绘制问题时，可以考虑<strong>将某个元素单独放到一个图层中</strong>。在创建图层之前，应该看一下看元素是否已经有了自己的图层，在刚才的<code>Rendering</code>的功能面板在宏，勾选上<code>Layers borders</code>选项</p>
+<p><img src="http://image.oldzhou.cn/FrC3LDOjC5ohtnz671V0UbD_oxYT" alt=""></p>
+<p>勾选之后，页面上除了绿色的框框，还会出现褐色的框框，绿色框框是浏览器对图层的划分，我们没有办法控制，橘色的框框表示元素位于自己的合成图层上。</p>
+<p><img src="http://image.oldzhou.cn/Fih95QnqMQw-abMCQXfSaI3H0erN" alt=""></p>
+<p>如何创建属于自己的图层呢？</p>
+<p>一般来说有两种方式：</p>
+<ol>
+<li><code>will-change</code>，使用<code>will-change</code>，属性值可以是<code>transform</code>、<code>left</code>、<code>top</code>等外观属性，浏览器会根据这些提示为这些属性进行布局和绘制流程，由于浏览器创建图层也是要耗费性能的，使用<code>will-change</code>最大的好处就是避免浏览器匆忙创建图层带来的性能代价。</li>
+<li>使用3D移动<code>transform: translateZ(0)</code>或者<code>transform: translate3D(0, 0, 0)</code></li>
+</ol>
+<p>这两种方式是在为静止的元素（不改变其原始位置）创建单独图层，实际上还有一些其他的方式也会创建单独的图层，比如：</p>
+<ul>
+<li><code>transform</code>的对应移动，<code>transalte</code>、<code>rotate</code>、<code>scale</code>等</li>
+<li><code>video</code>/<code>canvas</code>/<code>iframe</code>等元素</li>
+<li><code>opacity</code>改变</li>
+<li><code>position: fixed</code></li>
+<li><code>filter</code></li>
+<li>有合成层后代，并且自身<code>overflow</code>不为<code>visible</code>（隐式合成）</li>
+</ul>
+<p>Chrome创建层的标准是什么呢？完整的标准：</p>
+<blockquote>
+<p>What else gets its own layer? Chrome’s heuristics here have evolved over time and continue to, but currently any of the following trigger layer creation:</p>
+<ol>
+<li>3D or perspective transform CSS properties</li>
+<li><code>&lt;video&gt;</code> elements using accelerated video decoding</li>
+<li><code>&lt;canvas&gt;</code> elements with a 3D (WebGL) context or accelerated 2D context</li>
+<li>Composited plugins (i.e. Flash)</li>
+<li>Elements with CSS animation for their opacity or using an animated transform</li>
+<li>Elements with accelerated CSS filters</li>
+<li>Element has a descendant that has a compositing layer (in other words if the element has a child element that’s in its own layer)</li>
+<li>Element has a sibling with a lower z-index which has a compositing layer (in other words the it’s rendered on top of a composited layer)</li>
+</ol>
+</blockquote>
+<p>可以参考<a href="https://segmentfault.com/a/1190000010364647" target="_blank" rel="noopener">这篇文章</a>，讲得不错。</p>
+<p>可以使用<code>Layesr</code>工具来查看页面中有多少个图层：</p>
+<p><img src="http://image.oldzhou.cn/FukzjcgixMovmyKniKESuLDCjAQP" alt=""></p>
+<p>注意要避免隐式提升，下图中的<code>totes promited</code>成为单独图层的原因就是它覆盖在了于具有单独图层的元素的上方</p>
+<p><img src="http://image.oldzhou.cn/FuehaNogPab7tcgtvOfa73Y5Fo1x" alt=""></p>
+<p>所有元素都提升为单独的图层会消耗大量内存，并花费很多时间，在移动设备上问题更加明显。所以将元素提升到图层上时一定要谨慎，因为有可能会<strong>不小心由于存在重叠而创建了大量的其他的图层</strong>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如何提升性能：</p>
+<p>（1）JS</p>
+<ol>
+<li>避免多次访问尺寸、更改尺寸，导致布局抖动、强制布局</li>
+<li>使用<code>requestAnimation</code>来代替<code>setTimeout</code>/<code>setInterval</code>创建动画</li>
+<li>使用Web Worker，将复杂的计算过程放到子线程，避免主线程（渲染线程）的卡顿</li>
+</ol>
+<p>（2）CSS</p>
+<ol>
+<li>使用<code>will-change</code>提示浏览器将要发生的变化，并且创建单独的图层</li>
+<li>使用3D变化来创建单独的图层</li>
+<li>使用<code>transform</code>和<code>opacity</code>来创建单独的图层，实现动画</li>
+<li>更多的使用类选择器（BEM）来提升选择元素的</li>
+<li>避免隐式提升创建太多的图层</li>
+</ol>
+<p>分析工具：</p>
+<ul>
+<li><code>Performance</code> </li>
+<li><code>Rendering</code> </li>
+<li><code>Laryouts</code></li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://classroom.udacity.com/courses/ud860" target="_blank" rel="noopener">浏览器渲染优化@优达学城</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/浏览器/" rel="tag"># 浏览器</a>
+          
+            <a href="/tags/渲染/" rel="tag"># 渲染</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/13/01 前端笔记/07 零散专题/零散专题32 生成PDF/" rel="next" title="零散专题32 生成PDF">
+                <i class="fa fa-chevron-left"></i> 零散专题32 生成PDF
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/18/01 前端笔记/04 Vue/Vue提高20 日期选择器插件/" rel="prev" title="Vue提高20 日期选择器插件">
+                Vue提高20 日期选择器插件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一课-关键渲染路径"><span class="nav-number">1.</span> <span class="nav-text">第一课 关键渲染路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#练习"><span class="nav-number">1.1.</span> <span class="nav-text">练习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二课-App-生命周期"><span class="nav-number">2.</span> <span class="nav-text">第二课 App 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三课-卡顿杀伤性武器"><span class="nav-number">3.</span> <span class="nav-text">第三课 卡顿杀伤性武器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四课-JavaScript"><span class="nav-number">4.</span> <span class="nav-text">第四课 JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五课-样式和布局"><span class="nav-number">5.</span> <span class="nav-text">第五课 样式和布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第六课-合成和绘制"><span class="nav-number">6.</span> <span class="nav-text">第六课 合成和绘制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

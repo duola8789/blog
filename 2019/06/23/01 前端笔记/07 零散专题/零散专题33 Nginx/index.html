@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="以前的Nginx的学习笔记，重新总结了一下。">
+<meta name="keywords" content="Nginx,跨域">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零散专题33 Nginx">
+<meta property="og:url" content="http://oldzhou.cn/2019/06/23/01 前端笔记/07 零散专题/零散专题33 Nginx/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="以前的Nginx的学习笔记，重新总结了一下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/18-11-15/20784963.jpg">
+<meta property="og:image" content="http://image.oldzhou.cn/18-11-15/23647615.jpg">
+<meta property="og:image" content="http://image.oldzhou.cn/Fj11NRzqCe24KCIMQWmb0U81vRQO">
+<meta property="og:image" content="http://image.oldzhou.cn/FpmutJqv9nekezJRPjcWJAV7bA6L">
+<meta property="og:image" content="http://image.oldzhou.cn/FjmlXAq82rM10u8-TVzBiHxs0--b">
+<meta property="og:image" content="http://image.oldzhou.cn/FnnSs8kLR2yySIPf8CLJ7cqfsyFQ">
+<meta property="og:updated_time" content="2019-06-23T21:09:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零散专题33 Nginx">
+<meta name="twitter:description" content="以前的Nginx的学习笔记，重新总结了一下。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/18-11-15/20784963.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/06/23/01 前端笔记/07 零散专题/零散专题33 Nginx/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>零散专题33 Nginx | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/06/23/01 前端笔记/07 零散专题/零散专题33 Nginx/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">零散专题33 Nginx
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 21:09:33 / 修改时间：21:09:39" itemprop="dateCreated datePublished" datetime="2019-06-23T21:09:33+00:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/其他/" itemprop="url" rel="index"><span itemprop="name">其他</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/23/01 前端笔记/07 零散专题/零散专题33 Nginx/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/06/23/01 前端笔记/07 零散专题/零散专题33 Nginx/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>以前的Nginx的学习笔记，重新总结了一下。</p>
+<a id="more"></a>
+<h2 id="关于Nginx"><a href="#关于Nginx" class="headerlink" title="关于Nginx"></a>关于Nginx</h2><p>Nginx是一个强大的轻量级的高性能网页服务器、反向代理服务器和电子邮件代理服务器。作为负载均衡服务器，Nginx可以在内部直接支持Rails和PHP程序对外进行服务，也可以支持作为HTTP代理服务器对外进行服务。</p>
+<h2 id="Nginx的正向代理"><a href="#Nginx的正向代理" class="headerlink" title="Nginx的正向代理"></a>Nginx的正向代理</h2><p>正向代理的工作原理就像一个跳板，简单的说，我是一个用户，我访问不了某网站，但是我能访问一个代理服务器这个代理服务器呢,他能访问那个我不能访问的网站。</p>
+<p>于是我先连上代理服务器，告诉他我需要那个无法访问网站的内容，代理服务器去取回来,然后返回给我。从网站的角度,只在代理服务器来取内容的时候有一次记录。有时候并不知道是用户的请求,也隐藏了用户的资料,这取决于代理告不告诉网站。</p>
+<p>结论就是正向代理是一个位于客户端和原始服务器(Origin Server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。</p>
+<h2 id="Nginx的反向代理"><a href="#Nginx的反向代理" class="headerlink" title="Nginx的反向代理"></a>Nginx的反向代理</h2><blockquote>
+<p>正向代理代理的是客户端，反向代理代理的服务器</p>
+</blockquote>
+<h3 id="什么是反向代理"><a href="#什么是反向代理" class="headerlink" title="什么是反向代理"></a>什么是反向代理</h3><p>所谓反向代理（Reverse Proxy）方式是指以代理服务器来接受Internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给Internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
+<p><img src="http://image.oldzhou.cn/18-11-15/20784963.jpg" alt=""></p>
+<p>从上图可以看出，反向代理服务器位于网站机房，代理网站web服务器接受Http请求，对请求进行转发。</p>
+<p>例用户访问<code>http://ooxx.me/readme</code>，但<code>ooxx.me</code>上并不存在<code>readme</code>页面，他是偷偷从另外一台服务器上取回来,然后作为自己的内容吐给用户，但用户并不知情。这里所提到的<code>ooxx.me</code>这个域名对应的服务器就设置了反向代理功能。</p>
+<p>反向代理对于客户端而言它就像是原始服务器，并且客户端不需要进行任何特别的设置。客户端向反向代理发送普通请求，接着反向代理将判断向何处(原始服务器)转交请求，并将获得的内容返回给客户端，就像这些内容原本就是它自己的一样。</p>
+<h3 id="反向代理的作用"><a href="#反向代理的作用" class="headerlink" title="反向代理的作用"></a>反向代理的作用</h3><p>（1）保护网站安全：任何来自Internet的请求都必须先经过代理服务器；</p>
+<p><img src="http://image.oldzhou.cn/18-11-15/23647615.jpg" alt=""></p>
+<p>（2）通过配置缓存功能加速Web请求：可以缓存真实Web服务器上的某些静态资源，减轻真实Web服务器的负载压力；</p>
+<p><img src="http://image.oldzhou.cn/Fj11NRzqCe24KCIMQWmb0U81vRQO" alt=""></p>
+<p>（3）实现负载均衡：充当负载均衡服务器均衡的分发请求，平衡集群中各个服务器的负载压力；</p>
+<p><img src="http://image.oldzhou.cn/FpmutJqv9nekezJRPjcWJAV7bA6L" alt=""></p>
+<h2 id="Nginx的一些基本知识"><a href="#Nginx的一些基本知识" class="headerlink" title="Nginx的一些基本知识"></a>Nginx的一些基本知识</h2><p>在介绍下面的使用Nginx进行跨域之前，需要对Nginx的一些基本知识有所了解。</p>
+<h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><p>使用Nginx的命令需要首先定位到<code>nginx.exe</code>所在的目录（Windows系统）</p>
+<p>Nginx的一些基本命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看版本</span></span><br><span class="line">nginx -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动</span></span><br><span class="line">start nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">nginx -s stop  <span class="comment"># 快速停止Nginx，可能并不保存相关信息</span></span><br><span class="line">nginx -s quit  <span class="comment"># quit完整有序的停止Nginx，并保存相关信息。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新启动</span></span><br><span class="line">nginx -s reload  <span class="comment"># 当配置信息修改，需要重新载入这些配置时使用此命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新打开日志文件</span></span><br><span class="line">nginx -s reope</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看配置文件路径及是否调用有效</span></span><br><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>Nginx的功能都是通过<code>nginx.conf</code>配置文件来实现的，一个服务器上可能会有多个配置文件，可以执行<code>nginx -t</code>来查看配置文件的路径以及是否调用有效。</p>
+<p>Nginx的配置文件主要分为四部分：</p>
+<ol>
+<li><code>main</code>，全局设置，设置的指令将影响其他所有部分的设置</li>
+<li><code>server</code>，主机设置，用于指定虚拟主机域名、IP和端口</li>
+<li><code>upstream</code>，上游服务器设置，主要为反向代理、负载均衡相关配置</li>
+<li><code>location</code>，URL匹配特定设置</li>
+</ol>
+<p>他们之间，<code>location</code>继承<code>server</code>，<code>server</code>继承<code>main</code>，<code>upstream</code>既不会继承指令也不会被继承。</p>
+<h3 id="关于location"><a href="#关于location" class="headerlink" title="关于location"></a>关于<code>location</code></h3><p>Nginx配置文件中的<code>loaction</code>是主机访问的地址，在Nginx服务器做一个代理，转发到<code>location</code>中配置的地址。它有如下的匹配指令：</p>
+<ul>
+<li><code>=</code>表示进行普通字符精确匹配，只有请求的URL路径与后面的字符串完全相等时，才会命中</li>
+<li><code>~</code>表示执行一个正则匹配，区分大小写</li>
+<li><code>~*</code>表示执行一个正则匹配，不区分大小写</li>
+<li><code>^~</code>表示普通字符匹配，如果该选项匹配，只匹配该选项，不匹配别的选项，一般用来匹配目录</li>
+<li><code>@</code>定义一个命名的<code>location</code>，使用在内部定向时，例如<code>error_page</code>, <code>try_files</code></li>
+</ul>
+<p><code>loaction</code>匹配的优先级（与<code>loaction</code>在配置文件中的顺序无关）</p>
+<ul>
+<li><code>=</code>精确匹配会第一个被处理。如果发现精确匹配，Nginx停止搜索其他匹配。 </li>
+<li>普通字符匹配，正则表达式规则和长的块规则将被优先和查询匹配，也就是说如果该项匹配还需去看有没有正则表达式匹配和更长的匹配。</li>
+<li><code>^~</code>则只匹配该规则，Nginx停止搜索其他匹配，否则Nginx会继续处理其他<code>loaction</code>指令。</li>
+<li>最后匹配理带有<code>~</code>和<code>~*</code>的指令，如果找到相应的匹配，则Nginx停止搜索其他匹配；当没有正则表达式或者没有正则表达式被匹配的情况下，那么匹配程度最高的逐字匹配指令会被使用。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">location  = / &#123;</span><br><span class="line">  <span class="comment"># 只匹配"/". </span></span><br><span class="line">  [ configuration A ] </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location  / &#123;</span><br><span class="line">  <span class="comment"># 匹配任何请求，因为所有请求都是以"/"开始</span></span><br><span class="line">  <span class="comment"># 但是更长字符匹配或者正则表达式匹配会优先匹配</span></span><br><span class="line">  [ configuration B ] </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ^~ /images/ &#123;</span><br><span class="line">  <span class="comment"># 匹配任何以 /images/ 开始的请求，并停止匹配 其它location</span></span><br><span class="line">  [ configuration C ] </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">  <span class="comment"># 匹配以 gif, jpg, or jpeg结尾的请求. </span></span><br><span class="line">  <span class="comment"># 但是所有 /images/ 目录的请求将由 [Configuration C]处理.   </span></span><br><span class="line">  [ configuration D ] </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关于rewrite"><a href="#关于rewrite" class="headerlink" title="关于rewrite"></a>关于<code>rewrite</code></h3><p><code>rewrite</code>只能对URL中的路径部分除去传递的参数外的字符串起作用，不关心域名部分和查询参数，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.baidu.com/a/bb/ccc.php?id=1&amp;uu=str</span><br></pre></td></tr></table></figure>
+<p><code>rewrite</code>只会对<code>/a/bb/ccc.php</code>重写。</p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewrite regex replacement [flag]</span><br></pre></td></tr></table></figure>
+<p>执行顺序是首先执行<code>location</code>匹配，然后执行<code>location</code>中的<code>rewirte</code>指令。</p>
+<h3 id="关于proxy-pass"><a href="#关于proxy-pass" class="headerlink" title="关于proxy_pass"></a>关于<code>proxy_pass</code></h3><p><code>proxy_pass</code>地址后面加上了<code>/</code>则相当于转发到绝对根路径，Nginx不会对<code>loaction</code>中匹配的路径部分进行转发，例如：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~/proxy/html/</span> &#123;</span><br><span class="line">  <span class="comment"># 匹配任何以/proxy/html/开头的地址，匹配符合以后不继续往下搜索</span></span><br><span class="line">  <span class="attribute">proxy_pass</span> http://www.b.com/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果请求的url为：<code>http://localhost/proxy/html/test.json</code>，则转发后的地址是：<code>http://www.b.com/test.json</code>。</p>
+<p>如果<code>proxy_pass</code>地址后面不加<code>/</code>，则Nginx会对<code>loaction</code>中匹配的路径部分进行转发，例如:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~/proxy/html/</span>&#123;</span><br><span class="line">  <span class="comment"># 匹配任何以/proxy/html/开头的地址，匹配符合以后不继续往下搜索</span></span><br><span class="line">  <span class="attribute">proxy_pass</span> http://www.b.com</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果请求的url为：<code>http://localhost/proxy/html/test.json</code>，则转发后的地址是：<code>http://www.b.com/proxy/html/test.json</code>。</p>
+<h2 id="利用Nginx的反向代理实现跨域"><a href="#利用Nginx的反向代理实现跨域" class="headerlink" title="利用Nginx的反向代理实现跨域"></a>利用Nginx的反向代理实现跨域</h2><p>利用Nginx反向代理实现跨域，不需要目标服务器配合，但需要搭建中转Nginx服务器，用于转发请求。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p><img src="http://image.oldzhou.cn/FjmlXAq82rM10u8-TVzBiHxs0--b" alt=""></p>
+<p>对于请求者而言，发送的不是跨域的请求，而是对本地资源的请求，Nginx识别出特定的本地资源请求，转发到真实的跨域的资源的地址。</p>
+<p>而作为服务端而言，是不存在跨域的（需要添加对应的请求头），所以会把资源返回给Nginx服务，再由Nginx服务将资源返回给真正的请求页面。</p>
+<h3 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h3><p>首先找到<code>nginx.conf</code>中的下面这部分内容：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> localhost;</span><br><span class="line">  <span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span>   ../Project;</span><br><span class="line">    <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>server</code>代表启动的一个服务，<code>location</code>是一个定位规则，是Nginx用来跨域的入口。</p>
+<p><code>location /</code>的意思是所有以<code>/</code>开头的地址，实际上是所有请求，后面的地址可以是绝对地址，也可以是相对地址；<code>root</code>的意思是去请求相对上一层中的Project文件夹里的文件，<code>index</code>是去指定首页。</p>
+<p>在<code>location /{}</code>中添加一下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;&apos;;</span><br><span class="line">add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;</span><br><span class="line">add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;</span><br><span class="line">rewrite regex replacement [flag]</span><br><span class="line">proxy_pass http://ip:port/;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<p>（1）第一条指令：授权从<code>other.subdomain.com</code>的请求；是W3C标准里用来检查该跨域请求是否可以被通过；</p>
+<p>（2）第二条指令：当该标志为<code>true</code>时，响应于该请求可以被暴露；</p>
+<p>（3）第三条指令：制定请求的方式，可以使<code>GET</code>/<code>POST</code>等；</p>
+<p>（4）第四条指令：对域名（根路径）后面除去传递的参数外的字符串的<code>url</code>进行重写及重定向；</p>
+<blockquote>
+<p>URL是URI的子集。任何东西，只要能够唯一地标识出来，都可以说这个标识是URI。如果这个标识是一个可获取到上述对象的路径，那么同时它也可以是一个URL；但如果这个标识不提供获取到对象的路径，那么它就必然不是URL。</p>
+</blockquote>
+<p>（4）第五条指令：实际要访问的请求地址；</p>
+<p>前三条是用来指定自己的服务器是否可以被跨域访问的指令，是可以没有的。</p>
+<p>第四条利用Nginx提供的变量，结合正则表示和标志位来实现比较复杂的重定向，简单的情况也是可以没有的。</p>
+<h3 id="实现方法1：location-proxy-pass"><a href="#实现方法1：location-proxy-pass" class="headerlink" title="实现方法1：location + proxy_pass"></a>实现方法1：<code>location</code> + <code>proxy_pass</code></h3><p>适用于将<code>location</code>直接转发至<code>proxy_pass</code>地址的情况，这种情况一般比较简单。</p>
+<p>比如我们要访问的跨域资源位于<code>http://115.29.203.53:10013/students/</code>，前端代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> button = <span class="built_in">document</span>.getElementById(<span class="string">"button"</span>);</span><br><span class="line"></span><br><span class="line">$(button).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $.get(<span class="string">"students"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    alert(data.data[<span class="number">0</span>].id)</span><br><span class="line">  &#125;, <span class="string">"json"</span>);</span><br><span class="line">  </span><br><span class="line">  $.getJSON(<span class="string">"students"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    alert(data.data[<span class="number">0</span>].id)</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  $.ajax(&#123;</span><br><span class="line">    url: <span class="string">"students"</span>,</span><br><span class="line">    type: <span class="string">"GET"</span>,</span><br><span class="line">    dataType: <span class="string">"json"</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      alert(data.data[<span class="number">0</span>].id)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上面的三种方法都可以实现跨域，要注意的是使用<code>get</code>方法获取JSON数据时一定要声明第四个参数<code>dataType</code>为<code>JSON</code>，否则总是无法获得正确的对象。</p>
+<p>跨域的部分，<code>url</code>地址是一个相对地址<code>students</code>，转化为绝对地址就是<code>http://localhost/Project2/task5/students/</code>。而本地并没有这样的资源，所以需要利用Nginx进行转发处理。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> localhost;</span><br><span class="line">  <span class="attribute">location</span><span class="regexp"> ^~/Project2/task5/students/</span> &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://115.29.203.53:10013/students/;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置完成后重启Nginx服务，首先定位到<code>nginx.exe</code>所在的目录（Windows系统），然后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx.exe -s reload</span><br></pre></td></tr></table></figure>
+<p>这个是比较蠢的做法，直接将全部的URL替换为最终的真实URL，这样就将地址转发出去了，实现了跨域。</p>
+<h3 id="实现方法2：location-proxy-pass-rewrite"><a href="#实现方法2：location-proxy-pass-rewrite" class="headerlink" title="实现方法2：location + proxy_pass + rewrite"></a>实现方法2：<code>location</code> + <code>proxy_pass</code> + <code>rewrite</code></h3><p>适用于直接将<code>location</code>转发至<code>proxy_pass</code>不能满足需要，需要对虚拟根路径及后面的路径使用<code>rewrite</code>进行改写的情况。例如：</p>
+<p>我们主机的地址是<code>www.a.com/html/index.html</code>，想请求<code>www.b.com/api/msg?method=1&amp;para=2</code>，请求如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">  type: <span class="string">"get"</span>,</span><br><span class="line">  url: <span class="string">"www.b.com/api/msg?method=1&amp;para=2"</span>,</span><br><span class="line">  success: <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    alert(<span class="string">"success"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这样必然因为跨域问题发生错误，无法获得<code>b</code>网站的数据。将请求更改为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">  type: <span class="string">"get"</span>,</span><br><span class="line">  url: <span class="string">"proxy/api/msg?method=1&amp;para=2"</span>,</span><br><span class="line">  <span class="comment">// 绝对路径是 www.a.com/proxy/html/api/msg?method=1&amp;para=2</span></span><br><span class="line">  success: <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    alert(<span class="string">"success"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这是的URL请求的就是本地的资源了，但是在本地并不存在相应的数据，所以需要将这个地址通过Nginx转发出去。</p>
+<p>在刚才的路径中匹配到这个请求，在<code>location</code>下面再添加一个<code>location</code>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> localhost;</span><br><span class="line">  <span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span>   ../Project;</span><br><span class="line">    <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 匹配任何以 /proxy/html/ 开头的地址，匹配符合以后不继续往下搜索</span></span><br><span class="line">  <span class="attribute">location</span><span class="regexp"> ^~/proxy/html/</span> &#123;</span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/proxy/html/(.*)$</span> /<span class="variable">$1</span> <span class="literal">break</span>;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://www.b.com/</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>location ^~/proxy/html/</code>用于拦截请求，是一个匹配规则，匹配任何以<code>proxy/html/</code>开头的地址，这里匹配到的就是<code>proxy/html/api/msg?method=1&amp;para=2</code></p>
+<p><code>rewrite ^proxy/html/(.*)$ /$1 break</code>用来重写拦截的请求，并且只对<strong>域名后面除去传递参数外的字符</strong>起作用，即重写上面匹配到的地址的这一部分进行重写：<code>proxy/html/api/msg</code></p>
+<p><code>rewrite</code>后面是一个正则表达式，表示匹配以<code>/proxy/html/</code>开头的任何字符至结尾，并且将<code>proxy/html/</code>后面的任意字符存到第一个捕获组<code>$1</code>之中，<code>break</code>表示匹配一个后停止。</p>
+<p>重写的结果是：<code>/api/msg</code></p>
+<p><code>proxy_pass http://www.b.com/</code>用来把请求代理到其他主机，即<code>www.a.com</code>代理到<code>www.b.com</code>，请求路径最终变为<code>http://www.b.com/api/msg? method=1&amp;para=2</code></p>
+<p>配置完成后重启Nginx服务即可。</p>
+<p>这样就可以更改上面的情况1中的做法，JS文件不变，Nginx的<code>location</code>的配置如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> localhost;</span><br><span class="line">  <span class="attribute">location</span><span class="regexp"> ^~/Project2/task5/students/</span> &#123;</span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/Project2/task5/(.*)$</span> /<span class="variable">$1</span> <span class="literal">break</span>;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://115.29.203.53:10013/;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样可以实现跨域</p>
+<h3 id="又一个例子"><a href="#又一个例子" class="headerlink" title="又一个例子"></a>又一个例子</h3><p>前端请求：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">  type: <span class="string">"get"</span>,</span><br><span class="line">  url: <span class="string">"sohu/api/msg?method=1&amp;para=2"</span>,</span><br><span class="line">  <span class="comment">// 真实地址是 www.c.com/proxy/html/api/msg?method=1&amp;para=2</span></span><br><span class="line">  success: <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    alert(<span class="string">"success"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>Nginx进行如下配置：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> localhost;</span><br><span class="line">  <span class="attribute">location</span><span class="regexp"> ^~/sohu</span>&#123;</span><br><span class="line">    <span class="comment"># 匹配任何以/proxy/html/开头的地址，匹配符合以后不继续往下搜索</span></span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^.+sohu/?(.*)$</span> /<span class="variable">$1</span> <span class="literal">break</span>;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://www.sohu.com/</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以：</p>
+<ul>
+<li><code>location</code>定位到：<code>/sohu/api/msg?method=1&amp;para=2</code></li>
+<li><code>rewrite</code>的结果：<code>api/msg</code></li>
+<li><code>proxy_pass</code>后的结果：<code>http://www.sohu.com/api/msg?method=1&amp;para=2</code></li>
+</ul>
+<h3 id="最后一个例子"><a href="#最后一个例子" class="headerlink" title="最后一个例子"></a>最后一个例子</h3><p><img src="http://image.oldzhou.cn/FnnSs8kLR2yySIPf8CLJ7cqfsyFQ" alt=""></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://seanlook.com/2015/05/17/nginx-install-and-config/" target="_blank" rel="noopener">nginx服务器安装及配置文件详解@Sean’s Note</a></li>
+<li><a href="https://blog.csdn.net/ywl570717586/article/details/51556912" target="_blank" rel="noopener">nginx反向代理服务器的工作原理@CSDN</a></li>
+<li><a href="https://segmentfault.com/a/1190000002797606" target="_blank" rel="noopener">nginx配置location总结及rewrite规则写法@segmentfault</a></li>
+<li><a href="https://blog.51cto.com/stevenlee87/1188295" target="_blank" rel="noopener">Nginx proxy pass简单用法@51CTO</a></li>
+<li><a href="https://blog.csdn.net/shendl/article/details/48443299" target="_blank" rel="noopener">最简单实现跨域的方法—-使用nginx反向代理@CSDN</a></li>
+<li><a href="https://segmentfault.com/a/1190000013267839" target="_blank" rel="noopener">一文弄懂Nginx的location匹配@segmentfault</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          
+            <a href="/tags/跨域/" rel="tag"># 跨域</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/23/01 前端笔记/05 算法/算法练习07 数字组合总和/" rel="next" title="算法练习07 数字组合总和">
+                <i class="fa fa-chevron-left"></i> 算法练习07 数字组合总和
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/26/01 前端笔记/11 前端工程/02 持续集成/持续集成01 入门/" rel="prev" title="持续集成01 入门">
+                持续集成01 入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Nginx"><span class="nav-number">1.</span> <span class="nav-text">关于Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx的正向代理"><span class="nav-number">2.</span> <span class="nav-text">Nginx的正向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx的反向代理"><span class="nav-number">3.</span> <span class="nav-text">Nginx的反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是反向代理"><span class="nav-number">3.1.</span> <span class="nav-text">什么是反向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向代理的作用"><span class="nav-number">3.2.</span> <span class="nav-text">反向代理的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx的一些基本知识"><span class="nav-number">4.</span> <span class="nav-text">Nginx的一些基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本命令"><span class="nav-number">4.1.</span> <span class="nav-text">基本命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">4.2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于location"><span class="nav-number">4.3.</span> <span class="nav-text">关于location</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于rewrite"><span class="nav-number">4.4.</span> <span class="nav-text">关于rewrite</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于proxy-pass"><span class="nav-number">4.5.</span> <span class="nav-text">关于proxy_pass</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用Nginx的反向代理实现跨域"><span class="nav-number">5.</span> <span class="nav-text">利用Nginx的反向代理实现跨域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">5.1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础配置"><span class="nav-number">5.2.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现方法1：location-proxy-pass"><span class="nav-number">5.3.</span> <span class="nav-text">实现方法1：location + proxy_pass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现方法2：location-proxy-pass-rewrite"><span class="nav-number">5.4.</span> <span class="nav-text">实现方法2：location + proxy_pass + rewrite</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#又一个例子"><span class="nav-number">5.5.</span> <span class="nav-text">又一个例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后一个例子"><span class="nav-number">5.6.</span> <span class="nav-text">最后一个例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

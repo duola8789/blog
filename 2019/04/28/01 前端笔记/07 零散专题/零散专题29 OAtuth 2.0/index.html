@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="OAuth是一种授权机制，数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。">
+<meta name="keywords" content="CSRF,OAuth,第三方登录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零散专题29 OAuth 2.0">
+<meta property="og:url" content="http://oldzhou.cn/2019/04/28/01 前端笔记/07 零散专题/零散专题29 OAtuth 2.0/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="OAuth是一种授权机制，数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/bg2019040905.jpg">
+<meta property="og:image" content="http://image.oldzhou.cn/bg2019040906.jpg">
+<meta property="og:image" content="http://image.oldzhou.cn/bg2019042102.jpg">
+<meta property="og:image" content="http://image.oldzhou.cn/WX20190428-135646.png">
+<meta property="og:updated_time" content="2019-04-28T15:37:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零散专题29 OAuth 2.0">
+<meta name="twitter:description" content="OAuth是一种授权机制，数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/bg2019040905.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/04/28/01 前端笔记/07 零散专题/零散专题29 OAtuth 2.0/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>零散专题29 OAuth 2.0 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/04/28/01 前端笔记/07 零散专题/零散专题29 OAtuth 2.0/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">零散专题29 OAuth 2.0
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-28 15:37:17" itemprop="dateCreated datePublished" datetime="2019-04-28T15:37:17+00:00">2019-04-28</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/其他/" itemprop="url" rel="index"><span itemprop="name">其他</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/28/01 前端笔记/07 零散专题/零散专题29 OAtuth 2.0/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/28/01 前端笔记/07 零散专题/零散专题29 OAtuth 2.0/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OAuth是一种授权机制，数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。</p>
+<a id="more"></a>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>OAuth是一种授权机制，数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>举个例子，京东App要求访问我的微信头像和昵称，这里面，我是数据的所有者，而微信就是服务提供商，也就是上面的系统，而京东就是第三方的客户端。</p>
+<p>当京东要求获取我的微信数据时，我不会将我的微信账号和密码直接告诉京东，然后让京东自己去登陆我的微信账号去获取对应的数据，因为这样做会有以下的缺点：</p>
+<ol>
+<li>京东也许会保存我的密码，这样很不安全</li>
+<li>京东通过密码能够获取我在微信的全部数据，我没有办法限制京东能获得哪些数据、不能获得哪些数据</li>
+<li>我除了修改密码之外，没有能够取消京东获取我的微信数据的能力</li>
+<li>只要有一个京东这样的、知晓我的密码的第三方APP被破解，我的微信密码就会泄露</li>
+</ol>
+<p>所以京东需要通过OAuth这种授权机制来获得我的微信数据。思路是这样的：</p>
+<ol>
+<li>京东在它的APP里选择以微信账号登陆京东APP；</li>
+<li>京东客户端会跳转到微信设置的认证服务器，向我询问是否允许获取我的微信相关资料；</li>
+<li>当我同意之后，微信的认证服务器就会向京东APP颁发登陆令牌（token），这个token与用户密码不同，并且在登陆的时候可以指定token的权限范围有效期；</li>
+<li>京东APP获得令牌后，就可以向微信的资源服务器来申请获取用户的微信资料，微信的资源服务器根据令牌的权限和有效期向京东APP开放我的微信头像和昵称。</li>
+</ol>
+<h2 id="授权模式"><a href="#授权模式" class="headerlink" title="授权模式"></a>授权模式</h2><p>OAuth的核心就是向第三方应用颁发令牌，OAuth 2.0定义了四种授权方式来让客户端得到用户的授权：</p>
+<ol>
+<li>授权码（authorization-code）</li>
+<li>隐藏式（implicit）</li>
+<li>密码式（password）</li>
+<li>客户端凭证（client credentials）</li>
+</ol>
+<p>以上这些授权方式，第三方应用在申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端ID（client ID）和客户端密钥（client secret）。</p>
+<h2 id="授权码模式"><a href="#授权码模式" class="headerlink" title="授权码模式"></a>授权码模式</h2><p>授权码（authorization-code）模式，指的是第三方应用先申请<strong>授权码</strong>，然后用该授权码获取令牌。</p>
+<p>这种方式是最常用的，也是安全性最高的，适用于后后端的Web应用。授权码通过前端传送，令牌存储在后端，所有与资源服务器的通信都在后端完成。这样的前后端分离可以避免令牌泄露。</p>
+<p>仍旧以京东和微信举例</p>
+<p>（1）第一步，当用户点击京东APP以微信登陆的链接后，就会跳转到微信的认证服务器，下面就是一个示意的跳转链接：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://weixin.com/oauth/authorize?</span><br><span class="line">  response_type=code&amp;</span><br><span class="line">  client_id=CLIENT_ID&amp;</span><br><span class="line">  redirect_uri=CALLBACK_URL&amp;</span><br><span class="line">  scope=read</span><br></pre></td></tr></table></figure>
+<p><code>weixin.com/oauth/authorize</code>就是微信认证服务器的URL，<code>response_type</code>参数表示要求返回授权码（<code>code</code>），<code>client_id</code>参数用来表明客户端的ID，<code>redirect_uri</code>是认证服务器接受或拒接请求后的跳转网址，<code>scope</code>参数表示请求的授权范围</p>
+<p>（2）第二步，用户跳转到认证服务器的页面后，会要求用户登录，然后询问是否同意给京东APP授权。用户表示同意后，认证服务器就会调回<code>redirect_uri</code>参数指定的网址，在跳转时会以URL中的<code>query</code>参数的形式传回一个授权码（<code>code</code>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://jd.com/callback?code=AUTHORIZATION_CODE</span><br></pre></td></tr></table></figure>
+<p>上面的URL中，<code>code</code>参数对应的值就是授权码</p>
+<p>（3）第三步，京东拿到授权码后，就可以在<strong>后端</strong>向微信认证服务器请求令牌（token）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">https://weixin.com/oauth/token?</span><br><span class="line"> client_id=CLIENT_ID&amp;</span><br><span class="line"> client_secret=CLIENT_SECRET&amp;</span><br><span class="line"> grant_type=authorization_code&amp;</span><br><span class="line"> code=AUTHORIZATION_CODE&amp;</span><br><span class="line"> redirect_uri=CALLBACK_URL</span><br></pre></td></tr></table></figure>
+<p>上面URL中，<code>client_id</code>和<code>client_secert</code>参数用来让认证服务器确认京东APP的身份（<code>client_secret</code>是保密的，所以只能在后端发送请求），<code>grant_type</code>参数的值是<code>AUTHORIZATION_CODE</code>，表示采用的授权方式是授权码，<code>code</code>参数是上一步拿到的授权码，<code>redirect_uir</code>参数是令牌颁发后的回调地址。</p>
+<p>（4）第四步，微信认证服务器收到请求后，核对信息后就会办法令牌，具体的做法是向<code>redirect_uri</code>指定的网址发送一段JSON数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Type: application/json;charset=UTF-8</span><br><span class="line">Cache-Control: no-store</span><br><span class="line">Pragma: no-cache</span><br><span class="line"></span><br><span class="line">&#123;    </span><br><span class="line">  &quot;access_token&quot;:&quot;ACCESS_TOKEN&quot;,</span><br><span class="line">  &quot;token_type&quot;:&quot;bearer&quot;,</span><br><span class="line">  &quot;expires_in&quot;:2592000,</span><br><span class="line">  &quot;refresh_token&quot;:&quot;REFRESH_TOKEN&quot;,</span><br><span class="line">  &quot;scope&quot;:&quot;read&quot;,</span><br><span class="line">  &quot;uid&quot;:100101,</span><br><span class="line">  &quot;info&quot;:&#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面JSON对象中，<code>access_token</code>就是令牌，京东在后端服务器拿到了。整个过程如下图所示：</p>
+<p><img src="http://image.oldzhou.cn/bg2019040905.jpg" alt=""></p>
+<h2 id="第二种方式：隐藏式"><a href="#第二种方式：隐藏式" class="headerlink" title="第二种方式：隐藏式"></a>第二种方式：隐藏式</h2><p>有一些Web应用是纯前端应用，没有后端，这时就不能使用第一种方式了，需要将令牌存储在前端。这种方式成为隐藏式（implicit），<strong>允许直接向前端颁发令牌</strong>，而没有授权码这个中间步骤。</p>
+<p>（1）第一步，A网站提供一个连接，要求用户跳转到B网站，授权用户数据给A网站使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://b.com/oauth/authorize?</span><br><span class="line">  response_type=token&amp;</span><br><span class="line">  client_id=CLIENT_ID&amp;</span><br><span class="line">  redirect_uri=CALLBACK_URL&amp;</span><br><span class="line">  scope=read</span><br></pre></td></tr></table></figure>
+<p>上面的URL中，<code>response_type</code>参数为<code>token</code>，表示要求直接返回令牌</p>
+<p>（2）第二步，用户跳转到上面的URL后，登陆，然后同意向A网站授权。这时B网站就会跳回<code>redirect_uri</code>参数指定的跳转网址，并且把令牌作为URL的Hash参数，传递给A网站。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://a.com/callback#token=ACCESS_TOKEN</span><br></pre></td></tr></table></figure>
+<p>上面的<code>token</code>参数就是令牌，A网站直接在前端拿到令牌。</p>
+<p>注意，令牌在URL中是使用了Hash参数，也就是锚点位置储存，而不是使用查询字符串。这是因为当跳转网址时HTTP协议时，存在“中间人攻击”的风险，而浏览器跳转时Hash参数不会发送到服务器，减少了令牌泄露的风险。</p>
+<p>下面于OAuth的安全设置的内容笔记，专门讨论这一部分内容。</p>
+<p>这个过程如下所示：</p>
+<p><img src="http://image.oldzhou.cn/bg2019040906.jpg" alt=""></p>
+<p>这种方式把令牌直接传给前端，是很不安全的。因此只适用于安全性不搞的场景，且令牌的有效期必须非常短，通常是会话期间有效，浏览器关了令牌就失效。</p>
+<h2 id="第三种方式：密码式"><a href="#第三种方式：密码式" class="headerlink" title="第三种方式：密码式"></a>第三种方式：密码式</h2><p>如果高度信任某个应用，允许用户把用户名和密码直接告诉该应用，该应用使用密码来申请令牌。这种方式称为密码是（password）</p>
+<p>（1）第一步，A网站要求用户提供B网站的用户名和密码，拿到以后，A就直接向B请求令牌</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://oauth.b.com/token?</span><br><span class="line">  grant_type=password&amp;</span><br><span class="line">  username=USERNAME&amp;</span><br><span class="line">  password=PASSWORD&amp;</span><br><span class="line">  client_id=CLIENT_ID</span><br></pre></td></tr></table></figure>
+<p>上面的URL中，<code>grant_type</code>参数是<code>password</code>，代表授权方式是密码式，<code>username</code>和<code>password</code>就是B的用户名和密码。</p>
+<p>（2）第二步，B网站验证身份通过后，直接给出令牌，这里给出令牌的方式不再是通过URL的跳转，而是将令牌放在JSON数据中，作为HTTP响应，返回给A网站。</p>
+<p>这种方式需要用户给出用户名和密码，风险很大，因此只适用于其他授权方式都无法采用、并且对应用高度信任的情况下。</p>
+<h2 id="第四种方式：凭证式"><a href="#第四种方式：凭证式" class="headerlink" title="第四种方式：凭证式"></a>第四种方式：凭证式</h2><p>凭证式（client credentials）适用于没有前端的命令行应用，即在命令行下请求令牌。</p>
+<p>（1）第一步，A应用在命令行向B发出请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">https://oauth.b.com/token?</span><br><span class="line">  grant_type=client_credentials&amp;</span><br><span class="line">  client_id=CLIENT_ID&amp;</span><br><span class="line">  client_secret=CLIENT_SECRET</span><br></pre></td></tr></table></figure>
+<p>上面的URL中，<code>grant_type</code>参数<code>client_credentials</code>表示采用凭证式的授权方式，<code>client_id</code>和<code>client_sercret</code>用来表示A应用的身份。</p>
+<p>（2）第二步，B网站验证通过后，直接返回令牌。</p>
+<p>这种方式给出的令牌，是针对第三方应用的，而不是针对用户的，有可能多个用户共享一个令牌。</p>
+<h2 id="令牌的使用"><a href="#令牌的使用" class="headerlink" title="令牌的使用"></a>令牌的使用</h2><p>拿到令牌后，A网站就可以向B网站提供数据资料的API请求数据了。</p>
+<p>此时，每个发到API的请求，都必须带有令牌，具体做法是在请求的头信息加上<code>Authoization</code>字段，令牌就在这个字段里。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">"Authorization: Bearer ACCESS_TOKEN"</span> \</span><br><span class="line"><span class="string">"https://api.b.com"</span></span><br></pre></td></tr></table></figure>
+<p>上面的命令中，<code>ACCESS_TOKEN</code>就是拿到的令牌。</p>
+<blockquote>
+<p><code>curl</code>命令是一个命令行工具，支持多种协议，可以再命令行发出网络请求，然后得到和提取数据，显示在标准输出（stdout）上面。<code>-H</code>参数用来自定义头信息发送给服务器。</p>
+</blockquote>
+<h2 id="更新令牌"><a href="#更新令牌" class="headerlink" title="更新令牌"></a>更新令牌</h2><p>令牌的有效期到了，如果让用户重新走一遍上面的获取流程，申请新的令牌，体验会很差。OAuth 2.0允许用户自动更新令牌。</p>
+<p>具体做法是，B网站颁发令牌的时候，一次性颁发两个令牌，一个用来获取数据，一个用于获取新的令牌。令牌到期前，用户使用<code>refresh token</code>发送请求，更新令牌</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://b.com/oauth/token?</span><br><span class="line">  grant_type=refresh_token&amp;</span><br><span class="line">  client_id=CLIENT_ID&amp;</span><br><span class="line">  client_secret=CLIENT_SECRET&amp;</span><br><span class="line">  refresh_token=REFRESH_TOKEN</span><br></pre></td></tr></table></figure>
+<p>上面的URL中，<code>grant_type</code>参数为<code>refresh_token</code>表示要求更新令牌，<code>refresh_token</code>参数与就是用于更新令牌的令牌。</p>
+<p>B网站验证通过后，就会颁发新的令牌。</p>
+<h2 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h2><p>按照阮一峰的例子，做一个Demo，通过OAuth，以Github进行第三方登录，获取API数据。代码<a href="https://github.com/duola8789/OAuth-learning" target="_blank" rel="noopener">在这里</a>。</p>
+<p>登陆的过程就是OAuth授权，实际上和前面以微信账号登陆京东APP的例子是一样的。这里面我们的网站是A，允许使用Github账号登陆。</p>
+<p>流程如下：</p>
+<ol>
+<li>用户点击A网站“使用Gihutb登陆”的链接，页面跳转到Github的授权页面；</li>
+<li>Github要求用户登陆，然后循环是否授权使用当前Github账号登陆A网站</li>
+<li>用户同意登陆，Github会重定向回A网站在最开始的链接中指明的地址，同时发回一个授权码。</li>
+<li>A网站使用授权码，向Github请求令牌。这个过程必须在后端完成。</li>
+<li>Github返回令牌。</li>
+<li>A网站使用令牌，向Github请求用户数据。</li>
+</ol>
+<p>具体过程：</p>
+<p>（1）应用要求OAuth授权，必须在对方网站登记，换取clientID和clientSecret，证明自己的身份。Github的登记地址是这个<a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">网址</a>。</p>
+<p><img src="http://image.oldzhou.cn/bg2019042102.jpg" alt="bg2019042102.jpg"></p>
+<p>注意，应用的callback URL必须是Homepage下的子域名。</p>
+<p>（2）新建了一个<code>index.html</code>作为项目的首页</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>OAuth 2.0 Demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"login"</span>&gt;</span>Login with Github<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> client_id = <span class="string">'f38d5d8c4b1bb8259159'</span>;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> authorize_uri = <span class="string">'https://github.com/login/oauth/authorize'</span>;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> redirect_uri = <span class="string">'http://localhost:8080/oauth/redirect'</span>;</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> link = <span class="built_in">document</span>.querySelector(<span class="string">'#login'</span>);</span></span><br><span class="line"><span class="javascript">  link.href = <span class="string">`<span class="subst">$&#123;authorize_uri&#125;</span>?client_id=<span class="subst">$&#123;client_id&#125;</span>&amp;redirect_uri=<span class="subst">$&#123;redirect_uri&#125;</span>`</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在HTML代码中，跳转链接设置为<code>https://github.com/login/oauth/authorize?client_id=f38d5d8c4b1bb8259159&amp;redirect_uri=http://localhost:8080/oauth/redirect</code></p>
+<p>其中<code>https://github.com/login/oauth/authorize</code>就是Github用来获取授权码的地址，具体参考它的<a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/" target="_blank" rel="noopener">文档</a>。</p>
+<p>在<code>index.js</code>中使用koa-static来托管访问静态资源，监听8080端口：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Koa静态文件服务的目录</span></span><br><span class="line">app.use(staticServer(path.resolve(<span class="string">'public'</span>)));</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">8080</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Koa is listening in 8080'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>（3）当点击链接，页面会跳转到Github授权的页面</p>
+<p><img src="http://image.oldzhou.cn/WX20190428-135646.png" alt="WX20190428-135646.png"></p>
+<p>（4）点击授权后，页面跳转到之前指定的Callback URI，也就是<code>http://localhost:8080/oauth/redirect</code>，所以需要在服务端代码对这个路由进行处理：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> KoaRouter = <span class="built_in">require</span>(<span class="string">'koa-router'</span>);</span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> KoaRouter();</span><br><span class="line"></span><br><span class="line">router.get(<span class="string">'/oauth/redirect'</span>, oauthController);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载路由中间件</span></span><br><span class="line">app.use(router.routes());</span><br></pre></td></tr></table></figure>
+<p>当访问<code>/oauth/redirect</code>会执行<code>oauthController</code>的逻辑：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oauthController = <span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">  <span class="comment">// 获取授权码</span></span><br><span class="line">  <span class="keyword">const</span> &#123; code &#125; = ctx.request.query;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'authorization code: '</span>, code);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 使用授权码 + clientID + clientSecret 获取 token</span></span><br><span class="line">    <span class="keyword">const</span> tokenRes = <span class="keyword">await</span> axios(&#123;</span><br><span class="line">      method: <span class="string">'post'</span>,</span><br><span class="line">      url: <span class="string">`https://github.com/login/oauth/access_token?client_id=<span class="subst">$&#123;config.clientID&#125;</span>&amp;client_secret=<span class="subst">$&#123;config.clientSecret&#125;</span>&amp;code=<span class="subst">$&#123;code&#125;</span>`</span>,</span><br><span class="line">      headers: &#123;</span><br><span class="line">        accept: <span class="string">'application/json'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> token = tokenRes.data.access_token;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'access token: '</span>, token);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用令牌获取数据</span></span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> axios.get(<span class="string">'https://api.github.com/user'</span>, &#123;</span><br><span class="line">      headers: &#123;</span><br><span class="line">        accept: <span class="string">'application/json'</span>,</span><br><span class="line">        <span class="string">'Authorization'</span>: <span class="string">`token <span class="subst">$&#123;token&#125;</span>`</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'result: '</span>, res);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 拿到用户名，渲染到页面</span></span><br><span class="line">    <span class="keyword">const</span> &#123; name &#125; = res.data;</span><br><span class="line">    ctx.response.redirect(<span class="string">`/welcome.html?name=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(name)&#125;</span>`</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'There is something wrong when getting token: '</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在<code>oauthController</code>中，首先我们从<code>request</code>的查询参数中获取授权码，然后使用授权码 + clientID + clientSecret从Github获取 token，获取token之后再使用相应的API获取用户名，这时需要将上面获得的token作为<code>Authoriztion</code>字段，加到HTTP请求的头信息里面。</p>
+<p>拿到用户名，将页面重定向到<code>welcome.html</code>，在这个页面会将URL中的用户名取出来并显示在页面。注意由于用户名可能是中文，需要在<code>redirect</code>中进行安全编码，否则会发生问题。</p>
+<h2 id="关于OAuth的安全性问题"><a href="#关于OAuth的安全性问题" class="headerlink" title="关于OAuth的安全性问题"></a>关于OAuth的安全性问题</h2><h3 id="回调域名"><a href="#回调域名" class="headerlink" title="回调域名"></a>回调域名</h3><p>在做微信登陆时，到了获取授权码code这一步，如果给微信服务器传的<code>redirect_uri</code>不是申请appid时输入的域名，微信会立刻返回<code>redirect_uri错误</code>的提示。</p>
+<p>为什么会这样？因为如果微信不校验<code>redirect_uri</code>，会导致中间人攻击，攻击者伪造受害者的身份，使用受害者的微信账号，登陆目标网站。</p>
+<p>假设在申请appid时的域名是<code>a.com</code>，申请的appid是<code>123</code>，假设微信获取code地址是<code>https://wx.om/code</code>，这样获取code的完整URL是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://wx.com/code?</span><br><span class="line">  redirect_uri=http://a.com&amp;</span><br><span class="line">  appid=11111&amp;</span><br><span class="line">  response_type=code&amp;</span><br><span class="line">  scope=userinfo</span><br></pre></td></tr></table></figure>
+<p>把这个地址发送给任何一个微信联系人，他们都可以通过自己的微信账号获取code，微信会带着code参数回调到<code>http://a.com?code=455</code>，然后<code>a.com</code>再通过code换取access token，用户就可以使用微信账户登录<code>a.com</code>。</p>
+<p>但是如果微信不验证<code>redirect_uri</code>是否是<code>a.com</code>，攻击者将<code>redirect_uri</code>换为他的网站（假设为<code>hack.com</code>），受害人访问此链接，确认登录，微信生成code之后通过回调的方式将code传给了攻击者的网站<code>http://hack.com?code=151</code>，拿到code之后，攻击者再将域名切换为<code>http://a.com?code=151</code>，而这时<code>a.com</code>是无法分辨这是微信直接回调还是有人从中动了手脚的地址，无差别的获取code对应的access token，攻击者以受害者身份登陆成功。</p>
+<p>对于Implicit方式，更需要校验<code>redirect_uri</code>，因为是一步到位的获取access token。</p>
+<p>所以作为OAuth2.0 Server，<code>redirect_uri</code>的域名限制是一定要做的。而作为调用者，到不必这么担心，目前大部分遵循OAuth2.0的服务都不会犯这个错误。</p>
+<p>对于调用者开发过程中，微信后台对于<code>redirect_uri</code>域名设置的限制，对于本地地址是无法正常登陆了。解决方法就是更改Host文件，将<code>redirect_uri</code>的域名直接指向内网就行了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /etc/hosts</span></span><br><span class="line">127.0.0.1 a.com</span><br></pre></td></tr></table></figure>
+<h2 id="code与secret"><a href="#code与secret" class="headerlink" title="code与secret"></a>code与secret</h2><p>前面提到了，在使用OAuth之前，需要到提供的服务的服务商进行注册，获取appid（clientID）和secert（client Secret），appid的目的是为了告诉身份认证服务器我是<code>a.com</code>，而secret是为了告诉任务服务器，我真的是<code>a.com</code>。这个secert相当于客户端与认证服务器之间的信物，这个信物是不能暴露给用户的，所以它的传递只能通过服务器进行传递。能够被暴露的只有appid。</p>
+<p>如果没有secert，当出现DNS污染，本该发往<code>a.com</code>的code被发往了<code>hack.com</code>，这时候攻击者就会直接使用code换取token了。</p>
+<p>OAuth 2.0设计时的一个目标是，让不支持HTTPS的网站也能够安全使用。所以code才是必须的。如果没有code，直接获取access token，流程如下：</p>
+<ol>
+<li>用户浏览器访问<code>a.com</code>，跳转到微信OAuth服务器获取access token</li>
+<li>用户在微信的网页上登陆成功，并确认授权<code>a.com</code>使用微信账号登陆，微信服务器跳转到<code>redirect_uri</code>并且带上access_token参数</li>
+<li>用户浏览器访问带access token的连接，完成登陆。</li>
+</ol>
+<p>如果<code>a.com</code>不支持HTTPS，那么在最后一步，access token就完全暴露在浏览器和<code>a.com</code>服务器之间的线路中。</p>
+<p>如果<code>a.com</code>支持HTTPS，那么理论上来说，可以省略获取code这一步的。</p>
+<p>但是如果<code>a.com</code>不支持HTTPS，那么使用了code，code被暴露的后果是好于access token被暴露的。这是因为OAuth 2.0协议对此规定：</p>
+<ol>
+<li>code只能使用一次</li>
+<li>如果攻击者比正常用户先用了code，当用户第二次使用code时，之前通过此code获取的access token将被撤回。</li>
+</ol>
+<p>所以当code被泄露时，攻击最多让正常用户有点困扰，可能登陆意外失败，或者明明看起来登陆成功但还是获取不到用户信息的情况（access token已失效），攻击者拿不到数据。</p>
+<h2 id="state参数"><a href="#state参数" class="headerlink" title="state参数"></a>state参数</h2><p>在获取code时，一般服务器会返回一个state参数，一般来说没什么用，也可以为空，但是OAuth2.0文档标注的是Recommended，在什么时候使用呢？</p>
+<p>它在防御CSRF时是非常有用的。进行CSRF攻击，攻击者：</p>
+<ol>
+<li>申请一个的专门用于攻击的账号</li>
+<li>走正常流程，跳转到微信上登陆此账号</li>
+<li>登陆成功后，微信带着code跳转回<code>a.com</code>，这个时候，攻击者拦截自己的请求不再继续进行，而是将code的链接发送给受害者，棋牌受害者点击</li>
+<li>受害人点击后，继续攻击者登陆流程，不知不觉登陆了攻击者的账号</li>
+</ol>
+<p>而state参数如果利用起来，作为<strong>CSRF Token</strong>，就能避免此时的发生：</p>
+<ol>
+<li>攻击者依旧获取code并打算骗受害者点击</li>
+<li>受害者点击链接，但是服务器（<code>a.com</code>）分配给受害者的设备的state值和链接里面的state值不一样，服务器（<code>a.com</code>）直接返回验证state失败</li>
+</ol>
+<p>state或者CSRF Token这种与设备绑定的随机字符串，复杂一点，攻击者就无计可施。</p>
+<p><strong>设置一个让攻击者猜不到的、跟设备（或者浏览器）绑定的state或者CSRF Token值，就是解决CSRF的关键。</strong></p>
+<h3 id="Implicit授权模式"><a href="#Implicit授权模式" class="headerlink" title="Implicit授权模式"></a>Implicit授权模式</h3><p>Implicit授权模式一步到位，直接返回了access token，它的最重要也是最巧妙的设计是，登陆成功后身份认证服务器跳转回来带的参数都是放在<code>#</code>后面的，而不是查询参数。</p>
+<p>这是因为，如果在没有使用HTTPS的线路上通信时，access token很容易被偷走，但是如果access token放在<code>#</code>后面，浏览器发起请求时，<code>#</code>后面的内容不会碎请求发送到服务器。这一样就可以防止中间人共计而只让设备用用access token。</p>
+<p>同样，access token是一定不能存放在cookie这种可能被中间人发现的地方（除非使用HTTPS）。为了做到粳稻的安全性，access token最好连local/session storage都别放。这样理解，Implicit也就只适合SPA了，SPA不刷新页面可以让access token一直在内存里，直到关掉页面。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">理解OAuth 2.0@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">OAuth 2.0 的一个简单解释@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html" target="_blank" rel="noopener">OAuth 2.0 的四种方式@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/github-oauth.html" target="_blank" rel="noopener">GitHub OAuth 示例教程@阮一峰的网络日志</a></li>
+<li><a href="https://www.chrisyue.com/security-issue-about-oauth-2-0-you-should-know.html" target="_blank" rel="noopener">关于 OAuth2.0 安全性你应该要知道的一些事@Chrisyue’s Blog</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSRF/" rel="tag"># CSRF</a>
+          
+            <a href="/tags/OAuth/" rel="tag"># OAuth</a>
+          
+            <a href="/tags/第三方登录/" rel="tag"># 第三方登录</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/27/01 前端笔记/07 零散专题/零散专题28 BFF调研2/" rel="next" title="零散专题28 BFF调研2">
+                <i class="fa fa-chevron-left"></i> 零散专题28 BFF调研2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/05/05 全栈开发/01 Node/Node14 Buffer对象/" rel="prev" title="Node14 Buffer对象">
+                Node14 Buffer对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">2.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#授权模式"><span class="nav-number">3.</span> <span class="nav-text">授权模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#授权码模式"><span class="nav-number">4.</span> <span class="nav-text">授权码模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二种方式：隐藏式"><span class="nav-number">5.</span> <span class="nav-text">第二种方式：隐藏式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三种方式：密码式"><span class="nav-number">6.</span> <span class="nav-text">第三种方式：密码式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四种方式：凭证式"><span class="nav-number">7.</span> <span class="nav-text">第四种方式：凭证式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#令牌的使用"><span class="nav-number">8.</span> <span class="nav-text">令牌的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新令牌"><span class="nav-number">9.</span> <span class="nav-text">更新令牌</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子-1"><span class="nav-number">10.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于OAuth的安全性问题"><span class="nav-number">11.</span> <span class="nav-text">关于OAuth的安全性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#回调域名"><span class="nav-number">11.1.</span> <span class="nav-text">回调域名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code与secret"><span class="nav-number">12.</span> <span class="nav-text">code与secret</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#state参数"><span class="nav-number">13.</span> <span class="nav-text">state参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Implicit授权模式"><span class="nav-number">13.1.</span> <span class="nav-text">Implicit授权模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">14.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

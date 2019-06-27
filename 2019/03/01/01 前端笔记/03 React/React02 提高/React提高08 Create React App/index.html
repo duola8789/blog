@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。 这里只对它进行简单的尝试和入门，如果需要进一步的学习，官网在这里，文档在这里，也可以参考这篇文章进行更高阶更深入的配置和学习。">
+<meta name="keywords" content="脚手架,Create React App">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React提高08 Create React App">
+<meta property="og:url" content="http://oldzhou.cn/2019/03/01/01 前端笔记/03 React/React02 提高/React提高08 Create React App/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。 这里只对它进行简单的尝试和入门，如果需要进一步的学习，官网在这里，文档在这里，也可以参考这篇文章进行更高阶更深入的配置和学习。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-09T15:23:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React提高08 Create React App">
+<meta name="twitter:description" content="一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。 这里只对它进行简单的尝试和入门，如果需要进一步的学习，官网在这里，文档在这里，也可以参考这篇文章进行更高阶更深入的配置和学习。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/03/01/01 前端笔记/03 React/React02 提高/React提高08 Create React App/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>React提高08 Create React App | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/03/01/01 前端笔记/03 React/React02 提高/React提高08 Create React App/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">React提高08 Create React App
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-01 09:38:04" itemprop="dateCreated datePublished" datetime="2019-03-01T09:38:04+00:00">2019-03-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-09 15:23:41" itemprop="dateModified" datetime="2019-05-09T15:23:41+00:00">2019-05-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/01/01 前端笔记/03 React/React02 提高/React提高08 Create React App/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/03/01/01 前端笔记/03 React/React02 提高/React提高08 Create React App/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个由Facebook官方出品的React脚手架工具，无需额外配置，迅速搭建React应用脚手架。</p>
+<p>这里只对它进行简单的尝试和入门，如果需要进一步的学习，<a href="https://facebook.github.io/create-react-app/" target="_blank" rel="noopener">官网在这里</a>，<a href="https://facebook.github.io/create-react-app/docs/getting-started" target="_blank" rel="noopener">文档在这里</a>，也可以参考<a href="https://juejin.im/post/59dcd87451882578c2084515" target="_blank" rel="noopener">这篇文章</a>进行更高阶更深入的配置和学习。</p>
+<a id="more"></a>
+<p>使用Create React App开发React应用不必再安装Webpack或者Babel，它们已经被内置在脚手架中了</p>
+<p>它提供的功能：</p>
+<ol>
+<li>开箱即用的React支持</li>
+<li>开发模式和生产模式的编译</li>
+<li>开发模式的热更新</li>
+<li>提供了单元测试测试的接口支持</li>
+<li>其他配置工具的默认配置（亦可以个性化配置）</li>
+</ol>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app my-app</span><br><span class="line"><span class="built_in">cd</span> my-app</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>React应用会运行在<code>http://localhost:3000/</code>，开发完成后使用<code>npm run build</code>打包</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装需要Node的版本在8.10.0以上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用npx</span></span><br><span class="line">npx create-react-app my-app</span><br><span class="line"></span><br><span class="line"><span class="comment"># npm在5.1版本下不能使用npx</span></span><br><span class="line"><span class="comment"># 需要使用npm，首先进行全局安装</span></span><br><span class="line">npm install -g create-react-app</span><br><span class="line"><span class="comment"># 创建应用</span></span><br><span class="line">create-react-app my-app</span><br></pre></td></tr></table></figure>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>在<code>http://localhost:3000</code>以开发模式运行React应用，页面提供了热跟新功能，在控制台会显示错误和警告。</p>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<p>使用Jest运行单元测试，默认情况下会运行从上次提交commit后有改动的文件的单元测试。</p>
+<p>需要<a href="mailto:`react-scripts@0.3.0" target="_blank" rel="noopener">`react-scripts@0.3.0</a>`及更高版本，老项目开启单元测试看<a href="https://github.com/facebook/create-react-app/blob/master/CHANGELOG-0.x.md#migrating-from-023-to-030" target="_blank" rel="noopener">这里</a>。</p>
+<p>Jest是基于Node的运行期，速度很快，并且动过jsdom提供了浏览器的全局变量，比如<code>window</code>，但Jest对于DOM的测试是不准确的，它的目的是对逻辑和组件进行单元测试，而非测试DOM</p>
+<p>在运行时Jest会自动寻找以<code>test.js</code>/<code>spec.js</code>或者<code>__tests__</code>文件夹下以<code>.js</code>结尾的文件，==这些文件可以位于<code>src</code>目录下任意深度的文件夹内==。</p>
+<p>建议将测试文件（或<code>__test__</code>文件夹）和北侧文件放在一起，有两个好处：</p>
+<ol>
+<li>便于管理，一眼就能看到文件的单元测试文件</li>
+<li>引入组件的时候更简洁, 例如<code>import App from &#39;./App&#39;</code></li>
+</ol>
+<h3 id="命令行接口"><a href="#命令行接口" class="headerlink" title="命令行接口"></a>命令行接口</h3><p>使用<code>npm test</code>时，Jest会以<code>watch</code>模式运行，每次更改文件都会重新运行测试文件</p>
+<p>这个模式下的命令行接口提供了各种能力，可以一直开着这个窗口进行快速的重复测试</p>
+<h3 id="版本管理接口"><a href="#版本管理接口" class="headerlink" title="版本管理接口"></a>版本管理接口</h3><p>使用<code>npm test</code>默认情况下会运行从上次提交commit后有改动的文件的单元测试。可以在<code>watch</code>模式下按<code>a</code>来要求Jest执行全部的测试</p>
+<p>如果当前的工程没有使用版本管理，那么Jest会默认运行全部的测试</p>
+<h3 id="测试组件"><a href="#测试组件" class="headerlink" title="测试组件"></a>测试组件</h3><p>关于Jest的使用，以前学习<a href="https://blog.csdn.net/duola8789/article/details/80434962/" target="_blank" rel="noopener">在Vue中使用Jest时总结过</a>，Jest的基本用法是相同的，在测试组件时有所区别，Vue测试组件使用的将组件和Jest进行连接的工具是Vue-test-utils，而React则是<a href="https://airbnb.io/enzyme/" target="_blank" rel="noopener">Enzyme</a>（更准确些，<a href="https://github.com/FormidableLabs/enzyme-matchers" target="_blank" rel="noopener">jest-enzyme</a>更接近于Vue-test-utils，封装了很多方便的API）</p>
+<p>内容比较多，这里不展开，<a href="https://facebook.github.io/create-react-app/docs/running-tests" target="_blank" rel="noopener">文档在这里</a>，慢慢单独学习。</p>
+<h2 id="构建生产文件"><a href="#构建生产文件" class="headerlink" title="构建生产文件"></a>构建生产文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+<p>打包出的文件是经过压缩的，文件名带有Hash值</p>
+<h2 id="个性化配置"><a href="#个性化配置" class="headerlink" title="个性化配置"></a>个性化配置</h2><p>因为Create-React-App将Webpack、Babel、ESLit的配置隐藏起来，简化了用户的配置操作，可以快速开始开发。</p>
+<p>但是这只适用于一些小型的、没有特殊需求的应用的开发，如果构建大型应用还需要对上面这些工具进行个性化的配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run eject</span><br></pre></td></tr></table></figure>
+<p>运行后，Create-React-App会将上面工具的配置文件复制到项目中，以后对配置文件进行修改后，项目式中会采用项目中复制修改后的配置文件</p>
+<p>要注意，这个操作是不可逆的。</p>
+<h2 id="CSS-Loader"><a href="#CSS-Loader" class="headerlink" title="CSS-Loader"></a>CSS-Loader</h2><p>在新版本的Create React App中增加了对CSS Modules的支持，要求<code>react-scripts</code>版本高级2.0.0。</p>
+<p>CSS文件的命名形式为<code>[name].module.css</code>，对应的类名会通过添加后缀的形式来实现局部作用域，类名的格式是<code>[filename]\_[classname]\_\_[hash]</code></p>
+<p>详情参考<a href="https://facebook.github.io/create-react-app/docs/adding-a-css-modules-stylesheet" target="_blank" rel="noopener">文档</a>。</p>
+<p>如果需要在老版本的Create React App中增加了对CSS Modules的支持，则首先需要先通过<code>eject</code>命令暴露配置文件，参考<a href="https://medium.com/nulogy/how-to-use-css-modules-with-create-react-app-9e44bec2b5c2" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h2 id="ESLint"><a href="#ESLint" class="headerlink" title="ESLint"></a>ESLint</h2><p>由于Create React App将默认的构建配置封装了起来，而ESLint仅仅开启了最基本的规则，更重要的是默认情况下，ESLint仅仅会在IDE中对违反规则的情况进行提示，并不会在构建时在终端的输出进行终端和提示。</p>
+<p>如果这种情况可以满足需要，而只需要开启更多的规则，那么就可以在根目录下新建一个文件<code>.eslintrc.json</code>，然后添加：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"extends"</span>: <span class="string">"react-app"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是如果要起到更强制性的提示作用（中断构建、终端提示），Create React App建议使用<a href="https://github.com/prettier/prettier" target="_blank" rel="noopener">Prettier</a>代替ESLint。如果要使用ESLint，那么就需要使用<code>npm run eject</code>，将配置文件吐出，按照AlloyTeam的提示进行配置即可，参考<a href="https://duola8789.github.io/2017/12/05/01%20%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/07%20%E9%9B%B6%E6%95%A3%E4%B8%93%E9%A2%98/%E9%9B%B6%E6%95%A3%E4%B8%93%E9%A2%9816%20EditorConfig%E5%92%8CESLint/" target="_blank" rel="noopener">这篇笔记</a>。</p>
+<h2 id="Ant-Design按需引入"><a href="#Ant-Design按需引入" class="headerlink" title="Ant Design按需引入"></a>Ant Design按需引入</h2><p>安装antd：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install antd -S</span><br></pre></td></tr></table></figure>
+<p>然后进行按需引入分为两种情况：</p>
+<p>（1）未eject出所有配置：</p>
+<p>参考<a href="https://ant.design/docs/react/use-with-create-react-app-cn" target="_blank" rel="noopener">antd的文档</a>，</p>
+<p>安装<a href="https://github.com/timarney/react-app-rewired" target="_blank" rel="noopener">react-app-rewired</a>和<a href="https://github.com/arackaf/customize-cra" target="_blank" rel="noopener">customize-cra</a>（CRA）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react-app-rewired customize-cra -D</span><br></pre></td></tr></table></figure>
+<p>然后修改<code>package.json</code>文件的启动命令：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"start"</span>: <span class="string">"react-app-rewired start"</span>,</span><br><span class="line">  <span class="string">"build"</span>: <span class="string">"react-app-rewired build"</span>,</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"react-app-rewired test"</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后安装<a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">babel-plugin-import</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-import -D</span><br></pre></td></tr></table></figure>
+<p>然后在根目录下创建<code>config-overrides.js</code>，用来修改默认配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; override, fixBabelImports &#125; = <span class="built_in">require</span>(<span class="string">'customize-cra'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = override(</span><br><span class="line">  fixBabelImports(<span class="string">'import'</span>, &#123;</span><br><span class="line">    libraryName: <span class="string">'antd'</span>,</span><br><span class="line">    libraryDirectory: <span class="string">'es'</span>,</span><br><span class="line">    style: <span class="string">'css'</span>, <span class="comment">// true</span></span><br><span class="line">  &#125;),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>然后按按照下面的格式按需引入模块：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Button &#125; <span class="keyword">from</span> <span class="string">'antd'</span>;</span><br></pre></td></tr></table></figure>
+<p>（2）已经eject出所有配置文件：</p>
+<p>这个时候直接按照<a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">babel-plugin-import文档</a>的说明配置即可。</p>
+<p>安装<code>babel-plugin-import</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-import -D</span><br></pre></td></tr></table></figure>
+<p>然后在<code>package.json</code>中找到<code>babel</code>选项，修改为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"babel"</span>: &#123;</span><br><span class="line">  <span class="string">"presets"</span>: [</span><br><span class="line">    <span class="string">"react-app"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"plugins"</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">"import"</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">"libraryName"</span>: <span class="string">"antd"</span>,</span><br><span class="line">        <span class="string">"style"</span>: <span class="string">"css"</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>引入方式与上面相同：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Button &#125; <span class="keyword">from</span> <span class="string">'antd'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="配置Less"><a href="#配置Less" class="headerlink" title="配置Less"></a>配置Less</h2><p>首先安装<code>less</code>和<code>less-loader</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install less less-loader -D</span><br></pre></td></tr></table></figure>
+<p>然后同样分为是否eject配置两种情况：</p>
+<p>（1）未eject出所有配置，仍遵循上面的步骤，安装<code>react-app-rewired</code>和<code>customize-cra</code>,修改<code>package.json</code>中的启动脚本。</p>
+<p>然后修改<code>config-overrides.js</code>文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; override, fixBabelImports, addLessLoader &#125; = <span class="built_in">require</span>(<span class="string">'customize-cra'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = override(</span><br><span class="line">  fixBabelImports(<span class="string">'import'</span>, &#123;</span><br><span class="line">    libraryName: <span class="string">'antd'</span>,</span><br><span class="line">    libraryDirectory: <span class="string">'es'</span>,</span><br><span class="line">    style: <span class="literal">true</span>, </span><br><span class="line">  &#125;),</span><br><span class="line">  addLessLoader(&#123;</span><br><span class="line">    javascriptEnabled: <span class="literal">true</span>,</span><br><span class="line">    modifyVars: &#123; <span class="string">'@primary-color'</span>: <span class="string">'#1DA57A'</span> &#125;,</span><br><span class="line">  &#125;),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>这里利用了<code>less-loader</code>的<code>modifyVars</code>来进行主题配置，变量和其他配置方式可以参考<a href="https://ant.design/docs/react/customize-theme-cn" target="_blank" rel="noopener">配置主题</a>文档。</p>
+<p>（2）已经eject出所有配置的情况，参考<a href="https://juejin.im/post/5c3d67066fb9a049f06a8323" target="_blank" rel="noopener">这篇文章</a>：</p>
+<p>在<code>config</code>目录下的<code>webpack.config.js</code>文件，找到<code>// style files regexes</code>注释位置，添加：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加 less 解析规则</span></span><br><span class="line"><span class="keyword">const</span> lessRegex = <span class="regexp">/\.less$/</span>;</span><br><span class="line"><span class="keyword">const</span> lessModuleRegex = <span class="regexp">/\.module\.less$/</span>;</span><br></pre></td></tr></table></figure>
+<p>然后找到<code>rules</code>属性，在其中添加less解析配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Less 解析配置</span></span><br><span class="line">&#123;</span><br><span class="line">  test: lessRegex,</span><br><span class="line">  <span class="comment">// exclude: lessModuleRegex,</span></span><br><span class="line">  use: getStyleLoaders(</span><br><span class="line">    &#123;</span><br><span class="line">      importLoaders: <span class="number">2</span>,</span><br><span class="line">      sourceMap: isEnvProduction &amp;&amp; shouldUseSourceMap,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">'less-loader'</span></span><br><span class="line">  ),</span><br><span class="line">  sideEffects: <span class="literal">true</span>,</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">  test: lessModuleRegex,</span><br><span class="line">  use: getStyleLoaders(</span><br><span class="line">    &#123;</span><br><span class="line">      importLoaders: <span class="number">2</span>,</span><br><span class="line">      sourceMap: isEnvProduction &amp;&amp; shouldUseSourceMap,</span><br><span class="line">      modules: <span class="literal">true</span>,</span><br><span class="line">      getLocalIdent: getCSSModuleLocalIdent</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">'less-loader'</span></span><br><span class="line">  ),</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>要注意的是，新添加的<code>less-loader</code>必须在<code>file-loader</code>的前面才能生效，因为Webpack在解析Loader是从右至左进行的（从下到上），只有先经过<code>file-loader</code>对文件路径的处理，<code>less</code>文件才能够被正确引入。</p>
+<h2 id="配置Alias"><a href="#配置Alias" class="headerlink" title="配置Alias"></a>配置Alias</h2><p>在Vue中习惯了使用<code>@</code>来代替一连串的<code>..</code>表示的相对地址，这个功能是webpack提供的，需要在webpack中进行配置</p>
+<p>现在使用了React，也同样希望能够配置Alias来实现路径的更优雅的表示。如果已经eject处所有配置的情况下，直接在webpackd的配置文件下添加相关的代码即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  resolve: &#123;</span><br><span class="line">    alias: &#123;</span><br><span class="line">      <span class="string">'@'</span>: path.resolve(__dirname, <span class="string">'src/'</span>),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>但是如果在未eject的情况下，同样需要借助上面使用的<code>react-app-rewired</code>实现，首先在根目录建立一个<code>alias.js</code>文件，在这个文件中编写Alias的配置代码：<code>react-app-rewired</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  resolve: &#123;</span><br><span class="line">    alias: &#123;</span><br><span class="line">      <span class="string">'@'</span>: path.join(__dirname, <span class="string">'src'</span>),</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>然后在<code>config-overrides.js</code>文件中引入并进行配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; override, addWebpackAlias &#125; = <span class="built_in">require</span>(<span class="string">'customize-cra'</span>);</span><br><span class="line"><span class="keyword">const</span> alias = <span class="built_in">require</span>(<span class="string">'./alias'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = override(</span><br><span class="line">  addWebpackAlias(alias.resolve.alias),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>重新编译后<code>@</code>就生效了。</p>
+<p>这时有两个问题要解决</p>
+<p>（1）IDE的点击跳转失效了</p>
+<p>Webstorm是可以识别webpack的配置文件，对Alias进行相应的处理，但是这里并没有eject出Webpack的配置文件，但是我们的<code>alias.js</code>文件就是按照Webpack的配置模块的格式来编写的，所以可以将<code>alias.js</code>作为配置文件，传递给Webstorm，这样IDE的文件跳转就正常了</p>
+<p>（2）ESLint的导入导出规则报错</p>
+<p>这是因为ESLint不能识别我们的Alias，这需要安装<code>eslint-import-resolver-webpack</code>这个插件，让ESLint使用Webpack的解析规则。</p>
+<p>首先安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add eslint-import-resolver-webpack -D</span><br></pre></td></tr></table></figure>
+<p>然后在<code>.eslintrc.js</code>中添加如下的配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="string">"settings"</span>: &#123;</span><br><span class="line">    <span class="string">"import/resolver"</span>: &#123;</span><br><span class="line">      <span class="string">"webpack"</span>: &#123;</span><br><span class="line">        <span class="string">"config"</span>: <span class="string">"alias.js"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样使用<code>alias.js</code>来代替Webpack的配置文件，配置完之后ESLint也就能正常工作了。</p>
+<h2 id="配置webpack-bundle-analyzer"><a href="#配置webpack-bundle-analyzer" class="headerlink" title="配置webpack-bundle-analyzer"></a>配置webpack-bundle-analyzer</h2><p>首先需要安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># NPM </span></span><br><span class="line">npm install --save-dev webpack-bundle-analyzer</span><br><span class="line"><span class="comment"># Yarn </span></span><br><span class="line">yarn add -D webpack-bundle-analyzer</span><br></pre></td></tr></table></figure>
+<p>在未eject的情况下，同样可以使用<code>customize-cra</code>来添加webpack-bundle-analyzer的配置，在<code>cvonfig-overrides.js</code>中，引入<code>addBundleVisualizer</code>，进行配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; override, addBundleVisualizer &#125; = <span class="built_in">require</span>(<span class="string">'customize-cra'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = override(</span><br><span class="line">  <span class="comment">// 添加 webpack-bundle-analyzer</span></span><br><span class="line">  addBundleVisualizer(&#123;</span><br><span class="line">    analyzerMode: <span class="string">'static'</span>,</span><br><span class="line">    reportFilename: <span class="string">'report.html'</span>,</span><br><span class="line">  &#125;, <span class="literal">true</span>),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>addBundleVisualizer接受两个参数，第一个对象是<code>webpack-bundle-analyzer</code>的配置项，可以<a href="https://www.npmjs.com/package/webpack-bundle-analyzer" target="_blank" rel="noopener">参考文档</a>。第二个选项用来配置自动开启，设置为<code>ture</code>就不需要在每次<code>build</code>时传入<code>--analyze</code>来开启分析了</p>
+<p>在已经eject了的情况下，在<code>webpack.config.js</code>做进行配置，将<code>webpack-bundle-analyzer</code>作为插件进行引入</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> BundleAnalyzerPlugin = <span class="built_in">require</span>(<span class="string">'webpack-bundle-analyzer'</span>).BundleAnalyzerPlugin;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> BundleAnalyzerPlugin()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>环境变量在构建期间嵌入。</p>
+<p>可以使用<code>process.env.NODE_ENV</code>来读取内置的环境变量，当运行<code>npm start</code>时，它等于<code>development</code>，当运行<code>npm test</code>时，它等于<code>test</code>，当运行<code>npm run build</code>时它等于<code>production</code>。不能手动覆盖<code>NODE_ENV</code>，这可以防止开发人员意外地将开发环境部署到生产环境中</p>
+<p>除了<code>process.env.NODE_ENV</code>之外也可以使用自定义的环境变量，自定义的环境变量必须以<code>REACT_APP_</code>开头。</p>
+<p>添加环境变量有两种方式：</p>
+<p>（1）在Shell中添加临时环境变量。</p>
+<p>操作系统不同，在Shell中定义环境变量的方法也不相同:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Windows (cmd.exe)</span></span><br><span class="line"><span class="built_in">set</span> <span class="string">"REACT_APP_SECRET_CODE=abcdef"</span> &amp;&amp; npm start</span><br><span class="line"></span><br><span class="line"><span class="comment"># Linux, macOS (Bash)</span></span><br><span class="line">REACT_APP_SECRET_CODE=abcdef npm start</span><br></pre></td></tr></table></figure>
+<p>为了统一在不同的操作系统中的设置方法，可以使用<code>cross-env</code>这个库</p>
+<p>安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install cross-env --save-dev</span><br></pre></td></tr></table></figure>
+<p>使用时只需要在原来的脚本前面加上<code>cross-env</code>就可以了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cross-env NODE_ENV=development nodemon ./index.js</span><br></pre></td></tr></table></figure>
+<p>（2）在<code>.env</code>中添加开发环境变量</p>
+<p>在项目根目录中创建名为<code>.env</code>的文件，在文件创建以<code>REACT_APP_</code>开头的自定义环境变量。除了<code>NODE_ENV</code>之外的任何其他变量都将被会略</p>
+<p>==实际上，<code>NODE_ENV</code>是不能被覆盖的，也就意味着在<code>.env</code>中定义<code>NODE_ENV</code>也是同样被忽略的，在默认配置条件下，脚手架中的<code>NODE_ENV</code>是无法更改的。==</p>
+<p><code>.env</code>文件应该提交到git进行管理（除了<code>.env&amp;.local</code>之外）</p>
+<p>除了<code>.env</code>之外，还可以使用特殊的<code>.env</code>文件</p>
+<ul>
+<li><code>.env</code>：默认。</li>
+<li><code>.env.local</code>：本地覆盖。除<code>test</code>之外的所有环境都加载此文件。</li>
+<li><code>.env.development</code>, <code>.env.test</code>, <code>.env.production</code>：设置特定环境。</li>
+<li><code>.env.development.local</code>, <code>.env.test.local</code>,<code>.env.production.local</code>：设置特定环境的本地覆盖。</li>
+</ul>
+<p>如果使用一个新的自定义的<code>.env</code>文件，比如使用<code>.env.stage</code>的环境变量文件，需要在运行<code>npm</code>命令时使用<code>env-cmd</code></p>
+<p>安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install env-cmd --save-dev</span><br></pre></td></tr></table></figure>
+<p>使用时直接将<code>.env.stage</code>的路径引入即可，在<code>Package.json</code>文件中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"env-cmd ./.env.stage npm run build"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在命令行中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/.bin/env-cmd ./.env.stage npm run build</span><br></pre></td></tr></table></figure>
+<p>这种情况下，<code>process.env.NODE_ENV</code>仍然是<code>production</code>，但加载的<code>.env</code>文件已经不再是<code>.env.build</code>，而是变为了<code>env.stage</code></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://facebook.github.io/create-react-app/docs/documentation-intro" target="_blank" rel="noopener">Docs@Create React App</a></li>
+<li><a href="https://juejin.im/post/59dcd87451882578c2084515" target="_blank" rel="noopener">从React脚手架工具学习React项目的最佳实践（上）：前端基础配置@掘金</a></li>
+<li><a href="https://ant.design/docs/react/use-with-create-react-app-cn" target="_blank" rel="noopener">在create-react-app中使用@Ant Design</a></li>
+<li><a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">ant-design/babel-plugin-import@github</a></li>
+<li><a href="https://juejin.im/post/5c3d67066fb9a049f06a8323" target="_blank" rel="noopener">在 Create React App 中启用 Sass 和 Less@掘进</a></li>
+<li><a href="https://www.npmjs.com/package/eslint-import-resolver-webpack" target="_blank" rel="noopener">eslint-import-resolver-webpack@npm</a></li>
+<li><a href="http://jeremyfan.name/blog/2018/08/22/2018-08-eslint-webpack-alias/" target="_blank" rel="noopener">关于eslint-plugin-import无法识别webpack alias问题@JERMY’S BLOG</a></li>
+<li><a href="https://github.com/aze3ma/react-app-rewire-aliases" target="_blank" rel="noopener">aze3ma/react-app-rewire-aliases@github</a></li>
+<li><a href="https://www.onlyling.com/archives/321" target="_blank" rel="noopener">create-react-app 通过 react-app-rewired 添加 webpack 的 alias@OnlyLing</a></li>
+<li><a href="https://webpack.js.org/configuration/resolve/" target="_blank" rel="noopener">Resolve@Webpack</a></li>
+<li><a href="https://www.npmjs.com/package/env-cmd" target="_blank" rel="noopener">env-cmd@npm</a></li>
+<li><a href="https://www.npmjs.com/package/webpack-bundle-analyzer" target="_blank" rel="noopener">webpack-contrib/webpack-bundle-analyzer@github</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/脚手架/" rel="tag"># 脚手架</a>
+          
+            <a href="/tags/Create-React-App/" rel="tag"># Create React App</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/28/01 前端笔记/02 JavaScript/JS60 ES10的新特性简介/" rel="next" title="JS60 ES10的新特性简介">
+                <i class="fa fa-chevron-left"></i> JS60 ES10的新特性简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/05/01 前端笔记/06 Redux/Redux01 入门/" rel="prev" title="Redux01 入门">
+                Redux01 入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#快速开始"><span class="nav-number">1.</span> <span class="nav-text">快速开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行"><span class="nav-number">3.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单元测试"><span class="nav-number">4.</span> <span class="nav-text">单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">4.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行接口"><span class="nav-number">4.2.</span> <span class="nav-text">命令行接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#版本管理接口"><span class="nav-number">4.3.</span> <span class="nav-text">版本管理接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试组件"><span class="nav-number">4.4.</span> <span class="nav-text">测试组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建生产文件"><span class="nav-number">5.</span> <span class="nav-text">构建生产文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化配置"><span class="nav-number">6.</span> <span class="nav-text">个性化配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS-Loader"><span class="nav-number">7.</span> <span class="nav-text">CSS-Loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ESLint"><span class="nav-number">8.</span> <span class="nav-text">ESLint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ant-Design按需引入"><span class="nav-number">9.</span> <span class="nav-text">Ant Design按需引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Less"><span class="nav-number">10.</span> <span class="nav-text">配置Less</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Alias"><span class="nav-number">11.</span> <span class="nav-text">配置Alias</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置webpack-bundle-analyzer"><span class="nav-number">12.</span> <span class="nav-text">配置webpack-bundle-analyzer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量"><span class="nav-number">13.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">14.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在调研BFF的过程中，看到蚂蚁金服自研的BFF的开发框架BFF Chair是基于Egg.js开发的。BFF Chair没有开源，但是Egg.js已经开源了，如果需要引入BFF，需要基于Egg.js的基础上开发自己的BFF开发框架。">
+<meta name="keywords" content="Node,Egg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Egg01 入门">
+<meta property="og:url" content="http://oldzhou.cn/2019/04/15/05 全栈开发/03 Egg/Egg01 入门/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="在调研BFF的过程中，看到蚂蚁金服自研的BFF的开发框架BFF Chair是基于Egg.js开发的。BFF Chair没有开源，但是Egg.js已经开源了，如果需要引入BFF，需要基于Egg.js的基础上开发自己的BFF开发框架。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/68747470733a2f2f7261772e6769746875622e636f6d2f66656e676d6b322f6b6f612d67756964652f6d61737465722f6f6e696f6e2e706e67.png">
+<meta property="og:image" content="http://image.oldzhou.cn/middleware.gif">
+<meta property="og:updated_time" content="2019-04-15T16:50:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Egg01 入门">
+<meta name="twitter:description" content="在调研BFF的过程中，看到蚂蚁金服自研的BFF的开发框架BFF Chair是基于Egg.js开发的。BFF Chair没有开源，但是Egg.js已经开源了，如果需要引入BFF，需要基于Egg.js的基础上开发自己的BFF开发框架。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/68747470733a2f2f7261772e6769746875622e636f6d2f66656e676d6b322f6b6f612d67756964652f6d61737465722f6f6e696f6e2e706e67.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/04/15/05 全栈开发/03 Egg/Egg01 入门/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Egg01 入门 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/04/15/05 全栈开发/03 Egg/Egg01 入门/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Egg01 入门
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-15 16:50:20" itemprop="dateCreated datePublished" datetime="2019-04-15T16:50:20+00:00">2019-04-15</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Egg/" itemprop="url" rel="index"><span itemprop="name">Egg</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/15/05 全栈开发/03 Egg/Egg01 入门/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/15/05 全栈开发/03 Egg/Egg01 入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在调研BFF的过程中，看到蚂蚁金服自研的BFF的开发框架BFF Chair是基于Egg.js开发的。BFF Chair没有开源，但是Egg.js已经开源了，如果需要引入BFF，需要基于Egg.js的基础上开发自己的BFF开发框架。</p>
+<a id="more"></a>
+<blockquote>
+<p>在调研BFF的过程中，看到蚂蚁金服自研的BFF的开发框架BFF Chair是基于Egg.js开发的。BFF Chair没有开源，但是Egg.js已经开源了，如果需要引入BFF，需要基于Egg.js的基础上开发自己的BFF开发框架。</p>
+</blockquote>
+<h2 id="1-Egg-js是什么"><a href="#1-Egg-js是什么" class="headerlink" title="1 Egg.js是什么"></a>1 Egg.js是什么</h2><p>Egg是一个为了开发企业级应用的框架，没有集成太多功能，值专注于提供Web开发的核心功能，并且提供了一套灵活可扩展的插件机制，来满足定制需求。</p>
+<p>Egg奉行『约定优于配置』，在团队内应当按照<strong>一套统一的约定</strong>进行应用开发，降低沟通成本和学习成本。但约定不等于扩展性差，可以按照团队的约定制定框架。</p>
+<h2 id="2-Egg与其他Web框架的比较"><a href="#2-Egg与其他Web框架的比较" class="headerlink" title="2 Egg与其他Web框架的比较"></a>2 Egg与其他Web框架的比较</h2><h3 id="2-1-与Express的差异"><a href="#2-1-与Express的差异" class="headerlink" title="2.1 与Express的差异"></a>2.1 与Express的差异</h3><p>Express应用很广泛，简单且扩展性强，适合做个人项目，但框架本身缺少约定，标准的MVC模型会有各种千奇百怪的写法。而Egg按照约定进行开发，团队协作成本低。</p>
+<h3 id="2-2-与Koa的关系"><a href="#2-2-与Koa的关系" class="headerlink" title="2.2 与Koa的关系"></a>2.2 与Koa的关系</h3><p>Koa和Express的设计风格类似，底层都是公用的同一套HTTP基础库，但是二者有一些区别：</p>
+<p>（1）异步解决方案</p>
+<p>Express的异步编程模型是callback形式的，而Koa使用了<code>async/await</code>的形式</p>
+<p>（2）Middleware中间件</p>
+<p>Koa的中间件模型是洋葱圈模型</p>
+<p><img src="http://image.oldzhou.cn/68747470733a2f2f7261772e6769746875622e636f6d2f66656e676d6b322f6b6f612d67756964652f6d61737465722f6f6e696f6e2e706e67.png" alt=""></p>
+<p>当中间件在执行时：</p>
+<p><img src="http://image.oldzhou.cn/middleware.gif" alt="middleware.gif"></p>
+<p>所有的请求经过一个中间件的时候都会执行两次，可以很方便的话实现后置处理逻辑。</p>
+<p>（3）Context</p>
+<p>Express只有Request和Response两个对象，Koa增加了Context对象，作为当次请求的上下文对象（Koa1中为中间件的<code>this</code>，Koa2中作为中间件的第一个参数传入），可以将以此请求相关的上下文都挂载到这个对象，同时Context也挂在了Request和Response两个对象，这两个对象提供了大量的便捷方法辅助开发，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">request.query</span><br><span class="line">request.hostname</span><br><span class="line">response.body</span><br><span class="line">response.status</span><br></pre></td></tr></table></figure>
+<p>（4）异常处理</p>
+<p>通过同步方式编写异步代码带来的另一个非常大的好处就是异常处理非常自然，使用<code>try/catch</code>就可以将按照规范编写的代码中的所有错误捕获到。可以很方便的编写一个自定义的错误处理中间件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">onerror</span>(<span class="params">ctx, next</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> next();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    ctx.app.emit(<span class="string">'error'</span>, err);</span><br><span class="line">    ctx.body = <span class="string">'server error'</span>;</span><br><span class="line">    ctx.status = err.status || <span class="number">500</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要将这个中间件放在其他中间件之前，就可以捕获它们所有的同步或者异步代码中抛出的异常了。</p>
+<h3 id="2-3-Egg继承于Koa"><a href="#2-3-Egg继承于Koa" class="headerlink" title="2.3 Egg继承于Koa"></a>2.3 Egg继承于Koa</h3><p>Egg选择了Koa作为基础框架，在它的模型基础上，做了一些增强。</p>
+<h4 id="2-3-1-扩展"><a href="#2-3-1-扩展" class="headerlink" title="2.3.1 扩展"></a>2.3.1 扩展</h4><p>在基于Egg的框架或者应用中，可以通过定义<code>app/extend/{application, context, request, response}.js</code>中来扩展Koa中对应的四个对象的原型。通过这个功能，可以快速的增加更多的辅助方法。</p>
+<p>例如，在<code>app/extend/context.js</code>中写入以下代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/extend/context.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  get isIOS() &#123;</span><br><span class="line">    <span class="keyword">const</span> iosReg = <span class="regexp">/iphone|ipad|ipod/i</span>;</span><br><span class="line">    <span class="keyword">return</span> iosReg.test(<span class="keyword">this</span>.get(<span class="string">'user-agent'</span>));</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在Controller中，就可以使用刚才定义的便捷属性了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/controller/home.js</span></span><br><span class="line">exports.handler = <span class="function"><span class="params">ctx</span> =&gt;</span> &#123;</span><br><span class="line">  ctx.body = ctx.isIOS</span><br><span class="line">    ? <span class="string">'Your operating system is iOS.'</span></span><br><span class="line">    : <span class="string">'Your operating system is not iOS.'</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-2-插件"><a href="#2-3-2-插件" class="headerlink" title="2.3.2 插件"></a>2.3.2 插件</h4><p>Egg和Koa一样，可以通过中间件来提供各种功能，Egg的插件机制更加强大，让独立领域的功能模块可以更加容易编写。</p>
+<p>一个插件可以包含：</p>
+<ul>
+<li><code>extend</code>：扩展基础对象的上下文，提供各种工具类、属性</li>
+<li><code>middleware</code>：增加一个或多个中间件，提供请求的前置、后置处理逻辑</li>
+<li><code>config</code>：配置各个环境下插件自身的默认配置项</li>
+</ul>
+<h2 id="3-快速入门"><a href="#3-快速入门" class="headerlink" title="3 快速入门"></a>3 快速入门</h2><p>可以直接使用脚手架快速生成项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">npm init egg --<span class="built_in">type</span>=simple</span><br><span class="line"><span class="comment"># 等同于 npx egg --type=simple</span></span><br><span class="line"></span><br><span class="line">npm i</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动项目</span></span><br><span class="line">npm run dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># open localhost:7001</span></span><br></pre></td></tr></table></figure>
+<p>生成项目后，可以编写Controller和对应的Router，可以在<code>config</code>文件夹下添加配置文件，此时目录结构如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">egg-example</span><br><span class="line">├── app</span><br><span class="line">│   ├── controller</span><br><span class="line">│   │   └── home.js</span><br><span class="line">│   └── router.js</span><br><span class="line">├── config</span><br><span class="line">│   └── config.default.js</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+<p>Egg内置了static插件，默认映射<code>/public/* -&gt; app/public/*</code></p>
+<p>Egg不强制使用某种模板引擎，只是约定了View插件开发规范，使用某种模板引擎需要在<code>config</code>目录下的<code>plugin.js</code>中开启：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/plugin.js</span></span><br><span class="line">exports.nunjucks = &#123;</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  package: <span class="string">'egg-view-nunjucks'</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在<code>config/config.default.js</code>中设置文件关联：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/config.default.js</span></span><br><span class="line">exports.keys = <span class="xml"><span class="tag">&lt;<span class="name">此处改为你自己的</span> <span class="attr">Cookie</span> 安全字符串&gt;</span>;</span></span><br><span class="line"><span class="xml">// 添加 view 配置</span></span><br><span class="line"><span class="xml">exports.view = &#123;</span></span><br><span class="line"><span class="xml">  defaultViewEngine: 'nunjucks',</span></span><br><span class="line"><span class="xml">  mapping: &#123;</span></span><br><span class="line"><span class="xml">    '.tpl': 'nunjucks',</span></span><br><span class="line"><span class="xml">  &#125;,</span></span><br><span class="line"><span class="xml">&#125;;</span></span><br></pre></td></tr></table></figure>
+<p>实际应用中，Controller一般不会自己产出数据，也不会包含复杂的逻辑，复杂的过程应抽象为业务逻辑层Service</p>
+<p>可以使用中间件，完成一些独立的功能。</p>
+<p>Egg提供了强大的配置合并管理功能：</p>
+<ul>
+<li>支持按环境变量加载不同的配置文件，如<code>config.local.js</code>，<code>config.prod.js</code>等</li>
+<li>应用/插件/框架都可以配置自己的配置文件，框架将按顺序合并加载</li>
+</ul>
+<p>在项目根目录下，以<code>test.js</code>为后缀名，即<code>{app_root}/test/**/*.</code>(<code>test/app/middleware/robot.test.js</code>)</p>
+<h2 id="4-渐进式开发"><a href="#4-渐进式开发" class="headerlink" title="4 渐进式开发"></a>4 渐进式开发</h2><p>在Egg里面的渐进式开发路径是：</p>
+<p>插件（path） →  插件（package） → 框架</p>
+<h3 id="4-1-Step1-原始代码"><a href="#4-1-Step1-原始代码" class="headerlink" title="4.1 Step1 原始代码"></a>4.1 Step1 原始代码</h3><p>当我们编写了一段具有通用型逻辑的代码时，可以抽离成为插件，比如<code>context.js</code>中的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">example-app</span><br><span class="line">├── app</span><br><span class="line">│   ├── extend</span><br><span class="line">│   │   └── context.js</span><br><span class="line">│   └── router.js</span><br><span class="line">├── <span class="built_in">test</span></span><br><span class="line">│   └── index.test.js</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-Step2-插件（path）"><a href="#4-2-Step2-插件（path）" class="headerlink" title="4.2 Step2 插件（path）"></a>4.2 Step2 插件（path）</h3><p>但是在一开始的时候，功能还没完善，直接独立成为插件，维护比较麻烦，这是可以把代码写成<strong>插件的形式，但不独立出去</strong>（即使用path来引用的插件形式的代码）</p>
+<p>这个时候新的目录结构为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">example-app</span><br><span class="line">├── app</span><br><span class="line">│   └── router.js</span><br><span class="line">├── config</span><br><span class="line">│   └── plugin.js</span><br><span class="line">├── lib</span><br><span class="line">│   └── plugin</span><br><span class="line">│       └── egg-ua</span><br><span class="line">│           ├── app</span><br><span class="line">│           │   └── extend</span><br><span class="line">│           │       └── context.js</span><br><span class="line">│           └── package.json</span><br><span class="line">├── <span class="built_in">test</span></span><br><span class="line">│   └── index.test.js</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+<p>核心代码：</p>
+<p>（1）<code>app/extend/context.js</code>移动到<code>lib/plugin/egg-us/app/extend/context.js</code></p>
+<p>（2）<code>lib/plugin/egg-ua/package.json</code>声明插件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"eggPlugin"</span>: &#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"ua"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（3）在<code>config/plugin.js</code>中通过<code>path</code>来挂载组件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/plugin.js</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line">exports.ua = &#123;</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  path: path.join(__dirname, <span class="string">'../lib/plugin/egg-ua'</span>),</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-Step3-独立插件（package）"><a href="#4-3-Step3-独立插件（package）" class="headerlink" title="4.3 Step3 独立插件（package）"></a>4.3 Step3 独立插件（package）</h3><p>经过一段时间开发后，该模块的功能成熟，此时可以抽离出来成为独立的插件</p>
+<p>首先抽离出一个<code>egg-ua</code>插件，具体的方法的需要看<a href="https://eggjs.org/zh-cn/advanced/plugin.html" target="_blank" rel="noopener">插件文档</a>学习。</p>
+<p>代码在<a href="https://github.com/eggjs/examples/tree/master/progressive/step3/egg-ua" target="_blank" rel="noopener">这里</a>，目录结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">egg-ua</span><br><span class="line">├── app</span><br><span class="line">│   └── extend</span><br><span class="line">│       └── context.js</span><br><span class="line">├── <span class="built_in">test</span></span><br><span class="line">│   ├── fixtures</span><br><span class="line">│   │   └── <span class="built_in">test</span>-app</span><br><span class="line">│   │       ├── app</span><br><span class="line">│   │       │   └── router.js</span><br><span class="line">│   │       └── package.json</span><br><span class="line">│   └── ua.test.js</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+<p>然后对原有应用改造，代码参见<a href="https://github.com/eggjs/examples/tree/master/progressive/step3/egg-ua" target="_blank" rel="noopener">这里</a>。</p>
+<ul>
+<li>移除<code>lib/plugin/egg-ua</code>目录</li>
+<li><code>package.json</code>中声明对<code>egg-ua</code>的依赖</li>
+<li><code>config/plugin.js</code>中修改依赖声明为<code>package</code>方式</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/plugin.js</span></span><br><span class="line">exports.ua = &#123;</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  package: <span class="string">'egg-ua'</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在插件没发布前，可以通过<code>npm link</code>的方式进行本地测试，具体参见<a href="https://docs.npmjs.com/cli/link" target="_blank" rel="noopener">npm-link</a></p>
+<h3 id="4-4-Step4-框架"><a href="#4-4-Step4-框架" class="headerlink" title="4.4 Step4 框架"></a>4.4 Step4 框架</h3><p>当积累了插件和配置后我们会发现，团队的大部分项目都会用到这些插件。此时就可以考虑抽象出一个适合团队业务场景的框架。</p>
+<p>首先抽象出<code>example-framework</code>框架，具体的方法还是得看<a href="https://eggjs.org/zh-cn/advanced/framework.html" target="_blank" rel="noopener">文档</a>学习</p>
+<p><a href="https://github.com/eggjs/examples/tree/master/progressive/step4/example-framework" target="_blank" rel="noopener">代码在这里</a>，目录结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">example-framework</span><br><span class="line">├── config</span><br><span class="line">│   ├── config.default.js</span><br><span class="line">│   └── plugin.js</span><br><span class="line">├── lib</span><br><span class="line">│   ├── agent.js</span><br><span class="line">│   └── application.js</span><br><span class="line">├── <span class="built_in">test</span></span><br><span class="line">│   ├── fixtures</span><br><span class="line">│   │   └── <span class="built_in">test</span>-app</span><br><span class="line">│   └── framework.test.js</span><br><span class="line">├── README.md</span><br><span class="line">├── index.js</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+<p>把原来的<code>egg-ua</code>等插件的依赖从原来的应用中移除，配置到该框架的<code>package.json</code>和<code>config/plugin.js</code>中，然后改造原有的应用，对应的代码参考<a href="https://github.com/eggjs/examples/tree/master/progressive/step4/example-app" target="_blank" rel="noopener">这里</a></p>
+<ul>
+<li>移除<code>config/plugin.js</code>中对<code>egg-ua</code>的依赖</li>
+<li><code>package.json</code>中移除对<code>egg-ua</code>的依赖</li>
+<li><code>package.json</code>中声明对<code>example-framework</code>的以阿里，并配置<code>egg.framework</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"progressive"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">  <span class="string">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">"egg"</span>: &#123;</span><br><span class="line">    <span class="string">"framework"</span>: <span class="string">"example-framework"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"example-framework"</span>: <span class="string">"*"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样，在插件没发布前，可以通过<code>npm link</code>的方式进行本地测试</p>
+<h3 id="4-5-渐进式开发总结"><a href="#4-5-渐进式开发总结" class="headerlink" title="4.5 渐进式开发总结"></a>4.5 渐进式开发总结</h3><p>总的来说，Egg.js还是和适合一步步的渐进地去进行框架演进，具体流程如下：</p>
+<ol>
+<li>当应用中有可能会复用到的通用逻辑，抽离出来放到<code>lib/plugin</code>中</li>
+<li>当插件功能稳定后，独立出来作为一个<code>node moudle</code></li>
+<li>如此以往，应用中相对复用性较强的代码都会逐渐独立为单独的插件</li>
+<li>当应用逐渐进化到针对某类业务场景的解决方案时，将其抽象为独立的framework进行发布</li>
+<li>在新项目中抽象出的插件，下沉集成到框架后，其他项目只需要简单的重新<code>npm install</code>后就可以使用，可以提高团队效率</li>
+</ol>
+<h2 id="5-完整目录结构"><a href="#5-完整目录结构" class="headerlink" title="5 完整目录结构"></a>5 完整目录结构</h2><pre>egg-project
+├── package.json
+├── app.js (可选) ------------------------- # 用于自定义自动时的初始化工作
+├── agent.js (可选) ----------------------- # 用于 Agent 机制的配置
+├── app
+|   ├── router.js  ------------------------ # 用于配置 URL 路由规则
+│   ├── controller ------------------------ # 用于解析用户的输入
+│   |   └── home.js
+│   ├── service (可选) --------------------- # 用于编写业务逻辑层，建议使用
+│   |   └── user.js
+│   ├── middleware (可选) ------------------ # 用于编写中间件
+│   |   └── response_time.js
+│   ├── schedule (可选) -------------------- # 用于定时任务
+│   |   └── my_task.js
+│   ├── public (可选) ---------------------- # 用于放置静态资源
+│   |   └── reset.css
+│   ├── view (可选) ------------------------ # 用于放模板文件
+│   |   └── home.tpl
+│   ├── Modal (可选) ----------------------- # 用于放置领域模型，可选，由领域类相关插件约定
+│   |   └── mySQL.db
+│   └── extend (可选) ---------------------- # 用于框架的扩展
+│       ├── helper.js (可选)
+│       ├── request.js (可选)
+│       ├── response.js (可选)
+│       ├── context.js (可选)
+│       ├── application.js (可选)
+│       └── agent.js (可选)
+├── config
+|   ├── plugin.js -------------------------- # 用于配置需要加载的插件
+|   ├── config.default.js
+│   ├── config.prod.js --------------------- # 配置文件，根据不同环境加载
+|   ├── config.test.js (可选)
+|   ├── config.local.js (可选)
+|   └── config.unittest.js (可选)
+└── test ----------------------------------- # 用于单元测屙屎
+    ├── middleware
+    |   └── response_time.test.js
+    └── controller
+        └── home.test.js</pre>
+
+<h2 id="6-静态资源"><a href="#6-静态资源" class="headerlink" title="6 静态资源"></a>6 静态资源</h2><p><code>egg-view-assets</code>提供了通用的静态资源管理和本地开发，<a href="https://github.com/eggjs/egg-view-assets" target="_blank" rel="noopener">文档在这里</a>。</p>
+<p>可以配合基于Webpack封装的<a href="https://github.com/sorrycc/roadhog" target="_blank" rel="noopener">roadhog</a>、<a href="https://umijs.org/zh/guide/" target="_blank" rel="noopener">umi</a>，通过自动的方式添加静态资源。</p>
+<p>重要的是和构建工具整合，保证本地开发体验及自动部署，所以构建工具和框架有一层约定。</p>
+<h3 id="6-1-映射关系"><a href="#6-1-映射关系" class="headerlink" title="6.1 映射关系"></a>6.1 映射关系</h3><p>构建工具的Entry配置决定了映射关系，基于Webpack封装的roadhog、umi内置了映射关系，如果单独使用Webpack需要根据这层映射来选择使用哪种方式：</p>
+<ul>
+<li>文件源码<code>app/assets/index.js</code>，对应的Entry为<code>index.js</code></li>
+<li>本地静态服务接受以此为Entry，如请求<code>http://127.0.0.1:8000/index.js</code></li>
+<li>构建生成的文件需要有这层映射关系，如生成<code>index.{hash}.js</code>并生成Mainfest文件描述关系如：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;index.js&quot;: &quot;index.&#123;hash&#125;.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>roadhog完全满足这个映射关系，所以可以直接使用assets模板引擎，Umi不满足文件映射，所以选用其他模板引擎的方案。</p>
+<h3 id="6-2-开发、部署、CDN"><a href="#6-2-开发、部署、CDN" class="headerlink" title="6.2 开发、部署、CDN"></a>6.2 开发、部署、CDN</h3><p><a href="https://eggjs.org/zh-cn/tutorials/assets.html" target="_blank" rel="noopener">文档</a>的介绍多是基于roadhog的基础上进行的配置，如果使用Webpack需要自己配置，还是比较繁琐的。</p>
+<p>所以考虑使用Easy-Team提供的EGG + Vue工程化解决方案。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://eggjs.org/zh-cn/intro/" target="_blank" rel="noopener">Egg文档</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Node/" rel="tag"># Node</a>
+          
+            <a href="/tags/Egg/" rel="tag"># Egg</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/27/01 前端笔记/03 React/React02 提高/React提高09 Hooks/" rel="next" title="React提高09 Hooks">
+                <i class="fa fa-chevron-left"></i> React提高09 Hooks
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/16/01 前端笔记/07 零散专题/零散专题27 BFF调研1/" rel="prev" title="零散专题27 BFF调研1">
+                零散专题27 BFF调研1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Egg-js是什么"><span class="nav-number">1.</span> <span class="nav-text">1 Egg.js是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Egg与其他Web框架的比较"><span class="nav-number">2.</span> <span class="nav-text">2 Egg与其他Web框架的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-与Express的差异"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 与Express的差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-与Koa的关系"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 与Koa的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Egg继承于Koa"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Egg继承于Koa</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-扩展"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-插件"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 插件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-快速入门"><span class="nav-number">3.</span> <span class="nav-text">3 快速入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-渐进式开发"><span class="nav-number">4.</span> <span class="nav-text">4 渐进式开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Step1-原始代码"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Step1 原始代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Step2-插件（path）"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 Step2 插件（path）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Step3-独立插件（package）"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 Step3 独立插件（package）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-Step4-框架"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 Step4 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-渐进式开发总结"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 渐进式开发总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-完整目录结构"><span class="nav-number">5.</span> <span class="nav-text">5 完整目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-静态资源"><span class="nav-number">6.</span> <span class="nav-text">6 静态资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-映射关系"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 映射关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-开发、部署、CDN"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 开发、部署、CDN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
