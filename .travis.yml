@@ -19,5 +19,11 @@ deploy:
     branch: master
 
 script:
-  - hexo clean
-  - hexo generate
+  - npm run deploy
+
+notifications:
+  email:
+    - duola878@126.com
+  slack:
+    on_success: always
+    on_failure: always
