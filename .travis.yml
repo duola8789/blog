@@ -12,7 +12,6 @@ deploy:
   keep_history: true
   github_token: $github_token
   committer_from_gh: true
-  repo: https://github.com/duola8789/duola8789.github.io.git
   on:
     branch: master
 
