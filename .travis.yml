@@ -26,5 +26,5 @@ notifications:
     recipients:
       - duola8789@126.com
   slack:
-    on_success: always
+    on_success: never
     on_failure: always
