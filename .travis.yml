@@ -13,6 +13,7 @@ deploy:
   keep_history: true
   committer_from_gh: true
   local_dir: public/
+  target_branch: master
   on:
     branch: master
 
