@@ -35,7 +35,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 - [半透明边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/translucent-borders)
 - [background-clip@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip)
 
-## 多重边框
+## 2 多重边框
 
 ### `box-shadow`
 
