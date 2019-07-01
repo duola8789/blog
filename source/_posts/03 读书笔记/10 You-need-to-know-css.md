@@ -12,8 +12,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 
 <!-- more -->
 
-
-## 1 透明边框
+## 透明边框
 
 默认情况下，背景的颜色会延伸至边框下层，所以如果边框设置为透明色，会被背景色覆盖掉。
 
@@ -35,7 +34,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 - [半透明边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/translucent-borders)
 - [background-clip@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip)
 
-## 2 多重边框
+## 多重边框
 
 ### `box-shadow`
 
