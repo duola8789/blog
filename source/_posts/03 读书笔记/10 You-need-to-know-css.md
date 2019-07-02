@@ -133,3 +133,50 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 - [box-shadow详解@掘金](https://juejin.im/post/5ce290cc6fb9a07ea8039d83)
 - [outline@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline)
 - [outline-offset@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline-offset)
+
+## 边框内圆角
+
+要实现的效果：
+
+![](http://image.oldzhou.cn/FluW1mYFqLlYY8D1bBtJLU4cJHmL)
+
+边框外围没有圆角，内部有圆角，所以单独使用`border-radius`是不行的。上一部分内容中，我们可以发现，`box-shadow`是跟随边框有圆角的，而`outline`则是没有圆角的，所以我们可以使用三者的组合实现边框内圆角。
+
+利用`border-radius`设置圆角，假设为`r`，但是不设置`border`，设置`outline`为`w`，这样外边框是没有圆角的，
+
+
+```CSS
+.inner {
+  background: darkgray;
+  border-radius: 5px;
+  outline: 5px solid darkgreen;
+}
+```
+这时候效果是：
+
+![](http://image.oldzhou.cn/FpHhAgjiahF6PeuxsF_XaqwZb0-i)
+
+背景会由于`border-radius`的设置出现圆角，然后我们用`box-shadow`将这部分补上，只设置其扩展半径，颜色与`outline`的颜色相同
+
+```CSS
+.inner {
+  background: darkgray;
+  border-radius: 5px;
+  outline: 5px solid darkgreen;
+  box-shadow: 0 0 0 5px darkgreen;
+}
+```
+扩展半径的取值范围见下图：
+
+![](http://image.oldzhou.cn/FgsHRYQ-1rkRVFYStGFTgFUGFWCl)
+
+复习一下扩展半径的值：
+
+![](http://image.oldzhou.cn/Fn4GZlUhMnmHGxpUWPlUJd0Xx6Q9)
+
+所以这里取值最大值不能超过`outline`的宽度`w`，而最小宽度根据勾股定理不能小于`$\sqrt{2}r - r$`，即`$\sqrt{2-1}r$`，在我们上面的设置中，扩展半径的取值范围是`[5, 2.07]`
+
+
+*参考*：
+
+- [边框内圆角@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/inner-rounding)
