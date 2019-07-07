@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-01 11:24:00
+updated: 2019-07-07 11:15:49
 tags: 
 - CSS
 categories: 读书笔记
@@ -29,10 +29,9 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 
 所以将`background-clip`设置为`padding-box`就可以实现透明边框。
 
-*参考*：
-
-- [半透明边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/translucent-borders)
-- [background-clip@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip)
+> 参考：
+> - [半透明边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/translucent-borders)
+> - [background-clip@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip)
 
 ## 多重边框
 
@@ -125,14 +124,12 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 
 优点是可以实现非实线的边框，缺点是实现2条以上的边框不方便，且无法实现圆角边框。
 
-
-*参考*
-
-- [多重边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/multiple-borders)
-- [box-shadow@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-shadow)
-- [box-shadow详解@掘金](https://juejin.im/post/5ce290cc6fb9a07ea8039d83)
-- [outline@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline)
-- [outline-offset@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline-offset)
+> 参考
+> - [多重边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/multiple-borders)
+> - [box-shadow@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-shadow)
+> - [box-shadow详解@掘金](https://juejin.im/post/5ce290cc6fb9a07ea8039d83)
+> - [outline@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline)
+> - [outline-offset@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline-offset)
 
 ## 边框内圆角
 
@@ -174,9 +171,79 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 
 ![](http://image.oldzhou.cn/Fn4GZlUhMnmHGxpUWPlUJd0Xx6Q9)
 
-所以这里取值最大值不能超过`outline`的宽度`w`，而最小宽度根据勾股定理不能小于`$\sqrt{2}r - r$`，即`$\sqrt{2-1}r$`，在我们上面的设置中，扩展半径的取值范围是`[5, 2.07]`
+所以这里取值最大值不能超过`outline`的宽度`w`，而最小宽度根据勾股定理不能小于`$\sqrt{2}r - r$`，即`$\sqrt{2-1}r$`，在我们上面的设置中，扩展半径的取值范围是`[2.07, 5)`
 
 
-*参考*：
+> 参考：
+> - [边框内圆角@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/inner-rounding)
 
-- [边框内圆角@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/inner-rounding)
+## 背景定位
+
+### [`background-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
+
+![](http://image.oldzhou.cn/FrnFBglSd0nXpgo1VAOqqMONVf8R)
+
+我比较熟悉的背景定位是使用`background-position`，但是都是只指定了两个属性值：
+
+```CSS
+.backgroundPosition {
+  background-position: right bottom;
+}
+```
+
+有三个点要注意：
+
+1. `background-position`指定的位置是相对于由`background-origin`定义的位置图层的，默认定位于元素的左上角
+2. `background-position`在一个方向上，可以指定一个值（例如上面），也可以指定两个值，可以在`right`后面跟一个数值，表示相对于边缘的位置
+3. 如果指定的是百分比，`0%`代表图片的左（上）边界和容器的左（上）边界重合，`100%`代表图片的右（下）边界与容器的右（下）边界重合，`50%`代表图片的中心与容器的中心重合
+
+```CSS
+.inner {
+  width: 50%;
+  height: 200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff url('../assets/images/css-tricks.png') no-repeat;
+  background-size: 50px;CSS
+}
+
+.backgroundPosition {
+  background-position: right 20px bottom 20px;
+}
+```
+另外，这个属性是可以融合到`background`属性中的：
+
+```CSS
+.backgroundPosition {
+ background: #fff url('../assets/images/css-tricks.png') no-repeat right 20px bottom 20px;
+}
+```
+
+### [`background-origin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
+
+刚才也提到了，`background-position`指定的位置是相对于由`background-origin`定义的位置图层的。`background-origin`规定了背景图片的属性的原点位置与容器的关系（与`background-clip`类似）
+
+可以取值有：
+
+- `border-box`: 图片边界与`border`重合
+- `padding-box`: 图片边界与`padding`区域重合
+- `content-box`: 图片边界与`content`区域重合
+
+![](http://image.oldzhou.cn/Fk6jnaJ2R33O7q7j93Z-lMh4gnZ0)
+
+所以，可以取值`content-box`，借用`padding`定位实现。
+
+```CSS
+.inner {
+  padding: 20px;
+  border: 10px solid red;
+  background: #fff url('../assets/images/css-tricks.png') no-repeat right bottom;
+  background-origin: content-box;
+}
+```
+
+> 参考：
+> - [背景定位@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/extended-bg-position)
+> - [background-position@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
+> - [background-origin@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
+
