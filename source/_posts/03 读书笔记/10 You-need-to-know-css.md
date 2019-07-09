@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-07 11:15:49
+updated: 2019-07-09 20:35:25
 tags: 
 - CSS
 categories: 读书笔记
@@ -247,3 +247,117 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 > - [background-position@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
 > - [background-origin@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
 
+## 条纹进度条
+
+可以使用`background`的`repeating-linear-gradient`属性，来生成一个静态的进度条，再结合动画属性，实现动态的进度条样式。
+
+![](http://image.oldzhou.cn/FhYUUEkaUI0ZKKsS-9Uz_s4ItDWm)
+
+[`linear-gradient`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)可以实现线形重复渐变效果。
+
+[`repeating-linear-gradient`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/repeating-linear-gradient)类似`linear-gradient`，并且采用相同的参数，但是它会在所有方向上重复渐变以覆盖其整个容器。
+
+它分为两组参数，第一组参数用来描述渐变线的起点位置，`to top`这样的值会转换为0度，`to left`会被转换为270度。第二组参数可以包含多个值，用逗号分隔，每个值都是一个色值，后面跟随一个可选的终点位置，终点位置可以是百分比也可以是绝对值
+
+```CSS
+/* 一个倾斜45度的重复线性渐变,
+   从蓝色开始渐变到红色 */
+linear-gradient(45deg, blue, red);
+```
+
+![](http://image.oldzhou.cn/FrfiO8WADiybGVVVZEaqCzegt6Pt)
+
+```CSS
+/* 一个从右下角到左上角的重复线性渐变,
+   从蓝色开始渐变到红色 */
+linear-gradient(to left top, blue, red);
+```
+
+![](http://image.oldzhou.cn/Fk3UAB64mjf_QRIBHnCjpd9OJSxM)
+
+```CSS
+/* 一个由下至上的重复线性渐变,
+   从蓝色开始，40%后变绿，
+   最后渐变到红色 */
+linear-gradient(0deg, blue, green 40%, red);
+```
+
+![](http://image.oldzhou.cn/FmQdq_CuWwjIoiPrNLZDG7ygKc3y)
+
+要想实现突然变色，而非渐变色，需要为两个颜色制定同一个终点位置，那么这两个颜色会产生一个无线小的过渡区域，从效果上看，颜色会在那个位置突然变化，而不是一个平滑的过程。
+
+```CSS
+background: linear-gradient(90deg, blue 50%, red 50%);
+```
+
+![](http://image.oldzhou.cn/Fu8bj-9f2y3nll4eB0pa23e7-WIX)
+
+上面的写法的可维护性不太好，因为每次修改尺寸时都需要修改两处，但是CSS规范规定，如果某个色标的位置值比整个列表在它之前的位置都要小，则改色标的位置会被设置为它前面的额所有色标位置值的最大值
+
+所以上面的代码也可以改为：
+
+```CSS
+background: linear-gradient(90deg, blue 50%, red 0);
+```
+
+色块的大小是可以通过`background-size`来控制的：
+
+```CSS
+background: linear-gradient(90deg, blue 50%, red 0);
+background-size: 16px;
+```
+
+![](http://image.oldzhou.cn/FmbtnK0ucf0g_dQjb2KsLOB1S6d2)
+
+在就将角度倾斜，通过`animation`控制`background-position`，就可以实现动起来的效果了：
+
+```
+.inner:after {
+  background: linear-gradient(90deg, blue 50%, red 0);
+  background-size: 16px;
+  animation: loading 10s linear infinite;
+}
+@keyframes loading {
+  to {
+    background-position: 100% 0 ;
+  }
+}
+```
+
+这样可以实现水平方向条纹的横向移动
+
+![](http://image.oldzhou.cn/FvfGizAT795CYaX8dkenO_Oi7GTe)
+
+但是如果要是倾斜45度就出现问题了
+
+```
+.inner:after {
+  background: linear-gradient(45deg, blue 50%, red 0);
+  background-size: 16px;
+  animation: loading 10s linear infinite;
+}
+```
+
+![](http://image.oldzhou.cn/Fgpe2VMO_K0CPIc8uLoeG-Nr6KAA)
+
+这个时候应该改为使用`repeating-linear-gradient`属性，在所有方向上重复渐变以覆盖其整个容器，使用这个属性时，色标值需要写完整：
+
+```CSS
+background: repeating-linear-gradient(90deg, blue 0 ,blue 50%, red 50%, red 100%);
+```
+所以这样可以实现斜着45度的进度条：
+
+```CSS
+.inner:after {
+  background: repeating-linear-gradient(45deg, red 0, red 25%, blue 0, blue 50%,
+  red 0, red 75%, blue 0, blue 100%);
+  background-size: 16px;
+  animation: loading 10s linear infinite;
+}
+```
+
+> 参考：
+> - [条纹背景@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/stripes-background?id=%e8%bf%9b%e5%ba%a6%e6%9d%a1)
+> - [linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
+> - [repeating-linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/repeating-linear-gradient)
+> - [聊一聊CSS3的渐变——gradient@掘金](https://juejin.im/post/5bc2fb09f265da0ac55e75e7)
