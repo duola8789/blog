@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-09 20:35:25
+updated: 2019-07-10 09:54:53
 tags: 
 - CSS
 categories: 读书笔记
@@ -361,3 +361,61 @@ background: repeating-linear-gradient(90deg, blue 0 ,blue 50%, red 50%, red 100%
 > - [linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
 > - [repeating-linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/repeating-linear-gradient)
 > - [聊一聊CSS3的渐变——gradient@掘金](https://juejin.im/post/5bc2fb09f265da0ac55e75e7)
+
+## 不规则卡片
+
+想要实现这样的卡片：
+
+![](http://image.oldzhou.cn/Fnbau00ivj7GkoEPuD4nv8plYK6u)
+
+上面的不规则椭圆切口使用`background`的[`radial-gradient`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/radial-gradient)实现。
+
+它的第一个参数定义圆形渐变的中心点，默认为背景的中心，第二个参数定义渐变的形状，可以取值`circle`（圆形）和`ellipse`（椭圆），这两个参数可以通过`at`关键字合并为一个参数，比如`circle at 50% -5px`
+
+后面的参数和线性填充一样，表示某个确定位置的固定色值，形式为`color1 position1, color2 position2`，这个位置值是相对虚拟渐变射线的位置值，如果是圆形可以理解为半径
+
+所以这样的一个椭圆缺口可以通过下面实现：
+
+```CSS
+.top {
+  background: radial-gradient(circle at 50% -5px, transparent 20px, #73d2d3 21px );
+}
+```
+
+第一个参数定义了在`50%, -5px`的横纵坐标位置的一个圆形填充，如果不指定位置如下：
+
+![](http://image.oldzhou.cn/Ft5HZrTncSbiqJMnmXAne6e-onT2)
+
+后面的色值参数实际上省略了一部分，完整的应该是：
+
+
+```CSS
+.top {
+  background:  radial-gradient(circle at 50% -5px,transparent 0, transparent 20px, #73d2d3 21px, #73d2d3 100% );
+}
+```
+
+定义了在`20px`范围内是透明色，在`21px`到填充满都是蓝色，之所以大了`1px`是为了让边缘平滑。这样切口实现。
+
+下面实现上下两个色块的交界处的波浪线，可以利用伪元素加上样式为`dotted`的`border`实现：
+
+```CSS
+.top:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  border-bottom: #f7f7f7 6px dotted;
+}
+```
+
+`dotted`的边框，显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是`border-width`计算值的一半。
+
+![](http://image.oldzhou.cn/FuAr2s9nK8fiPG_G5luffh0pN815)
+
+> 参考：
+> - [不规则卡片@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/stripes-background?id=%e4%b8%8d%e8%a7%84%e5%88%99%e5%8d%a1%e7%89%87)
+> - [radial-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/radial-gradient)
+> - [border-style@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style)
