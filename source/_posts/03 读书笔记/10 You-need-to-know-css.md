@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-10 09:54:53
+updated: 2019-07-12 14:39:05
 tags: 
 - CSS
 categories: 读书笔记
@@ -419,3 +419,45 @@ background: repeating-linear-gradient(90deg, blue 0 ,blue 50%, red 50%, red 100%
 > - [不规则卡片@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/stripes-background?id=%e4%b8%8d%e8%a7%84%e5%88%99%e5%8d%a1%e7%89%87)
 > - [radial-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/radial-gradient)
 > - [border-style@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style)
+
+## 圆和椭圆
+
+一般我们会使用`border-radius`实现圆角效果，但是实际上使用`border-radius`可以实现圆、椭圆、半圆等各种圆形的效果。
+
+我们常用的可能就是`border-radius: 5px`，但是实际上它是一个缩写，它的完整写法是：
+
+```TEXT
+border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px
+```
+
+这八个取值以`/`进行分割，每一组四个值，分别代表左上、右上、右下、左下四个角的圆角半径，第一组值是水平方向半径，第二组是垂直方向的半径
+
+
+```
+border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 右下角水平圆角半径大小 左下角水平圆角半径大小
+               / 左上角垂直圆角半径大小 右上角垂直圆角半径大小 右下角垂直圆角半径大小 左下角垂直圆角半径大小
+```
+
+理解了完整的取值，就可以通过设置不同的值来实现不同的圆形。以半圆为例：
+
+![](http://image.oldzhou.cn/FjzAnPWXdFuA7jhf7_TME52N7FPx)
+
+首先矩形的宽度应该是高度的2倍，上图的半圆应该设置的是左上和右上的圆角，而且水平半径应该都是矩形宽度的一半，垂直半径应该等于矩形高度，所以：
+
+```CSS
+.semicircle {
+  width: 200px;
+  height: 100px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+```
+`border-radius`的百分比是相对于`offsetWidth`和`offsetHeight`进行设置的，及包括了`content`、`padding`以及`border`的宽度。
+
+更多的实现起来也就不难了，无非是各种组合。
+
+![](http://image.oldzhou.cn/FoVIGXokiPMOlo0NCPkoEfgpEZ_k)
+
+> ## 参考
+> - [圆与椭圆@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/ellipse)
+> - [秋月何时了，CSS3 border-radius知多少@鑫空间鑫生活](https://www.zhangxinxu.com/wordpress/2015/11/css3-border-radius-tips/)
+> - [border-radius@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius)
