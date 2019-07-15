@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-12 14:39:05
+updated: 2019-07-15 10:46:47
 tags: 
 - CSS
 categories: 读书笔记
@@ -461,3 +461,125 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 > - [圆与椭圆@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/ellipse)
 > - [秋月何时了，CSS3 border-radius知多少@鑫空间鑫生活](https://www.zhangxinxu.com/wordpress/2015/11/css3-border-radius-tips/)
 > - [border-radius@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius)
+
+## 四边形
+
+![](http://image.oldzhou.cn/FlxewVHNLJBvvy_PXSu1Z4ob5dWP)
+
+实现一个四边形我首先想到的方案是使用矩形+三角形拼接而成，三角形使用`border`来实现：
+
+```CSS
+.parallel1 {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: #FFF;
+}
+
+.parallel1:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform: translateX(-100%);
+  border: 50px solid transparent;
+  border-right-color: #FFF;
+  border-bottom-color: #FFF;
+}
+
+.parallel1:after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform: translateX(100%);
+  border: 50px solid transparent;
+  border-left-color: #FFF;
+  border-top-color: #FFF;
+}
+```
+能够实现，但是代码量是在是不少，而且还占据了两个伪元素。其实有两种更简单的方法，一种是使用`transform: skew`，`skew`的意思就是偏离、扭转，它定义了在2D平面上一个对象的歪斜变换，参数可以使一个也可以是两个，当是两个的时候，分别表示沿着横坐标、从坐标扭曲元素的角度。
+
+它的效果可以看下面的三幅图：
+
+`transform: skewX(30deg)`
+
+![](http://image.oldzhou.cn/FgEYRszHBiQ9RCUNpnI5-YZDBHmb)
+
+
+`transform: skewY(30deg)`
+
+![](http://image.oldzhou.cn/FiwuEwmAMoxE3y52uMbkP77c1rma)
+
+`transform: skew(30deg)`
+
+![](http://image.oldzhou.cn/FpGOAUJylHDQ7Or8diFZGHXRhGcu)
+
+
+所以用它来实现四边形就很简单了：
+
+```CSS
+.parallel2 {
+  width: 200px;
+  height: 100px;
+  background: #FFF;
+  transform: skewX(-45deg);
+}
+```
+还有一种方法是使用`clip-path`，它可以用来创建一个只有元素的部分区域显示的剪切区域，区域内的部分显示，区域外的隐藏（这个属性替代了已经弃用的`clip`属性）
+
+它的可能取值有：
+
+- `clip-source`，用一个SVG的URL来表示剪切元素的路径，比如`clip-path: url(resources.svg#c1);`
+- `geometry-box`，为基本形状提供相应的参考矿框盒，可以取值有`margin-box`、`border-box`、`padding-box`、`content-box`、`fill-box`等
+- `basic-shape`，可以用一些预置的形状来进行剪切，比如`circle`、`epplipse`、`polygon`
+
+用这个属性与使用SVG是很类似的，可以实现多种多样的形状，使用`clie-path: polygon(A, B, C, D)`就可以实现各种四边形。其中A/B/C/D分别是四个点的坐标值，其中横坐标在前，纵坐标在后：
+
+```CSS
+.parallel3 {
+  width: 300px;
+  height: 100px;
+  background: #FFF;
+  clip-path: polygon(33% 0, 100% 0, 66% 100%, 0 100%);
+}
+```
+
+可以实现类似菱形的四边形：
+
+```CSS
+.parallel4 {
+  width: 100px;
+  height: 100px;
+  background: #FFF;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+```
+
+也可以实现一个三角形：
+
+```CSS
+.parallel5 {
+  width: 100px;
+  height: 100px;
+  background: #FFF;
+  clip-path: polygon(0 100%, 100% 100%, 100% 0);
+  transition: clip-path 0.5s;
+}
+```
+
+![](http://image.oldzhou.cn/Fjpiu_n8Qytes9AF5NsW0zfyeHET)
+
+简直太强大了。
+
+> ## 参考
+> - [parallel四边形@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/parallelogram)
+> - [skew()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function/skew)
+> - [clip-path@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
+> - [css3中-webkit-transform 的 skew 如何使用？@知乎](https://www.zhihu.com/question/21725826/answer/19247715)
