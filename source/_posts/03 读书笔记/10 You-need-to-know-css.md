@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-15 10:46:47
+updated: 2019-07-18 10:10:34
 tags: 
 - CSS
 categories: 读书笔记
@@ -583,3 +583,73 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 > - [skew()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function/skew)
 > - [clip-path@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
 > - [css3中-webkit-transform 的 skew 如何使用？@知乎](https://www.zhihu.com/question/21725826/answer/19247715)
+
+## 切角效果
+
+想实现下面这两种切角效果
+
+![](http://image.oldzhou.cn/FrlcN9GSAToCVBLlQWLdyxFwxuKa)
+
+有三种方法，实际上前面都介绍过，先看实现直角切角效果
+
+（1）首先可以使用`linear-gradient`，首先定义一个方向的直线渐变：
+
+```CSS
+.corner1 {
+  background: linear-gradient(45deg, transparent 12px, #FFF 13px) left bottom no-repeat；
+  background-size: 51%  51%;
+}
+```
+
+要注意的是，这个切角是定义的左下角的位置，首先这个「左下角」是由`background-position`定义的，只不过简写在`background`属性中
+
+还要注意的是角度，只需要记住`to top`是`0deg`，`to right`是`90deg`，计算角度时需要从镜像的起始点出发计算
+
+![](http://image.oldzhou.cn/FmvTrDRTVMCA2XEplQu01ZB91opA)
+
+然后定义了`background-size: 51%  51%;`相当于只定义了左下角四分之一的背景填充：
+
+![](http://image.oldzhou.cn/Fob1EZjScaYgxzMjH7_BNuFYCxut)
+
+之所以不用`50%`而是`51%`，是为了防止有些浏览器在渲染时出现缝隙的问题，和`border-radius`设置为`51%`是一样的道理。
+
+所以按照同理，将另外三个角补充完整即可：
+
+```CSS
+.corner1 {
+  background: linear-gradient(45deg, transparent 12px, #FFF 13px) left bottom no-repeat,
+              linear-gradient(135deg, transparent 12px, #FFF 13px) left top no-repeat,
+              linear-gradient(-45deg, transparent 12px, #FFF 13px) right bottom no-repeat,
+              linear-gradient(-135deg, transparent 12px, #FFF 13px) right top no-repeat;
+  background-size: 51%  51%;
+}
+```
+
+（2）也可以使用之前一节学习过的`clip-path`来实现，将这个切过角的形状作为一个多边形，将各个坐标点描绘出来即可（当然也可以使用内联SVG）
+
+在描述各点坐标时，可以使用`calc`这个属性来计算，小心点一点别把横纵坐标搞错就行：
+
+
+```CSS
+.corner2 {
+  clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px,
+                     100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+```
+
+（3）圆角切角可以使用`radial-gradient`实现，原理与使用`linear-gradient`类似，只是需要额外指定径向渐变的圆心位置：
+
+
+```CSS
+.corner3 {
+  background: radial-gradient(circle at bottom left, transparent 12px, #FFF 13px) bottom left no-repeat,
+              radial-gradient(circle at top left, transparent 12px, #FFF 13px) top left no-repeat,
+              radial-gradient(circle at bottom right, transparent 12px, #FFF 13px) bottom right no-repeat,
+              radial-gradient(circle at top right, transparent 12px, #FFF 13px) top right no-repeat;
+  background-size: 51%  51%;
+  }
+```
+
+> ## 参考
+> - [切角效果@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/bevel-corners)
+> - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
