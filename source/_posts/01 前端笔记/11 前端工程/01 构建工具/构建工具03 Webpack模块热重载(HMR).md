@@ -6,7 +6,7 @@ updated: 2019-08-05 16:43:00
 tags: 
 - HMR
 - Webpack
-categories: 
+categories: 前端工程
 ---
 
 使用[`webpack-dev-server`](https://webpack.js.org/configuration/dev-server/#devserver) 实现的Hot Moudle Replacement（HMR）让我们在开发时修改代码并保存后，不必手动刷新浏览器，而是让浏览器通过新的模块替换老的模块。这样可以让我们在保证当前页面状态的前提下，让新的代码生效，就如同在Chrome的控制台修改CSS样式一样。
