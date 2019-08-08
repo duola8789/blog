@@ -2,6 +2,7 @@
 title: Vue提高11 组件的自动化全局注册
 top: false
 date: 2019-01-28 19:53:20
+updated: 2019-01-28 19:53:20
 tags:
 - Vue
 - Webpack

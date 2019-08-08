@@ -2,9 +2,10 @@
 title: React提高05 高阶组件
 top: false
 date: 2019-01-25 16:06:43
+updated: 2019-01-25 16:06:43
 tags:
-- React
-- 坑
+- HOC
+- 高阶组件
 categories: React
 ---
 

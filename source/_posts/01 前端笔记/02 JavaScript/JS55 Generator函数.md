@@ -2,6 +2,7 @@
 title: JS55 Generator函数
 top: false
 date: 2019-01-18 14:47:00
+updated: 2019-01-18 14:47:00
 tags:
 - Generator
 - ES6
