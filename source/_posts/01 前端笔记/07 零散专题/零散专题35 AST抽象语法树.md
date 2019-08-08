@@ -2,7 +2,7 @@
 title: 零散专题35 AST抽象语法树
 top: false
 date: 2019-08-01 17:53:56
-updated: 2019-08-01 17:53:56
+updated: 2019-08-08 18:27:34
 tags: 
 - Babel
 - AST
@@ -263,7 +263,7 @@ console.log(r);
 
 这也就是Babel转义JavaScript代码的原理。
 
-## 关于Babael
+## 关于Babel
 
 Babel使用一个基于ESTree并修改过的AST，它的内核说明文档可以在[这里](https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md)找到。
 
@@ -319,6 +319,24 @@ n * n;
 
 深度优先遍历将经过一系列转换后的AST，并将其转换成字符串形式的代码，同时还会创建源码映射。
 
+## 单元测试覆盖率
+
+JavaScript单元测试覆盖率统计方法的核心思想，是在源代码响应的位置注入设定的统计代码，当执行测试代码的时候，代码运行到注入的地方，就会执行对应的统计代码，生成覆盖率统计报告。大概步骤如下：
+
+（1）对源代码进行语法分析、解析，然后生成抽象语法树
+
+（2）在语法树相应的位置注入统计代码。
+
+在程序执行到这个位置的时候对相应的全局变量赋值，确保执行之后能够根据全局变量知道代码的执行流程。
+
+（3）通过注入统计代码的抽象语法树，生成对应的JavaScript代码
+
+（4）将生成好的JavaScript代码交给执行环境（Node或者浏览器）运行
+
+（5）执行单元测试，产生的统计信息，放到全局变量里面。
+
+（6）根据全局变量中的覆盖率信息生成特定格式的报告。
+
 ## 总结
 
 大致学习了一下AST的知识，并没有很深入，只是了解到AST是对源代码的一种树状结构的表示形式，可以用来在编译阶段对代码进行处理。Babel之所以能够实现JavaScript的转换，就是利用了AST，经历了解析、转换、生成三个步骤，其中转换是最复杂的步骤，各种Babel的插件也是在这个步骤中发挥作用。
@@ -327,4 +345,5 @@ n * n;
 
 - [抽象语法树@维基百科](https://zh.wikipedia.org/zh-hans/%E6%8A%BD%E8%B1%A1%E8%AA%9E%E6%B3%95%E6%A8%B9)
 - [AST 抽象语法树@jartto](http://jartto.wang/2018/11/17/about-ast/)
-- [http://jartto.wang/2018/11/17/about-ast/@知乎](https://zhuanlan.zhihu.com/p/61780633)
+- [Babel 插件有啥用？@知乎](https://zhuanlan.zhihu.com/p/61780633)
+- [代码测试覆盖率分析@segmentfault](https://segmentfault.com/a/1190000010838845)
