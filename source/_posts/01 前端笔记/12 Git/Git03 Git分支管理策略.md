@@ -5,7 +5,7 @@ date: 2019-03-21 17:23:00
 updated: 2019-07-05 11:15:00
 tags: 
 - Git分支
-categories: 
+categories: Git
 ---
 
 Git分支管理策略学习笔记。
