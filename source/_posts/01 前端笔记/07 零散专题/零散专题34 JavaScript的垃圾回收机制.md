@@ -223,6 +223,7 @@ f();
 2. 确保移除不再需要的事件监听器，比如即将被移除的DOM对象所绑定的事件
 3. 避免缓存大量不会被重用的数据
 4. 少用闭包
+5. 不要再生产环境使用`console.log()`、`console.error()`、`console.dir()`等方法打印任何复杂对象，因为这些对象不会被垃圾回收器回收。
 
 
 ## 参考
@@ -230,3 +231,4 @@ f();
 - [前端面试：谈谈 JS 垃圾回收机制@segmentfault](https://segmentfault.com/a/1190000018605776)
 - [chrome v8引擎以及垃圾回收机制（原创）@掘金](https://juejin.im/post/5abb637f5188255c620f23ac)
 - [几种垃圾回收算法@简书](https://www.jianshu.com/p/a8a04fd00c3c)
+- [解读生产环境为何避免使用console.log@segmentfault](https://segmentfault.com/a/1190000012295395)
