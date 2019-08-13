@@ -654,7 +654,7 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 > - [切角效果@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/bevel-corners)
 > - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
 
-## 使用一个`div`实现进度条：
+## 使用一个`div`实现进度条
 
 ```CSS
 .bar {
