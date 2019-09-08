@@ -2,7 +2,7 @@
 title: 10 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
-updated: 2019-07-18 10:10:34
+updated: 2019-08-13 16:39:12
 tags: 
 - CSS
 categories: 读书笔记
@@ -653,3 +653,67 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 > ## 参考
 > - [切角效果@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/bevel-corners)
 > - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
+
+## 使用一个`div`实现进度条
+
+```CSS
+.bar {
+  --c: #5b8b7b;
+  --h: 80px;
+  --p: 50%;
+  width: 800px;
+  height: var(--h);
+  border-radius: calc(var(--h) / 2);
+  background-color: lightgray;
+  background-image: linear-gradient(var(--c), var(--c));
+  background-repeat: no-repeat;
+  background-size: var(--p) 100%;
+}
+```
+效果：
+
+![](http://image.oldzhou.cn/FishqPKefkv-UFpfufwRMw-8IS6I)
+
+为了使完成部分也出现圆角，可以添加一个`radial-gradient`，利用它可以实现一个圆球：
+
+```CSS
+.circle {
+  background-image: radial-gradient(closest-side circle at 50% 50%, red, red 100%, yellow);
+  background-repeat: no-repeat;
+}
+```
+
+![](http://image.oldzhou.cn/FggrhOtmhulYd1Gnj_dG7McX9YX3)
+
+综合起来：
+
+```CSS
+.bar {
+  --c: #5b8b7b;
+  --h: 80px;
+  --p: 60%;
+  width: 800px;
+  height: var(--h);
+  border-radius: calc(var(--h) / 2);
+  background-color: lightgray;
+  background-image: radial-gradient(closest-side circle at var(--p) center, var(--c), var(--c) 100%, transparent),
+                      linear-gradient(var(--c), var(--c));
+  background-repeat: no-repeat;
+  background-size: 100%, var(--p);
+}
+```
+注意，`background-size`两个取值之间有一个逗号，意味着是对多个背景的设置，一个背景的设置中如果提供了两个数值时，第一个将作为宽度，第二个作为高度，如果只提供了一个数值，那么它将作为宽度值大小，高度值会被设为`auto`，所以完整的写法是：
+
+```
+background-size: 100% auto, var(--p) auto;
+```
+
+实现的效果：
+
+![](http://image.oldzhou.cn/Fsj-gmkm0X6fDXcs-3u-aFKTRdrn)
+
+> ## 参考
+> - [你未必知道的49个CSS知识点@掘金](https://juejin.im/post/5d3eca78e51d4561cb5dde12#heading-37)
+> - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
+> - [background-size@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size)
+> - [radial-gradient()@MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
