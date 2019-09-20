@@ -2,10 +2,12 @@
 title: 网络基础07 HTTP安全
 top: false
 date: 2017-11-06 19:01:30
-updated: 2019-08-08 11:24:17
+updated: 2019-09-20 09:29:07
 tags:
 - HTTP
 - 安全
+- XSS
+- CSRF
 categories: 网络基础
 ---
 
@@ -104,6 +106,8 @@ XSS攻击有两大要素：
 
 ## CSRF
 
+Cookie往往用来存储用户的身份信息，恶意网站可以设法伪造带有正确Cookie的HTTP请求，这就是CSRF攻击。
+
 ### 现象
 
 CSRF（Corss Site Request Forgery），有时也被缩写为XSRF，跨站伪造请求，伪造不是来自于用户的意愿，诱导用户发起请求。
@@ -119,12 +123,66 @@ CSRF攻击的思想：
 1. 登陆受信任网站A，并在本地生成cookie
 2. 在不登出信任网站A的情况下（session有效），访问危险网站B
 
-CSRF攻击是源于HTTP使用cookie实现的隐式身份验证机制，这种机制可以保证一个请求是来自于某个用户的浏览器，但是无法保证该请求是用户批准发送的。
+CSRF攻击是源于**HTTP使用cookie实现的隐式身份验证机制**，这种机制可以保证一个请求是来自于某个用户的浏览器，但是无法保证该请求是用户批准发送的。
 
+### 攻击形式
+
+同源策略并不能访问CSRF，因为CSRF会通过`<img>`、`<srcipt>`或者通过`action`提交表单的形式来让用户在不知情的情况下发送请求，这些形式是不受浏览器的跨域限制的，所以请求正常发送，也就会默认将目标网站的cookie带上，伪造了用户的身份。
+
+GET类型的CSRF一般会利用`<img>`标签：
+
+```HTML
+<img src="http://bank.example/withdraw?amount=10000&for=hacker" > 
+```
+
+POST类型的CSRF通常会利用自动提交的表单：
+
+```HTML
+<form action="http://bank.example/withdraw" method=POST>
+  <input type="hidden" name="account" value="xiaoming" />
+  <input type="hidden" name="amount" value="10000" />
+  <input type="hidden" name="for" value="hacker" />
+</form>
+<script> document.forms[0].submit(); </script> 
+```
+
+有时候也会有通链接形式`<a>`的攻击，这种形式需要诱导用户主动点击：
+
+```HTML
+<a href="http://test.com/csrf/withdraw.php?amount=1000&for=hacker" taget="_blank">
+重磅消息！！
+<a/>
+```
 
 ### 防护
 
-CSRF的防御可以从服务端和客户端两个方面入手，服务端的效果更好一些。**服务端防护的中心思想就是在客户端页面增加伪随机数**。
+由于CSRF通常发生在第三方域名，并且CSRF不能获取到目标网站的Cookie，仅仅是利用，所以可以从两方面定制防护策略：
+
+- 同源检测
+- 附加信息认证
+
+（1）同源检测
+
+可以通过请求头Header中的`Origin`自断判断域名是否同源，但是它对IE11和302重定向都不支持
+
+也可以使用Header中的`Referer`来确定，它记录了HTTP请求的来源地址，对于Ajax请求、图片、脚本等资源请求，Referer是发起请求的页面地址，对于页面跳转，它是打开页面历史记录的前一个页面地址。这种方式并不安全，因为攻击者可以修改或者隐藏的Referer：
+
+```HTML
+<img src="http://bank.example/withdraw?amount=10000&for=hacker" referrerpolicy="no-referrer"> 
+```
+
+所以同源检测的可靠性并不是很高，尤其是在Origin和Referer同时不存在的情况下，最好阻止这次网络请求，但是对外域请求如果一概阻止又会将来自搜索引擎链接的请求误伤。并且CSRF也可能来自同源页面（例如用户可以发布带链接和图片的评论等）
+
+综上所述，同源请求是一个相对接单的防范方法，能够防范一定的CSRF攻击，但是对于安全性较高或者有较多用户输入内容的网站，就需要对关键接口进行进一步的防护。
+
+
+（2）附加信息认证
+
+**附加信息认证中心思想就是在客户端页面增加伪随机数**。
+
+CSRF的另一个特征是，攻击者无法直接窃取到用户的信息（Cookie，Header，网站内容等），仅仅是冒用Cookie中的信息。
+
+而CSRF攻击之所以能够成功，是因为服务器误把攻击者发送的请求当成了用户自己的请求。那么我们可以要求所有的用户请求都携带一个CSRF攻击者无法获取到的Token。服务器通过校验请求是否携带正确的Token，来把正常的请求和攻击的请求区分开，也可以防范CSRF的攻击。
 
 （1） Cookie Hashing
 
@@ -143,6 +201,40 @@ Egg默认的预防CSRF的方式就是通过这种方式实现的，框架会在C
 （3）JWT
 
 可以通过JSON-WEB-Token来实现，在响应页面时将Token渲染到页面上，在提交表单的时候通过隐藏域提交上来
+
+（4）`SameSite`属性
+
+Google起草了一分草案，为`Set-Cookie`响应头新增`SameSite`属性，用来标明这个Cookie是个同站Coookie。同站Cookie只能作为第一方Cookie，不能作为第三方Cookie。
+
+```BASH
+Set-Cookie: foo=1; Samesite=Strict
+```
+
+设置`Samesite`为`strict`为严格模式，表明这个cookie任何情况下都不能作为第三方cookie，没有例外。假设我们为`b.com`设置了上面的cookie，那么在`a.com`发起对`b.com`的跨域请求，`foo`这个cookie都不会包含在cookie请求头中。
+
+举个实际的例子就是，假如淘宝网站用来识别用户登录与否的Cookie被设置成了`Samesite=Strict`，那么用户从百度搜索页面甚至天猫页面的链接点击进入淘宝后，淘宝都不会是登录状态，因为淘宝的服务器不会接受到那个Cookie，其它网站发起的对淘宝的任意请求都不会带上那个Cookie。
+
+```BASH
+Set-Cookie: foo=1; Samesite=Strict
+Set-Cookie: bar=2; Samesite=Lax
+Set-Cookie: baz=3
+```
+
+设置`Samesite`为`lax`为宽松模式，假设这个请求改变了当前页面（或者打开了新页面）且同时是一个GET请求，那么这个cookie可以作为第三方cookie
+
+加入`b.com`设置了上面的两个cookie，当从`a.com`点击链接进入`b.com`时，`foo`这个cookie不会包含在请求头中，但是`bar`和`baz`会。
+
+也就是说用户在不同网站之间通过链接跳转不会受影响，到那时如果在`a.com`发起对`b.com`发起网络请求，或者页面跳转是通过表单的POST请求触发的，那么`bar`也不会包含在请求头中。
+
+如果将`Samesite`被设置为`Strict`，浏览器在任何网络请求中都不会携带Cookie，可以完全杜绝CSRF攻击，但是新打开标签或者跳转到子域名的网站都需要重新登录，用户体验很差。
+
+如果将`Samesite`被设置为`Lax`可以保障链接跳转是的用户体验，但是安全性也比较低。
+
+此外`Samesite`的兼容性也很差，并且不支持子域，也就是说`user.a.com`不能使用`a.com`下的Samesite Cookie，如果网站有多个子域名，不能使用Samesite Cookie在主域名存储用户登录信息。
+
+所以Samesite Cookie是一个可能替代同源验证的方案，但还不成熟，应用场景有待观望。
+
+关于CSRF攻击美团技术团队的[这篇文章](https://juejin.im/post/5bc009996fb9a05d0a055192)写的非常好，可以仔细阅读学习。
 
 ## HTTP劫持（中间人攻击）
 
@@ -172,11 +264,13 @@ if (top.location !== location){
   top.location = self.location
 }
 ```
-但是前端防护很容易被绕过，更可靠的方法是通过设置HTTP头信息的`X-FRAME-OPTION`属性来进行方法，可取的属性值有`DENY`/`SAMEORIGIN`/`ALLOWFROM`
+但是前端防护很容易被绕过，更可靠的方法是通过设置HTT响应头信息的`X-FRAME-OPTION`属性来进行防护，用来给浏览器指示允许一个页面可否在`<frame>`，`<iframe>`，`<embed>`或者`<object>`中展现。站点可以通过确保网站没有被嵌入到别人的站点里面，从而避免点击劫持攻击。
 
-- `DENY`： 拒绝任何域加载
-- `SAMEORIGIN`： 仅允许同源域机载
-- `ALLOW-FROM`： 定义允许加载`iframe`的页面地址
+可取的属性值有`DENY`/`SAMEORIGIN`/`ALLOWFROM`
+
+- `DENY`：表示该页面不允许 frame中展示，即便是在相同域名的页面中嵌套也不允许。
+- `SAMEORIGIN`：表示该页面可以在相同域名页面的frame中展示。
+- `ALLOW-FROM`： 表示该页面可以在指定来源的frame中展示。
 
 
 ## 参考
@@ -187,3 +281,5 @@ if (top.location !== location){
 - [JavaScript防http劫持与XSS@CSDN](https://blog.csdn.net/z69183787/article/details/52496188)
 - [浅析点击劫持攻击@FREEBUF](https://www.freebuf.com/articles/web/67843.html)
 - [安全@Egg](https://eggjs.org/zh-cn/core/security.html)
+- [X-Frame-Options 响应头@MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
+- [前端安全系列之二：如何防止CSRF攻击？@掘金](https://juejin.im/post/5bc009996fb9a05d0a055192)
