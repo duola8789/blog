@@ -342,7 +342,7 @@ npx的优点：
 - `dependencies`表示我们要在生产环境下使用该依赖，
 - `devDependencies`则表示我们仅在开发环境使用该依赖。
 
-举个例子，我要用`webpack`构建代码，所以在开发环节，它是必需的，但对普通用户来说，它是不必要的，所以安装`webpack时，我要执行：
+举个例子，我要用Webpack构建代码，所以在开发环节，它是必需的，但对普通用户来说，它是不必要的，所以安装Wbpack时，我要执行：
 
 ```BASH
 npm install webpack --save-dev
@@ -377,6 +377,12 @@ npm install webpack --save-dev
 在做项目的时候，两者可以认为没有实质的区别，但是在发布npm包的时候二者区别很大：`dependencies`下的模块会作为依赖，一起被下载；`devDependencies`下面的模块就不会自动下载了
 
 一般来说，开发时依赖的东西需要安装在`devDependencies`字段中，比如转义用的`babel`，打包用的`webpack`等，如果发布后还需要使用的则要安装在`dependencies`，比如`vue`、`vue-router`等
+
+> （2019.10.16）
+> 
+> 今天发现之前的理解有些片面，这二者在`install`的时候有差别，默认的`npm install`会同时安装`devDependencies`和`dependencies`的依赖，但是如果是发布到服务器上，依赖环境也会安装在服务器，那么可以执行`npm install -production`，那么只会安装`dependencies`下的依赖，`install`的速度会更快。
+> 
+> 但是在Webpack打包`build`文件时，并不会因为模块处于`devDependencies`就不会打包，也不会因为模块处于`dependencies`就一定打包，是否打包决定于是否在代码中引入`import`。只要`import`了，无论模块写在哪里，都会被打包。但是如果`import`之后，模块并没有使用，模块也会被打包，这就是Tree Shaking的作用，移除引入后但是没有使用到的代码。
 
 ## 6 其他字段
 
