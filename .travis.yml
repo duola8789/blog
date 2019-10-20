@@ -18,8 +18,8 @@ deploy:
   on:
     branch: master
 
-script:
-  - npm run deploy
+#script:
+#  - npm run deploy
 
 notifications:
   email:
