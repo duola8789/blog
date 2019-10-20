@@ -2,23 +2,24 @@ language: node_js
 
 node_js: stable
 
-cache: npm
-
-branches:
-  only:
-    - master # build master branch only
-
-script:
-  - hexo clean && hexo generate # generate static files
+cache:
+  directories:
+    - node_modules
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GH_TOKEN
   keep_history: true
-  local_dir: public
+  committer_from_gh: true
+  repo: duola8789/duola8789.github.io
+  local_dir: public/
+  target_branch: master
   on:
     branch: master
+
+script:
+  - hexo clean && hexo generate
 
 notifications:
   email:
