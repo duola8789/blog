@@ -2,7 +2,7 @@
 title: 持续集成02 Travis CI
 top: false
 date: 2019-06-27 10:52:03
-updated: 2019-06-27 10:52:07
+updated: 2019-10-20 21:55:30
 tags:
 - 持续集成
 - 持续部署
@@ -196,21 +196,47 @@ env:
 
 ## 部署Github Pages
 
-以我的Github Pages博客的部署做例子，根据[官网文档](https://docs.travis-ci.com/user/deployment/pages/)，`.travis.yml`配置如下：
+以我的Github Pages博客的部署做例子，根据[官网文档](https://hexo.io/zh-cn/docs/github-pages.html)，`.travis.yml`配置如下：
 
 ```YAML
+sudo: false
+
+language: node_js
+
+node_js: stable
+
+cache: npm
+
+branches:
+  only:
+    - master # build master branch only
+
+script:
+  - hexo generate # generate static files
+
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_TOKEN  
+  github_token: $GH_TOKEN
   keep_history: true
+  local_dir: public
   on:
     branch: master
+
+notifications:
+  email:
+    recipients:
+      - duola8789@126.com
+  slack:
+    on_success: never
+    on_failure: always
 ```
 
 要说明的是：
 
-（1）`github_token`需要提供Github的个人凭证，生成方式参考[Github的文档](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)
+（1）通过`.travis.yml`配置后，就不再需要`_config.yml`中配置`deploy`相关东西了，但是要注意，使用`.travis.yml`配置，Travis-CI网站上存放`github_token`的变量名必须是`$GH_TOKEN`
+
+（2）`github_token`需要提供Github的个人凭证，生成方式参考[Github的文档](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)
 
 ![](http://image.oldzhou.cn/Fm5YpSC1WIhonBFudILNit9Zs9uz)
 
@@ -228,11 +254,16 @@ deploy:
 
 ![](http://image.oldzhou.cn/FikGhMaTB1jE_KQw0xc37gVw2EWr)
 
-（2）第二点要注意的是，需要将`skip_cleanup`设为`true`，否则Travis CI会将在构建过程中生成的文件全部删除，可能会导致本来想上传的文件删除
+（3）需要将`skip_cleanup`设为`true`，否则Travis CI会将在构建过程中生成的文件全部删除，可能会导致本来想上传的文件删除
 
-更多的配置项参考[文档](https://docs.travis-ci.com/user/deployment/pages/。
+更多的配置项参考[文档](https://docs.travis-ci.com/user/deployment/pages/)。
 
 配置完成后来实验一下，新添加一篇文章《持续集成01 入门》。
+
+（2019.10.20更新）根据Hexo的[新的文档](https://hexo.io/zh-cn/docs/github-pages.html)配置了`.travis.yml`，很详细却准确，不需要下面的步骤了。
+
+文章结束。
+---
 
 本以为会很顺利，结果尝试了多次才按照上面Travis CI的配置推送成功，因为我的博客的源码和页面是放在了两个不同的仓库，源码的仓库是`https://github.com/duola8789/blog.git`，而页面的仓库是`https://github.com/duola8789/duola8789.github.io.git`，所以直接推送的时候总是推送失败，是因为它默认将`duola8789/blog`仓库的本地全部目录推送到`duola8789/blog`的`gh-pages`分支，而我现在想要的是将`duola8789/blog`仓库的`public`目录推送到`duola8789.github.io.git`的`master`分支，所以根据[文档](https://docs.travis-ci.com/user/deployment/pages/)的提示，在`.travis.yml`中增加下面的配置
 
