@@ -1,5 +1,3 @@
-sudo: false
-
 language: node_js
 
 node_js: stable
@@ -11,7 +9,7 @@ branches:
     - master # build master branch only
 
 script:
-  - hexo clean && hexo d -g # generate static files
+  - hexo clean && hexo generate # generate static files
 
 deploy:
   provider: pages
