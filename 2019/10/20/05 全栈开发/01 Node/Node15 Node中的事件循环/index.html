@@ -96,13 +96,13 @@
 
 
 
-  <meta name="description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同。">
+  <meta name="description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同的。">
 <meta name="keywords" content="事件循环,Event Loop">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node15 Node中的事件循环">
 <meta property="og:url" content="http://oldzhou.cn/2019/10/20/05 全栈开发/01 Node/Node15 Node中的事件循环/index.html">
 <meta property="og:site_name" content="不负好时光">
-<meta property="og:description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同。">
+<meta property="og:description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同的。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://image.oldzhou.cn/FsuRUsI8Z65WUJoCaoRUrT2o7r2c">
 <meta property="og:image" content="http://image.oldzhou.cn/Fktc_7XdXtIvBlBhwEeqskpmk8Ot">
@@ -112,7 +112,7 @@
 <meta property="og:updated_time" content="2019-10-20T17:32:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node15 Node中的事件循环">
-<meta name="twitter:description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同。">
+<meta name="twitter:description" content="Node中的事件循环，与浏览器中的事件循环，还是有一些不同的。">
 <meta name="twitter:image" content="http://image.oldzhou.cn/FsuRUsI8Z65WUJoCaoRUrT2o7r2c">
 
 
@@ -496,7 +496,7 @@
       
 
       
-        <p>Node中的事件循环，与浏览器中的事件循环，还是有一些不同。</p>
+        <p>Node中的事件循环，与浏览器中的事件循环，还是有一些不同的。</p>
 <a id="more"></a>
 <h2 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h2><p>Node.js是单线程的语言，是通过<strong>事件循环</strong>处理非阻塞I/O操作的，Node会将这些操作转移到系统内核中，内核会在后台处理多种操作。当其中一个操作完成的时候，内核将通知Node将对应的回调函数加入轮询队列中。</p>
 <p>Node的I/O处理使用了自己设计的基于事件驱动的跨平台抽象层libuv，它封装了不同操作系统的一些底层特性，对外提供统一的API，事件循环也是有libuv负责</p>
