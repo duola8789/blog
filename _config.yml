@@ -83,8 +83,8 @@ theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
-#deploy:
-#  type: git
-#  repo: https://github.com/duola8789/duola8789.github.io.git
-#  branch: master
+deploy:
+  type: git
+  repo: https://github.com/duola8789/duola8789.github.io
+  branch: master
 
