@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="HTTP安全学习笔记。">
+<meta name="keywords" content="CSRF,HTTP,安全,XSS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络基础07 HTTP安全">
+<meta property="og:url" content="http://oldzhou.cn/2017/11/06/01 前端笔记/08 网络基础/网络基础07 HTTP安全/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="HTTP安全学习笔记。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/FvWo3AQwS_R7ZqKhSG3OxvFxPjG8">
+<meta property="og:updated_time" content="2019-09-20T09:29:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络基础07 HTTP安全">
+<meta name="twitter:description" content="HTTP安全学习笔记。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/FvWo3AQwS_R7ZqKhSG3OxvFxPjG8">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2017/11/06/01 前端笔记/08 网络基础/网络基础07 HTTP安全/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>网络基础07 HTTP安全 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2017/11/06/01 前端笔记/08 网络基础/网络基础07 HTTP安全/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">网络基础07 HTTP安全
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-06 19:01:30" itemprop="dateCreated datePublished" datetime="2017-11-06T19:01:30+00:00">2017-11-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-20 09:29:07" itemprop="dateModified" datetime="2019-09-20T09:29:07+00:00">2019-09-20</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络基础/" itemprop="url" rel="index"><span itemprop="name">网络基础</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/06/01 前端笔记/08 网络基础/网络基础07 HTTP安全/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/11/06/01 前端笔记/08 网络基础/网络基础07 HTTP安全/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>HTTP安全学习笔记。</p>
+<a id="more"></a>
+<h2 id="XSS跨站脚本攻击"><a href="#XSS跨站脚本攻击" class="headerlink" title="XSS跨站脚本攻击"></a>XSS跨站脚本攻击</h2><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>XSS（cross site scripting），即跨站点脚本工具，发生在用户的浏览器端。用户输入非法字符，向页面植入恶意代码，在目标网站上执行非原有的脚本。</p>
+<p>如果网页会使用用户的输入渲染为HMTL内容渲染时就会执行被植入的恶意代码，利用这些恶意脚本，攻击者可获取用户的敏感信息如Cookie、SessionID等，进而危害数据安全。</p>
+<p>XSS的本质是：恶意代码未经过滤，与网站正常的代码混在一起；浏览器无法分辨哪些脚本是可信的，导致恶意脚本被执行。</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>一般会分为存储型XSS、反射型XSS和DOM型XSS</p>
+<p>（1）存储型XSS</p>
+<p>攻击者将恶意代码提交到目标网站的数据库中，用户打开网站时网站将恶意代码从数据库中取出，拼接在HTML中返回给浏览器，在浏览器中执行恶意代码</p>
+<p>恶意代码窃取用户数据，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作</p>
+<p>这种攻击常见于<strong>带有用户保存数据的网站功能</strong>，比如论坛发帖、商品评论、用户私信等。</p>
+<p>（2）反射型XSS</p>
+<p>攻击者构造出包含恶意代码的特殊的URL，用户打开URL后，网站服务端取出URL中的恶意代码，凭借在HTML中返回给浏览器，在浏览器中执行恶意代码</p>
+<p>反射型XSS与存储型XSS的区别是，存储型XSS的恶意代码存在数据库，而反射型XSS的恶意代码存在URL中。</p>
+<p>反射型XSS攻击常见于通通过URL传递参数的功能，比如网站搜索、跳转等。由于需要用户主动打开URL才能生效，所以攻击者往往会结合多种手段诱导用户点击。</p>
+<p>（3）DOM型XSS</p>
+<p>攻击者构造出包含恶意代码的特殊的URL，用户打开URL后，JavaScript取出URL中的恶意代码并执行。恶意代码窃取用户数据，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。</p>
+<p>DOM型XSS与前两种区别是，DOM型XSS的取出和执行恶意代码都有浏览器端完成，属于前端JavaScript自身的安全漏洞，而其他两种属于服务端的安全漏洞。</p>
+<h3 id="防护"><a href="#防护" class="headerlink" title="防护"></a>防护</h3><p>XSS攻击有两大要素：</p>
+<ol>
+<li>攻击者提交恶意代码</li>
+<li>浏览器执行恶意代码</li>
+</ol>
+<p>针对第一个要素，需要对用户输入进行过滤，但是并非完全可靠，因为在提交较短并不确定内容要输出哪里，对内容的转义有可能导致乱码和不确定性问题。</p>
+<p>所以更合理的预防方法是针对第二个要素，通过<strong>防止浏览器执行恶意代码来防范XSS</strong>，分为两类：</p>
+<ol>
+<li>防止HTML中出现注入</li>
+<li>防止JavaScript执行恶意代码</li>
+</ol>
+<p>总结起来，可以采取的预防方法有：</p>
+<p>（1）一定要针对用户输入做相关的格式检查、过滤等操作，防止任何可能的前端注入</p>
+<p>（2）对于不需要考虑SEO的内部系统、管理系统，使用纯前端渲染代替服务端渲染，把<strong>代码与数据分开</strong></p>
+<p>（3）对于需要服务端拼接HTML的情况，要对HTML中的敏感字符（比如<code>&gt;</code>、<code>&gt;</code>等）进行HTML转义（<code>&amp;lt;</code>、<code>&amp;gt;</code>）</p>
+<p>（4）由于HTML转义是很复杂的，不同情况下要采取不同的准一规则，应当尽量避免自己写转义库，而是采取成熟的、业界通用的转义库</p>
+<p>（5）对于跳转链接例如<code>&lt;a href=&quot;xxx&quot;&gt;</code>或者<code>location.href=&quot;xxx&quot;</code>要检验内容，禁止以<code>javascript:</code>开头的链接</p>
+<p>（6）遵循GET请求不改变服务状态的原则，改变状态的请求都是用POST或者PUT方法</p>
+<p>（7）前端在使用<code>innerHTML</code>、<code>outerHTML</code>、<code>document.write</code>时要注意，不要把不可信数据作为HTML插入到页面</p>
+<p>（8）使用Vue/React技术栈时不要使用<code>v-html</code>、<code>dangerouslySetInnerHTML</code>功能，在前端render阶段避免XSS隐患</p>
+<p>（9）DOM中的内联事件监听器，比如<code>onclick</code>、<code>onload</code>、<code>onmouseover</code>、JavaScript中的<code>eval</code>、<code>setTimeout</code>、<code>setInterval</code>、<code>eval</code>都可以将字符串作为代码运行，如果不可信数据传递给上述API，很容易产生安全隐患，所以要尽量避免，</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:alert(1)"</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"javascript:alert(1)"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">'x'</span> <span class="attr">onerror</span>=<span class="string">"alert(1)"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">src</span>=<span class="string">'x'</span> <span class="attr">onerror</span>=<span class="string">"alert(1)"</span>&gt;</span><span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">onclick</span>=<span class="string">"alert(1)"</span> <span class="attr">onmouseover</span>=<span class="string">"alert(2)"</span>&gt;</span><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>（10）对于不受信任的输入，可以限制合理的长度，可以增加XSS攻击的难度</p>
+<p>（11）某些敏感cookie应该设置<code>HTTP-only</code>，避免通过JavaScript读取cookie</p>
+<p>（12）添加验证码，防止脚本冒充用户提交危险操作</p>
+<p>（13）主动监测发现XSS漏洞，使用XSS攻击字符串和自动扫描工具寻找潜在的XSS漏洞</p>
+<p>（14）JSONP的callback参数非常危险，风险性主要存在于会意外截断JS代码或者被添加恶意标签</p>
+<h2 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h2><p>Cookie往往用来存储用户的身份信息，恶意网站可以设法伪造带有正确Cookie的HTTP请求，这就是CSRF攻击。</p>
+<h3 id="现象-1"><a href="#现象-1" class="headerlink" title="现象"></a>现象</h3><p>CSRF（Corss Site Request Forgery），有时也被缩写为XSRF，跨站伪造请求，伪造不是来自于用户的意愿，诱导用户发起请求。</p>
+<p>通过CSRF，攻击者可以盗用用户的身份，以用户的名义发送恶意请求，比如以你的名义发送邮件、发送消息、盗取账号等。</p>
+<p>CSRF攻击的思想：</p>
+<p><img src="http://image.oldzhou.cn/FvWo3AQwS_R7ZqKhSG3OxvFxPjG8" alt=""></p>
+<p>要完成一次CSRF攻击，受害者必须依次完成两个步骤：</p>
+<ol>
+<li>登陆受信任网站A，并在本地生成cookie</li>
+<li>在不登出信任网站A的情况下（session有效），访问危险网站B</li>
+</ol>
+<p>CSRF攻击是源于<strong>HTTP使用cookie实现的隐式身份验证机制</strong>，这种机制可以保证一个请求是来自于某个用户的浏览器，但是无法保证该请求是用户批准发送的。</p>
+<h3 id="攻击形式"><a href="#攻击形式" class="headerlink" title="攻击形式"></a>攻击形式</h3><p>同源策略并不能访问CSRF，因为CSRF会通过<code>&lt;img&gt;</code>、<code>&lt;srcipt&gt;</code>或者通过<code>action</code>提交表单的形式来让用户在不知情的情况下发送请求，这些形式是不受浏览器的跨域限制的，所以请求正常发送，也就会默认将目标网站的cookie带上，伪造了用户的身份。</p>
+<p>GET类型的CSRF一般会利用<code>&lt;img&gt;</code>标签：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http://bank.example/withdraw?amount=10000&amp;for=hacker"</span> &gt;</span></span><br></pre></td></tr></table></figure>
+<p>POST类型的CSRF通常会利用自动提交的表单：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://bank.example/withdraw"</span> <span class="attr">method</span>=<span class="string">POST</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"account"</span> <span class="attr">value</span>=<span class="string">"xiaoming"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"amount"</span> <span class="attr">value</span>=<span class="string">"10000"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"for"</span> <span class="attr">value</span>=<span class="string">"hacker"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"> <span class="built_in">document</span>.forms[<span class="number">0</span>].submit(); </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>有时候也会有通链接形式<code>&lt;a&gt;</code>的攻击，这种形式需要诱导用户主动点击：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://test.com/csrf/withdraw.php?amount=1000&amp;for=hacker"</span> <span class="attr">taget</span>=<span class="string">"_blank"</span>&gt;</span></span><br><span class="line">重磅消息！！</span><br><span class="line"><span class="tag">&lt;<span class="name">a</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="防护-1"><a href="#防护-1" class="headerlink" title="防护"></a>防护</h3><p>由于CSRF通常发生在第三方域名，并且CSRF不能获取到目标网站的Cookie，仅仅是利用，所以可以从两方面定制防护策略：</p>
+<ul>
+<li>同源检测</li>
+<li>附加信息认证</li>
+</ul>
+<p>（1）同源检测</p>
+<p>可以通过请求头Header中的<code>Origin</code>自断判断域名是否同源，但是它对IE11和302重定向都不支持</p>
+<p>也可以使用Header中的<code>Referer</code>来确定，它记录了HTTP请求的来源地址，对于Ajax请求、图片、脚本等资源请求，Referer是发起请求的页面地址，对于页面跳转，它是打开页面历史记录的前一个页面地址。这种方式并不安全，因为攻击者可以修改或者隐藏的Referer：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http://bank.example/withdraw?amount=10000&amp;for=hacker"</span> <span class="attr">referrerpolicy</span>=<span class="string">"no-referrer"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>所以同源检测的可靠性并不是很高，尤其是在Origin和Referer同时不存在的情况下，最好阻止这次网络请求，但是对外域请求如果一概阻止又会将来自搜索引擎链接的请求误伤。并且CSRF也可能来自同源页面（例如用户可以发布带链接和图片的评论等）</p>
+<p>综上所述，同源请求是一个相对接单的防范方法，能够防范一定的CSRF攻击，但是对于安全性较高或者有较多用户输入内容的网站，就需要对关键接口进行进一步的防护。</p>
+<p>（2）附加信息认证</p>
+<p><strong>附加信息认证中心思想就是在客户端页面增加伪随机数</strong>。</p>
+<p>CSRF的另一个特征是，攻击者无法直接窃取到用户的信息（Cookie，Header，网站内容等），仅仅是冒用Cookie中的信息。</p>
+<p>而CSRF攻击之所以能够成功，是因为服务器误把攻击者发送的请求当成了用户自己的请求。那么我们可以要求所有的用户请求都携带一个CSRF攻击者无法获取到的Token。服务器通过校验请求是否携带正确的Token，来把正常的请求和攻击的请求区分开，也可以防范CSRF的攻击。</p>
+<p>（1） Cookie Hashing</p>
+<p>这是比较简单的解决方案，所有的表单都包含同一个伪随机Hash值。在表单中添加一个隐藏的字段，值就是服务单构造的伪随机cookie，随表单一起发送。服务端对表单中的Hash值进行验证。</p>
+<p>理论上攻击者无法获取第三方的cookie，那么也就无法伪造表单了，也就杜绝CSRF的攻击了。</p>
+<p>Egg默认的预防CSRF的方式就是通过这种方式实现的，框架会在Cookie存放一个CSRF Token，放到query、body或者header中发送给服务端进行验证</p>
+<p><strong>注意不能放在cookie中直接验证，那样就没有意义了，因为即便是CSRF伪造的请求，也会携带cookie。</strong></p>
+<p>（2）验证码</p>
+<p>这种方法也是最常见的方法之一，每次用户提交都需要在表单中填写一个图片上的伪随机字符串（或者实现某些特殊的交互），来让攻击者无法获取对应的字符串或者操作，从而伪造身份失败。</p>
+<p>（3）JWT</p>
+<p>可以通过JSON-WEB-Token来实现，在响应页面时将Token渲染到页面上，在提交表单的时候通过隐藏域提交上来</p>
+<p>（4）<code>SameSite</code>属性</p>
+<p>Google起草了一分草案，为<code>Set-Cookie</code>响应头新增<code>SameSite</code>属性，用来标明这个Cookie是个同站Coookie。同站Cookie只能作为第一方Cookie，不能作为第三方Cookie。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: foo=1; Samesite=Strict</span><br></pre></td></tr></table></figure>
+<p>设置<code>Samesite</code>为<code>strict</code>为严格模式，表明这个cookie任何情况下都不能作为第三方cookie，没有例外。假设我们为<code>b.com</code>设置了上面的cookie，那么在<code>a.com</code>发起对<code>b.com</code>的跨域请求，<code>foo</code>这个cookie都不会包含在cookie请求头中。</p>
+<p>举个实际的例子就是，假如淘宝网站用来识别用户登录与否的Cookie被设置成了<code>Samesite=Strict</code>，那么用户从百度搜索页面甚至天猫页面的链接点击进入淘宝后，淘宝都不会是登录状态，因为淘宝的服务器不会接受到那个Cookie，其它网站发起的对淘宝的任意请求都不会带上那个Cookie。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: foo=1; Samesite=Strict</span><br><span class="line">Set-Cookie: bar=2; Samesite=Lax</span><br><span class="line">Set-Cookie: baz=3</span><br></pre></td></tr></table></figure>
+<p>设置<code>Samesite</code>为<code>lax</code>为宽松模式，假设这个请求改变了当前页面（或者打开了新页面）且同时是一个GET请求，那么这个cookie可以作为第三方cookie</p>
+<p>加入<code>b.com</code>设置了上面的两个cookie，当从<code>a.com</code>点击链接进入<code>b.com</code>时，<code>foo</code>这个cookie不会包含在请求头中，但是<code>bar</code>和<code>baz</code>会。</p>
+<p>也就是说用户在不同网站之间通过链接跳转不会受影响，到那时如果在<code>a.com</code>发起对<code>b.com</code>发起网络请求，或者页面跳转是通过表单的POST请求触发的，那么<code>bar</code>也不会包含在请求头中。</p>
+<p>如果将<code>Samesite</code>被设置为<code>Strict</code>，浏览器在任何网络请求中都不会携带Cookie，可以完全杜绝CSRF攻击，但是新打开标签或者跳转到子域名的网站都需要重新登录，用户体验很差。</p>
+<p>如果将<code>Samesite</code>被设置为<code>Lax</code>可以保障链接跳转是的用户体验，但是安全性也比较低。</p>
+<p>此外<code>Samesite</code>的兼容性也很差，并且不支持子域，也就是说<code>user.a.com</code>不能使用<code>a.com</code>下的Samesite Cookie，如果网站有多个子域名，不能使用Samesite Cookie在主域名存储用户登录信息。</p>
+<p>所以Samesite Cookie是一个可能替代同源验证的方案，但还不成熟，应用场景有待观望。</p>
+<p>关于CSRF攻击美团技术团队的<a href="https://juejin.im/post/5bc009996fb9a05d0a055192" target="_blank" rel="noopener">这篇文章</a>写的非常好，可以仔细阅读学习。</p>
+<h2 id="HTTP劫持（中间人攻击）"><a href="#HTTP劫持（中间人攻击）" class="headerlink" title="HTTP劫持（中间人攻击）"></a>HTTP劫持（中间人攻击）</h2><p>当我们使用HTTP请求请求一个网站页面的时候，营商可在用户发起请求时直接跳转到某个广告，或者直接改变搜索结果插入自家的广告，让客户端（通常是浏览器）展示“错误”的数据，通常是一些弹窗，宣传性广告或者直接显示某网站的内容。如果劫持代码出现了BUG ，则直接让用户无法使用，出现白屏。</p>
+<p>数据泄露、请求劫持、内容篡改等等问题，核心原因就在于HTTP是全裸式的明文请求，域名、路径和参数都被中间人们看得一清二楚。</p>
+<p>最直接的解决方法就是<strong>使用HTTPS协议代替HTTP协议</strong>。HTTPS做的就是给请求加密，让其对用户更加安全。对于自身而言除了保障用户利益外，还可避免本属于自己的流量被挟持，以保护自身利益。</p>
+<h2 id="DNS劫持"><a href="#DNS劫持" class="headerlink" title="DNS劫持"></a>DNS劫持</h2><p>DNS劫持就是通过劫持了DNS服务器，通过某些手段取得某域名的解析记录控制权，进而修改此域名的解析结果，导致对该域名的访问由原IP地址转入到修改后的指定IP，其结果就是对特定的网址不能访问或访问的是假网址，从而实现窃取资料或者破坏原有正常服务的目的</p>
+<p>这种攻击作为网站开发者并没有什么好的解决方式，可能的解决方有两个：</p>
+<ol>
+<li>使用大公司提供的CDN服务，减少被坚持的概率</li>
+<li>被劫持后向工信部投诉解决，或者包茎</li>
+</ol>
+<h2 id="点击劫持"><a href="#点击劫持" class="headerlink" title="点击劫持"></a>点击劫持</h2><p>点击劫持是一种视觉欺骗，将我们的网页放置到和原页面相同大小的<code>iframe</code>中，用透明的<code>iframe</code>或者图片覆盖页面，诱导用户点击，访问其他页面。</p>
+<p>可以在前端预防，判断当前页面是否被嵌套了在<code>iframe</code>中，如果被嵌套了的话则重定向外层页面到我们的正常页面。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (top.location !== location)&#123;</span><br><span class="line">  top.location = self.location</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是前端防护很容易被绕过，更可靠的方法是通过设置HTT响应头信息的<code>X-FRAME-OPTION</code>属性来进行防护，用来给浏览器指示允许一个页面可否在<code>&lt;frame&gt;</code>，<code>&lt;iframe&gt;</code>，<code>&lt;embed&gt;</code>或者<code>&lt;object&gt;</code>中展现。站点可以通过确保网站没有被嵌入到别人的站点里面，从而避免点击劫持攻击。</p>
+<p>可取的属性值有<code>DENY</code>/<code>SAMEORIGIN</code>/<code>ALLOWFROM</code></p>
+<ul>
+<li><code>DENY</code>：表示该页面不允许 frame中展示，即便是在相同域名的页面中嵌套也不允许。</li>
+<li><code>SAMEORIGIN</code>：表示该页面可以在相同域名页面的frame中展示。</li>
+<li><code>ALLOW-FROM</code>： 表示该页面可以在指定来源的frame中展示。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://tech.meituan.com/2018/09/27/fe-security.html" target="_blank" rel="noopener">前端安全系列（一）：如何防止XSS攻击？@美团技术团队</a></li>
+<li><a href="https://eggjs.org/zh-cn/core/security.html#安全威胁-csrf-的防范" target="_blank" rel="noopener">安全威胁 CSRF 的防范@Egg</a></li>
+<li><a href="https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html" target="_blank" rel="noopener">浅谈CSRF攻击方式@hyddd</a></li>
+<li><a href="https://blog.csdn.net/z69183787/article/details/52496188" target="_blank" rel="noopener">JavaScript防http劫持与XSS@CSDN</a></li>
+<li><a href="https://www.freebuf.com/articles/web/67843.html" target="_blank" rel="noopener">浅析点击劫持攻击@FREEBUF</a></li>
+<li><a href="https://eggjs.org/zh-cn/core/security.html" target="_blank" rel="noopener">安全@Egg</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options" target="_blank" rel="noopener">X-Frame-Options 响应头@MDN</a></li>
+<li><a href="https://juejin.im/post/5bc009996fb9a05d0a055192" target="_blank" rel="noopener">前端安全系列之二：如何防止CSRF攻击？@掘金</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSRF/" rel="tag"># CSRF</a>
+          
+            <a href="/tags/HTTP/" rel="tag"># HTTP</a>
+          
+            <a href="/tags/安全/" rel="tag"># 安全</a>
+          
+            <a href="/tags/XSS/" rel="tag"># XSS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/03/05 全栈开发/01 Node/Node10 同时使用不同版本的node/" rel="next" title="Node10 同时使用不同版本的node">
+                <i class="fa fa-chevron-left"></i> Node10 同时使用不同版本的node
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/09/01 前端笔记/02 JavaScript/JS28 判断对象是空对象/" rel="prev" title="JS28 判断对象是空对象">
+                JS28 判断对象是空对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#XSS跨站脚本攻击"><span class="nav-number">1.</span> <span class="nav-text">XSS跨站脚本攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#现象"><span class="nav-number">1.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">1.2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防护"><span class="nav-number">1.3.</span> <span class="nav-text">防护</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSRF"><span class="nav-number">2.</span> <span class="nav-text">CSRF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#现象-1"><span class="nav-number">2.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻击形式"><span class="nav-number">2.2.</span> <span class="nav-text">攻击形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防护-1"><span class="nav-number">2.3.</span> <span class="nav-text">防护</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP劫持（中间人攻击）"><span class="nav-number">3.</span> <span class="nav-text">HTTP劫持（中间人攻击）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS劫持"><span class="nav-number">4.</span> <span class="nav-text">DNS劫持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击劫持"><span class="nav-number">5.</span> <span class="nav-text">点击劫持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

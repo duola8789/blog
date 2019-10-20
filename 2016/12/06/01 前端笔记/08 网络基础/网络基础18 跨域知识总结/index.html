@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="跨域知识总结。">
+<meta name="keywords" content="跨域">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络基础18 跨域知识总结">
+<meta property="og:url" content="http://oldzhou.cn/2016/12/06/01 前端笔记/08 网络基础/网络基础18 跨域知识总结/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="跨域知识总结。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/Fh0R7ngqlLfKYC67UrhNI5BvP9es">
+<meta property="og:image" content="http://image.oldzhou.cn/FlEfpDo_N1mg1M-hpBXPEJxwbWlY">
+<meta property="og:updated_time" content="2019-09-20T09:28:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络基础18 跨域知识总结">
+<meta name="twitter:description" content="跨域知识总结。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/Fh0R7ngqlLfKYC67UrhNI5BvP9es">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2016/12/06/01 前端笔记/08 网络基础/网络基础18 跨域知识总结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>网络基础18 跨域知识总结 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2016/12/06/01 前端笔记/08 网络基础/网络基础18 跨域知识总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">网络基础18 跨域知识总结
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-12-06 21:44:00" itemprop="dateCreated datePublished" datetime="2016-12-06T21:44:00+00:00">2016-12-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-20 09:28:56" itemprop="dateModified" datetime="2019-09-20T09:28:56+00:00">2019-09-20</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络基础/" itemprop="url" rel="index"><span itemprop="name">网络基础</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/06/01 前端笔记/08 网络基础/网络基础18 跨域知识总结/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2016/12/06/01 前端笔记/08 网络基础/网络基础18 跨域知识总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>跨域知识总结。</p>
+<a id="more"></a>
+<h2 id="跨域及产生原因"><a href="#跨域及产生原因" class="headerlink" title="跨域及产生原因"></a>跨域及产生原因</h2><h3 id="什么是跨域"><a href="#什么是跨域" class="headerlink" title="什么是跨域"></a>什么是跨域</h3><p>跨域是指从一个域名的网页去请求另一个域名的资源。比如从<code>www.baidu.com</code>页面去请求<code>www.google.com</code>的资源。</p>
+<p>跨域的严格一点的定义是：协议（<code>http</code>&amp;<code>https</code>）、端口(<code>80</code>&amp;<code>81</code>)、域名（<code>baidu</code>&amp;<code>google</code>）、二级域名（<code>news</code>&amp;<code>sports</code>）不相同，都为跨域。</p>
+<p>受到跨域的限制，浏览器不能用AJAX获取不同源的数据，也不能在同一个页面但是处于不同域的框架之间的进行数据传递。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">URL                                      说明                    是否允许通信</span><br><span class="line"></span><br><span class="line">http://www.domain.com/a.js          同一域名，不同文件或路径           允许</span><br><span class="line">http://www.domain.com/b.js                 </span><br><span class="line">http://www.domain.com/lab/c.js</span><br><span class="line"></span><br><span class="line">http://www.domain.com:8000/a.js     同一域名，不同端口                不允许</span><br><span class="line">http://www.domain.com/b.js         </span><br><span class="line"> </span><br><span class="line">http://www.domain.com/a.js          同一域名，不同协议                不允许</span><br><span class="line">https://www.domain.com/b.js        </span><br><span class="line"> </span><br><span class="line">http://www.domain.com/a.js          域名和域名对应相同ip              不允许</span><br><span class="line">http://192.168.4.12/b.js           </span><br><span class="line"> </span><br><span class="line">http://www.domain.com/a.js          主域相同，子域不同                不允许</span><br><span class="line">http://x.domain.com/b.js           </span><br><span class="line">http://domain.com/c.js</span><br><span class="line"> </span><br><span class="line">http://www.domain1.com/a.js         不同域名                         不允许</span><br><span class="line">http://www.domain2.com/b.js</span><br></pre></td></tr></table></figure>
+<h3 id="为什么浏览器要限制跨域访问"><a href="#为什么浏览器要限制跨域访问" class="headerlink" title="为什么浏览器要限制跨域访问"></a>为什么浏览器要限制跨域访问</h3><p>==首先要注意，跨域是浏览器的限制，服务端不存在跨域的问题~==</p>
+<p>原因就是安全问题：如果一个网页可以随意地访问另外一个网站的资源，那么就有可能在客户完全不知情的情况下出现安全问题。比如下面的操作就有安全问题：</p>
+<blockquote>
+<p>用户访问<code>www.mybank.com</code>，登陆并进行网银操作，这时浏览器会生成对应的cookie。用户突然想起件事，并迷迷糊糊地访问了一个邪恶的网站<code>www.xiee.com</code>，这时该网站就可以在它的页面中，拿到银行的cookie，cookie中可能存放着很多敏感信息比如用户名，登陆token等，然后发起对<code>www.mybank.com</code>的操作。如果这时浏览器不予限制，并且银行也没有做响应的安全处理的话，那么用户的信息有可能就这么泄露了。</p>
+</blockquote>
+<h3 id="为什么要跨域"><a href="#为什么要跨域" class="headerlink" title="为什么要跨域"></a>为什么要跨域</h3><p>有时公司内部有多个不同的子域，比如一个是<code>location.company.com</code>, 而应用是放在<code>app.company.com</code>,  这时想从<code>app.company.com</code>去访问<code>location.company.com</code>的资源就属于跨域。</p>
+<h3 id="不受跨域限制的情况"><a href="#不受跨域限制的情况" class="headerlink" title="不受跨域限制的情况"></a>不受跨域限制的情况</h3><p>有两种情况是不受浏览器同源策略的限制的，第一种是HTML标签中像<code>&lt;srcipt&gt;</code>、<code>&lt;img&gt;</code>等获取资源的标签是没有跨域限制的，第二种是提交表单是不受跨域的限制的。</p>
+<p>要注意的是，表单提交只有通过指定表单的<code>action</code>这种形式才是不受跨域限制的，而通过Ajax手动控制表单提交的情况还是会收到跨域的限制的。</p>
+<p>这是因为通过<code>action</code>提交表单，剩余的操作就交给了<code>action</code>里面的域，本页面的逻辑和这个表单没关系，不需要表单里的域的吓响应，所以浏览器认为是安全的。</p>
+<p>而使用Ajax来发送表单的请求的时候，页面JS会需要知道请求的返回值，这个时候表单的情况会收到跨域的限制。</p>
+<h3 id="跨域限制的是哪个步骤"><a href="#跨域限制的是哪个步骤" class="headerlink" title="跨域限制的是哪个步骤"></a>跨域限制的是哪个步骤</h3><p>当我们尝试发送一个跨域请求的时候，会被浏览器阻止，在控制台收到错误信息：</p>
+<p><img src="http://image.oldzhou.cn/Fh0R7ngqlLfKYC67UrhNI5BvP9es" alt=""></p>
+<p>我们是收不到对方服务器的返回结果的，但是浏览器阻止的究竟是请求的发出还是响应的读取呢？</p>
+<p>首先使用Koa2搭建一个HTTP服务，运行在<code>8080</code>端口：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'收到跨域请求'</span>, ctx.request.query.test);</span><br><span class="line">  ctx.body = &#123;<span class="attr">val</span>: <span class="string">'node'</span>&#125;;</span><br><span class="line">  ctx.cookies.set(<span class="string">'userId'</span>, <span class="string">'123'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">8080</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'app is listening 8080...'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>前端页面运行在<code>http://localhost:63342</code>，当页面访问<code>http://localhost:8080</code>进行跨域请求接口数据的时候，浏览器由于跨域的原因报错，没有收到服务器响应的数据，并且cookie也没有写入成功。</p>
+<p>但是服务端的控制台会显示这次请求的信息：</p>
+<p><img src="http://image.oldzhou.cn/FlEfpDo_N1mg1M-hpBXPEJxwbWlY" alt=""></p>
+<p>证明，浏览器的同源策略，并没有限制请求的发送，而是在浏览器接受响应数据前进行了检查和限制。</p>
+<p>为什么这样限制呢？因为有可能服务端进行了允许特定网站的跨域请求，浏览器如果从发送请求就限制住，那么就不存在任何跨域的可能性了，所以需要根据服务端返回的结果在进行检查，是要限制还是将数据解析展示。</p>
+<h2 id="跨域的方法"><a href="#跨域的方法" class="headerlink" title="跨域的方法"></a>跨域的方法</h2><p>跨域类型我个人觉得可以分为两种，一种是接口跨域，也就是需要跨域去请求接口，返回服务端的数据，是页面与服务端的通信；另外一种是页面跨域，是两个页面间的通信，可能是两个Tab间的通信，也可能是主页面与iframe之间的通信。</p>
+<p>接口跨域的方法：</p>
+<ol>
+<li>动态创建<code>script</code></li>
+<li>JSONP</li>
+<li>CORS</li>
+<li>Nginx反向代理跨域</li>
+<li>利用后端转发请求跨域</li>
+<li><code>&lt;img&gt;</code>标签</li>
+<li>Websocket</li>
+<li>SSE + EventSource</li>
+</ol>
+<p>页面跨域的方法：</p>
+<ol>
+<li><code>document.domain</code></li>
+<li><code>window.name</code></li>
+<li><code>postMessage</code></li>
+</ol>
+<h2 id="接口跨域"><a href="#接口跨域" class="headerlink" title="接口跨域"></a>接口跨域</h2><h3 id="（1）动态创建script"><a href="#（1）动态创建script" class="headerlink" title="（1）动态创建script"></a>（1）动态创建<code>script</code></h3><p>由于HTML标签中像<code>&lt;srcipt&gt;</code>、<code>&lt;img&gt;</code>等获取资源的标签是没有跨域限制的，利用这一点就可以实现跨域。</p>
+<p>在本地定义一个方法<code>cb</code>，在一个<code>&lt;srcipt&gt;</code>标签中的<code>src</code>访问跨域的目标地址，并通过查询参数将函数名传递给服务端。服务端在接受到请求后将数据作为<code>cb</code>的参数，返回序列化的<code>cb(params)</code>。</p>
+<p>由于请求是由<code>&lt;script&gt;</code>标签发出的，所以接受到服务端的结果后就会立即调用<code>cb</code>，并且参数就会返回的数据。</p>
+<p>前端代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> localHandler = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'我是本地函数，可以被跨域的remote.js文件调用，远程js带来的数据是：'</span> + data.result);</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个标签可以通过 document.createElement 动态创建 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"http://remoteserver.com/remote.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>服务端代码（使用Node）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">var</span> urllib = <span class="built_in">require</span>(<span class="string">'url'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> port = <span class="number">8081</span>;</span><br><span class="line"><span class="keyword">var</span> data = &#123;<span class="string">'name'</span>: <span class="string">'jifeng'</span>, <span class="string">'company'</span>: <span class="string">'taobao'</span>&#125;;</span><br><span class="line"></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 解析参数</span></span><br><span class="line">  <span class="keyword">var</span> params = urllib.parse(req.url, <span class="literal">true</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (params.query &amp;&amp; params.query.callback) &#123;</span><br><span class="line">    <span class="comment">// JSONP</span></span><br><span class="line">    <span class="keyword">var</span> str =  params.query.callback + <span class="string">'('</span> + <span class="built_in">JSON</span>.stringify(data) + <span class="string">')'</span>;</span><br><span class="line">    res.end(str);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    res.end(<span class="built_in">JSON</span>.stringify(data));</span><br><span class="line">  &#125;     </span><br><span class="line">&#125;).listen(port, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'server is listening on port '</span> + port);  </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这种方式比较常用，只要服务端部署了响应的代码，前端按照约定传递一个<code>callback</code>的查询参数即可，但是要注意的就是对XSS的防范，防止攻击者构造特殊的<code>callback</code>代码，实现注入攻击。</p>
+<p>可以将创建<code>&lt;script&gt;</code>标签的过程封装起来</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getJSON</span> (<span class="params">url, callBack</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> src = <span class="string">`<span class="subst">$&#123;url&#125;</span>?callback=<span class="subst">$&#123;callBack&#125;</span>`</span>;</span><br><span class="line">  <span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  script.src = src;</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(script);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="（2）JSONP"><a href="#（2）JSONP" class="headerlink" title="（2）JSONP"></a>（2）JSONP</h3><p>JSONP就是对上面的方法的一个封装，一种是<code>get</code>/<code>getJSON</code>的方式，另一种是<code>$.ajax()</code>的方式，都支持GET请求，不支持POST请求。</p>
+<p>前端代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//getJOSN方法</span></span><br><span class="line">$.getJSON(<span class="string">"http://localhost:8080/msg/front/jcj/t1.jsp?callback=?"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//ajax方法</span></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  type: <span class="string">"get"</span>,</span><br><span class="line">  url: <span class="string">"http://localhost:8080/msg/front/jcj/t1.jsp"</span>,</span><br><span class="line">  <span class="comment">//也可以直接将callback写在url中</span></span><br><span class="line">  <span class="comment">//url: "http://localhost:8080/msg/front/jcj/t1.jsp?callback=m1",</span></span><br><span class="line">  dataType: <span class="string">"jsonp"</span>,</span><br><span class="line">  jsonpCallback: <span class="string">"m1"</span>,</span><br><span class="line">  success: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//处理返回的数据</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">m1</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  alert(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一种方式的<code>callback=?</code>回调函数标志着Ajax请求是以JSONP的方式发送请求，客户端请求会自动在问号处增加一个方法名，方法名是以jquery开头的一串数字</p>
+<p>而第二种方式的是参数<code>dataType=&quot;jsonp&quot;</code>来说明是以JSONP的方式发送请求，所以可以直接在<code>callback</code>后面直接指定方法名<code>callback=m1</code>，而不需要<code>jsonpCallback: &quot;m1&quot;</code>这一行代码。</p>
+<h3 id="（3）CORS（跨域资源共享）"><a href="#（3）CORS（跨域资源共享）" class="headerlink" title="（3）CORS（跨域资源共享）"></a>（3）CORS（跨域资源共享）</h3><p>CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing），这种跨域方式如果不携带cookie跨域，那么前端发送请求不需要额外处理，如果需要携带cookie，那么需要添加<code>withCredential: true</code>这个字段</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.withCredentials = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>主要的工作量都在后端代码，来设置响应头，如果是<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="noopener">简单请求</a>，那么只需要设置<code>Access-Control-Allow-Origin</code>即可，如果是非简单请求那么需要同时设置<code>Access-Control-Allow-Origin</code>、<code>Access-Control-Request-Method</code>和<code>Access-Control-Allow-Headers</code>，如果需要跨域那么还需要额外设置<code>Access-Control-Allow-Credentials</code></p>
+<p>一般都会使用专门的中间件来帮助我们完成，比如<a href="https://www.npmjs.com/package/@koa/cors" target="_blank" rel="noopener">koa-cors</a>。</p>
+<h3 id="（4）Nginx反向代理跨域"><a href="#（4）Nginx反向代理跨域" class="headerlink" title="（4）Nginx反向代理跨域"></a>（4）Nginx反向代理跨域</h3><blockquote>
+<p>以前其实并不了解Nginx跨域的原理，其实就是利用了服务度不存在跨域的原理，前端JS访问自己本地的资源，而Nginx将访问跨域目标的请求进行了拦截，将请求转发到真实的地址，获取到数据。</p>
+</blockquote>
+<p>上面的的方法都有一个共同的限制，那就是必须在要跨域的目标服务器上进行相应的部署，但是有一种最常遇到的情形，就是想要获取的数据的网站是不受自己控制的，开发者只能控制一个域。</p>
+<p>这时候可以通过Nginx进行反向代理跨域，具体的配置可以参考这篇笔记《零散专题33 Nginx</p>
+<h3 id="（5）利用后端转发请求跨域"><a href="#（5）利用后端转发请求跨域" class="headerlink" title="（5）利用后端转发请求跨域"></a>（5）利用后端转发请求跨域</h3><p>除了使用Nginx，也可以使用其他的框架来进行本地请求的转发，比如如果使用Node的Express框架编写的服务端程序，那可以使用<code>request</code>模块进行请求转发，实现跨域请求。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> request = <span class="built_in">require</span>(<span class="string">'request'</span>);</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">'/api'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> url = apiUrl + req.url;</span><br><span class="line">  req.pipe(request(url)).pipe(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面完整的请求传递给API，并且将相应传递给请求的发起者，支持GET/PUT/DELETE的其他请求方式</p>
+<p>使用的时候，前端只需将需要跨域的请求请求到<code>/api</code>地址，将真实地址放到查询参数中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> QUERY_URL = <span class="string">'https://wallstreetcn.com/live/global'</span>;</span><br><span class="line"><span class="keyword">const</span> X_URL = <span class="string">`/api/proxy?url=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(QUERY_URL)&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">fetch(X_URL).then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">console</span>.log(v.text()))</span><br></pre></td></tr></table></figure>
+<h3 id="（6）-lt-img-gt-标签"><a href="#（6）-lt-img-gt-标签" class="headerlink" title="（6）&lt;img&gt;标签"></a>（6）<code>&lt;img&gt;</code>标签</h3><p>使用<code>&lt;img&gt;</code>标签原理与使用<code>&lt;srcipt&gt;</code>的原理是相同的，<code>&lt;img&gt;</code>标签不存在跨域的问题，可以访问任意其他网页的图片，并且可以通过<code>onload</code>和<code>onerror</code>事件了解到响应是何时完成的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img = <span class="keyword">new</span> Image();</span><br><span class="line"></span><br><span class="line">img.onload = img.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">'done'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">img.src = <span class="string">'http://www.baidu.com/test?name=123'</span></span><br></pre></td></tr></table></figure>
+<p>当<code>img</code>的<code>src</code>被设置那一刻，请求就发出了，服务器的响应一般是像素图或<code>204 No-Content</code></p>
+<p>一般用来跟踪用户点击页面或动态广告曝光字数，是一种==单向的跨域方式==，==只能是GET请求==，并且无法访问服务器的相应文本。</p>
+<h3 id="（7）Websocket"><a href="#（7）Websocket" class="headerlink" title="（7）Websocket"></a>（7）Websocket</h3><p>Websocket建立的连接不存在跨域问题，因此可以通过建立Websocket打开到任何站点的俩进阶，至于是否可以与页面通信，完全取决于服务器（通过握手信息就可以知道请求来自何方）</p>
+<p>前端代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>user input：</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> socket = io(<span class="string">'http://www.domain2.com:8080'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="comment">// 连接成功处理</span></span></span><br><span class="line"><span class="javascript">  socket.on(<span class="string">'connect'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 监听服务端消息</span></span></span><br><span class="line"><span class="javascript">    socket.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.log(<span class="string">'data from server: ---&gt; '</span> + msg);</span></span><br><span class="line"><span class="undefined">    &#125;);</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 监听服务端关闭</span></span></span><br><span class="line"><span class="javascript">    socket.on(<span class="string">'disconnect'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.log(<span class="string">'Server socket has closed.'</span>);</span></span><br><span class="line"><span class="undefined">    &#125;);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.getElementsByTagName(<span class="string">'input'</span>)[<span class="number">0</span>].onblur = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    socket.send(<span class="keyword">this</span>.value);</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>服务端Node代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">var</span> socket = <span class="built_in">require</span>(<span class="string">'socket.io'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启http服务</span></span><br><span class="line"><span class="keyword">var</span> server = http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  res.writeHead(<span class="number">200</span>, &#123;</span><br><span class="line">    <span class="string">'Content-type'</span>: <span class="string">'text/html'</span></span><br><span class="line">  &#125;);</span><br><span class="line">  res.end();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="string">'8080'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Server is running at port 8080...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听socket连接</span></span><br><span class="line">socket.listen(server).on(<span class="string">'connection'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">client</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 接收信息</span></span><br><span class="line">  client.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</span><br><span class="line">    client.send(<span class="string">'hello：'</span> + msg);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'data from client: ---&gt; '</span> + msg);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 断开处理</span></span><br><span class="line">  client.on(<span class="string">'disconnect'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Client socket has closed.'</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="（8）SSE-EventSource"><a href="#（8）SSE-EventSource" class="headerlink" title="（8）SSE + EventSource"></a>（8）SSE + EventSource</h3><p>SSE（server-sent events）是服务器发送事件，是一种服务器向客户端推送的单向通信技术。它的API就是EventSource接口</p>
+<p>URL可以与当前网址同域，也可以跨域。跨域时，可以指定第二个参数，打开<code>withCredentials</code>属性，表示是否一起发送Cookie。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.EventSource) &#123;</span><br><span class="line">  <span class="comment">// 参数是一个URL，可以使与当前网址同域，也可以跨域</span></span><br><span class="line">  <span class="comment">// 打开withCredentials属性，表示是否一起发送Cookie。</span></span><br><span class="line">  <span class="keyword">const</span> source = <span class="keyword">new</span> EventSource(<span class="string">'myEvent.com'</span>, &#123;</span><br><span class="line">    withCredentials: <span class="literal">true</span></span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// EventSource实例的readyState属性，表明连接的当前状态</span></span><br><span class="line">  <span class="keyword">if</span> (source.readyState === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 0 相当于常量EventSource.CONNECTING，表示连接还未建立，或者断线正在重连。</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (source.readyState === <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="comment">// 1 相当于常量EventSource.OPEN，表示连接已经建立，可以接受数据。</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (source.readyState === <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="comment">// 2 相当于常量EventSource.CLOSED，表示连接已断，且不会重连。</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 连接一旦建立，就会触发open事件，可以在onopen属性定义回调函数。</span></span><br><span class="line">  source.addEventListener(<span class="string">'open'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;, <span class="literal">false</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 客户端收到服务器发来的数据，就会触发message事件，可以在onmessage属性的回调函数。</span></span><br><span class="line">  source.addEventListener(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = event.data;</span><br><span class="line">    <span class="comment">// handle message</span></span><br><span class="line">  &#125;, <span class="literal">false</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 如果发生通信错误（比如连接中断），就会触发error事件，可以在onerror属性定义回调函数。</span></span><br><span class="line">  source.addEventListener(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// handle error event</span></span><br><span class="line">  &#125;, <span class="literal">false</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// close方法用于关闭 SSE 连接。</span></span><br><span class="line">  source.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="页面跨域"><a href="#页面跨域" class="headerlink" title="页面跨域"></a>页面跨域</h2><h3 id="（1）document-domain-iframe"><a href="#（1）document-domain-iframe" class="headerlink" title="（1）document.domain + iframe"></a>（1）<code>document.domain</code> + iframe</h3><p>适用于主域相同，子域不同的情况，并且需要对跨域的两个网页的JS脚本都进行修改。例如在<code>http://www.a.com/a.html</code>和<code>http://script.a.com/b.html</code>之间的跨域就可以使用这种方法。</p>
+<blockquote>
+<p>主域名是不带www的域名，比如<code>a.com</code>， 主域名带前缀的通常是二级域名或者多级域名，比如<code>www.a.com</code>。</p>
+</blockquote>
+<p>首先在<code>a.html</code>中添加下面的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.html</span></span><br><span class="line"><span class="comment">// 设置共同的 domain</span></span><br><span class="line"><span class="built_in">document</span>.domain = <span class="string">"a.com"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">"iframe"</span>);</span><br><span class="line">ifr.src = <span class="string">"ttp://script.a.com/b.html"</span>;</span><br><span class="line">ifr.style.display = <span class="string">"none"</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(irf);</span><br><span class="line"></span><br><span class="line">ifr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//在这里操作b.html的contentWindow</span></span><br><span class="line">  <span class="keyword">var</span> contentWindow = ifr.contentDocument;</span><br><span class="line">  <span class="built_in">console</span>.log(contentWindow.message); <span class="comment">// hello</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 还可以获取 document</span></span><br><span class="line">  <span class="keyword">var</span> doc = ifr.contentDocument || contentWindow.document;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将<code>b.html</code>通过iframe添加到<code>a.html</code>页面下，也需要在<code>b.html</code>中设置相同的<code>domain</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// b.html</span></span><br><span class="line"><span class="comment">// 设置共同的 domain</span></span><br><span class="line"><span class="built_in">document</span>.domain = <span class="string">"a.com"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加数据</span></span><br><span class="line"><span class="built_in">window</span>.message = <span class="string">'hello'</span></span><br></pre></td></tr></table></figure>
+<p>这样就将两个原本跨域的网页的域统一了，此时就和平时同一个域镶嵌iframe一样，通过iframe的<code>contentDocument</code>中就可以实现数据交互。</p>
+<blockquote>
+<p>页面默认的<code>domain</code>是<code>window.loaction.hostname</code>，<code>document.domain</code>只能设置成自身或更高一级的父域，比如<code>a.b.example.com</code>中的某个页面的<code>document.domain</code>可以设置为<code>a.b.example.com</code>、<code>b.example.com</code>、<code>example.com</code>，但是不能是设置为<code>c.a.b.example.com</code>或<code>baidu.com</code>。</p>
+</blockquote>
+<p>因此为保证两个主域相同，子域不同的页面跨域，二者的<code>document.domain</code>只能设置为二者的共同的主域，即<code>a.com</code></p>
+<p>这种方法依赖于iframe，iframe的缺点也是一堆，现在的大部分网站避免使用iframe。</p>
+<blockquote>
+<p>历史上，iframe 常被用于复用部分界面，但是多数情况下并不合适。现在，应该使用iframe的例子如：</p>
+<ol>
+<li>沙箱隔离。</li>
+<li>引用第三方内容。</li>
+<li>独立的带有交互的内容，比如幻灯片。</li>
+<li>需要保持独立焦点和历史管理的子窗口，如复杂的Web应用。</li>
+</ol>
+<p>缺点也很明显：大量使用，打开一个网页加载过多iframe体验很不友好而且影响网页加载速度，对爬虫不够友好。</p>
+</blockquote>
+<h3 id="（2）-window-name"><a href="#（2）-window-name" class="headerlink" title="（2） window.name"></a>（2） <code>window.name</code></h3><p>将JSON格式的数据写入到<code>window.name</code>中，通过共享一个Tab窗口的两个页面的共同的<code>window.name</code>实现跨域的数据传递</p>
+<p><code>window.name</code>属性在一个窗口（<code>window</code>）生命周期内，窗口载入的所有的页面都是共享一个<code>window.name</code>的，每个页面对<code>window.name</code>都有读写权限。</p>
+<p><code>window.name</code>是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而重置。<code>window.name</code>只能是字符串，最大允许2M左右数据。</p>
+<p>这种方法的限制太多，不展开了。</p>
+<h3 id="（3）postMessage"><a href="#（3）postMessage" class="headerlink" title="（3）postMessage"></a>（3）<code>postMessage</code></h3><p><strong>页面和其打开的新窗口</strong>的数据传递、<strong>页面与嵌套的iframe</strong>消息传递都可以使用<code>postMessage</code>方法跨域或同源传递数据。</p>
+<p><code>postMessage()</code>方法允许来自不同源的脚本采用异步方式进行有限的通信，可以实现跨文本档、多窗口、跨域消息传递。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.postMessage(message, targetOrigin);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>message</code>是要发送的数据，可以是JavaScript的任意基本类型或可复制的对象，但是出于兼容性考虑，最好使用<code>JSON.stringify()</code>方法对对象参数序列化。</li>
+<li><code>targetOrigin</code>用来限制<code>otherWindow</code>对象所在的域，指明目标窗口的URL，可以将参数设置为”<code>*</code>“传递给任意窗口，如果要指定和当前窗口同源的话设置为”<code>/</code>“。</li>
+</ul>
+<p>接受消息的页面通过通过监听<code>window</code>的<code>message</code>事件获取传过来的消息，消息内容存储在<code>message</code>事件对象的<code>data</code>属性中。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"message"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e.data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（4）代码示例</p>
+<p><code>a.com</code>上的<code>a.html</code>的代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">"ifr"</span> <span class="attr">src</span>=<span class="string">"b.com/b.html"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--对接受信息页面的引用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ifr = <span class="built_in">document</span>.getElementById(<span class="string">"ifr"</span>).contentWindow;</span></span><br><span class="line"><span class="javascript">    <span class="comment">//获取框架的window对象</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> targetOrigin = <span class="string">"http://b.com"</span> <span class="comment">//对目标的限定</span></span></span><br><span class="line"><span class="javascript">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      ifr.postMessage(<span class="string">"i love you"</span>, targetOrigin); </span></span><br><span class="line"><span class="undefined">    &#125;)</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>b.com</code>上的<code>b.html</code>的代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="built_in">window</span>.addEventListener(<span class="string">"message"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123; <span class="comment">//注册message事件用来接收消息</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">if</span> (event.origin === <span class="string">"http://a.com"</span>) &#123; <span class="comment">//通过origin判断消息来源地址</span></span></span><br><span class="line"><span class="javascript">      alert(event.data); <span class="comment">//通过data属性获取"i love you"</span></span></span><br><span class="line"><span class="javascript">      alert(event.source); <span class="comment">//对a.com/a.html中window对象的引用</span></span></span><br><span class="line"><span class="javascript">      alert(event.origin); <span class="comment">//发送消息窗口的源（协议+主机+端口号）</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">  &#125;, <span class="literal">false</span>)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://blog.csdn.net/notechsolution/article/details/50394391" target="_blank" rel="noopener">跨域与跨域访问@CSDN</a></li>
+<li><a href="https://blog.csdn.net/notechsolution/article/details/50394391https://www.zhihu.com/question/20653055" target="_blank" rel="noopener">Iframe 有什么好处，有什么坏处？国内还有哪些知名网站仍用Iframe，为什么？有哪些原来用的现在抛弃了？又是为什么？@知乎</a></li>
+<li><a href="https://blog.csdn.net/notechsolution/article/details/50394391https://www.zhihu.com/question/20653055" target="_blank" rel="noopener">Iframe 有什么好处，有什么坏处？国内还有哪些知名网站仍用Iframe，为什么？有哪些原来用的现在抛弃了？又是为什么？@知乎</a></li>
+<li><a href="https://www.cnblogs.com/dolphinX/p/3464056.html" target="_blank" rel="noopener">html5 postMessage解决跨域、跨窗口消息传递@博客园</a></li>
+<li><a href="https://www.cnblogs.com/dreamroute/p/3613563.html" target="_blank" rel="noopener">jQuery的Ajax的跨域请求@博客园</a></li>
+<li><a href="https://note.youdao.com/" target="_blank" rel="noopener">jquery中ajax处理跨域的三大方式@脚本之家</a></li>
+<li><a href="https://segmentfault.com/q/1010000011535675" target="_blank" rel="noopener">为什么提交表单不受同源政策限制@segmentfault</a></li>
+<li><a href="https://www.cnblogs.com/yincheng/p/cross-domain.html/" target="_blank" rel="noopener">同源策略和跨域请求研究@博客园</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/跨域/" rel="tag"># 跨域</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/24/01 前端笔记/02 JavaScript/01 语言理解/JS语言理解01 Javascript中的封装/" rel="prev" title="JS语言理解01 Javascript中的封装">
+                JS语言理解01 Javascript中的封装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#跨域及产生原因"><span class="nav-number">1.</span> <span class="nav-text">跨域及产生原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是跨域"><span class="nav-number">1.1.</span> <span class="nav-text">什么是跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么浏览器要限制跨域访问"><span class="nav-number">1.2.</span> <span class="nav-text">为什么浏览器要限制跨域访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要跨域"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不受跨域限制的情况"><span class="nav-number">1.4.</span> <span class="nav-text">不受跨域限制的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#跨域限制的是哪个步骤"><span class="nav-number">1.5.</span> <span class="nav-text">跨域限制的是哪个步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨域的方法"><span class="nav-number">2.</span> <span class="nav-text">跨域的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口跨域"><span class="nav-number">3.</span> <span class="nav-text">接口跨域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）动态创建script"><span class="nav-number">3.1.</span> <span class="nav-text">（1）动态创建script</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）JSONP"><span class="nav-number">3.2.</span> <span class="nav-text">（2）JSONP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）CORS（跨域资源共享）"><span class="nav-number">3.3.</span> <span class="nav-text">（3）CORS（跨域资源共享）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（4）Nginx反向代理跨域"><span class="nav-number">3.4.</span> <span class="nav-text">（4）Nginx反向代理跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（5）利用后端转发请求跨域"><span class="nav-number">3.5.</span> <span class="nav-text">（5）利用后端转发请求跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（6）-lt-img-gt-标签"><span class="nav-number">3.6.</span> <span class="nav-text">（6）&lt;img&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（7）Websocket"><span class="nav-number">3.7.</span> <span class="nav-text">（7）Websocket</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（8）SSE-EventSource"><span class="nav-number">3.8.</span> <span class="nav-text">（8）SSE + EventSource</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面跨域"><span class="nav-number">4.</span> <span class="nav-text">页面跨域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）document-domain-iframe"><span class="nav-number">4.1.</span> <span class="nav-text">（1）document.domain + iframe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）-window-name"><span class="nav-number">4.2.</span> <span class="nav-text">（2） window.name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）postMessage"><span class="nav-number">4.3.</span> <span class="nav-text">（3）postMessage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

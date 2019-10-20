@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="使用webpack-dev-server 实现的Hot Moudle Replacement（HMR）让我们在开发时修改代码并保存后，不必手动刷新浏览器，而是让浏览器通过新的模块替换老的模块。这样可以让我们在保证当前页面状态的前提下，让新的代码生效，就如同在Chrome的控制台修改CSS样式一样。">
+<meta name="keywords" content="Webpack,HMR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建工具03 Webpack模块热重载(HMR)">
+<meta property="og:url" content="http://oldzhou.cn/2018/04/24/01 前端笔记/11 前端工程/01 构建工具/构建工具03 Webpack模块热重载(HMR)/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="使用webpack-dev-server 实现的Hot Moudle Replacement（HMR）让我们在开发时修改代码并保存后，不必手动刷新浏览器，而是让浏览器通过新的模块替换老的模块。这样可以让我们在保证当前页面状态的前提下，让新的代码生效，就如同在Chrome的控制台修改CSS样式一样。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/FjAWv8-u5cSSC1-0mOBQb1HfWw9V">
+<meta property="og:updated_time" content="2019-08-05T16:43:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建工具03 Webpack模块热重载(HMR)">
+<meta name="twitter:description" content="使用webpack-dev-server 实现的Hot Moudle Replacement（HMR）让我们在开发时修改代码并保存后，不必手动刷新浏览器，而是让浏览器通过新的模块替换老的模块。这样可以让我们在保证当前页面状态的前提下，让新的代码生效，就如同在Chrome的控制台修改CSS样式一样。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/FjAWv8-u5cSSC1-0mOBQb1HfWw9V">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2018/04/24/01 前端笔记/11 前端工程/01 构建工具/构建工具03 Webpack模块热重载(HMR)/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>构建工具03 Webpack模块热重载(HMR) | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2018/04/24/01 前端笔记/11 前端工程/01 构建工具/构建工具03 Webpack模块热重载(HMR)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">构建工具03 Webpack模块热重载(HMR)
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-04-24 16:43:00" itemprop="dateCreated datePublished" datetime="2018-04-24T16:43:00+00:00">2018-04-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-05 16:43:00" itemprop="dateModified" datetime="2019-08-05T16:43:00+00:00">2019-08-05</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/前端工程/" itemprop="url" rel="index"><span itemprop="name">前端工程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/24/01 前端笔记/11 前端工程/01 构建工具/构建工具03 Webpack模块热重载(HMR)/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/04/24/01 前端笔记/11 前端工程/01 构建工具/构建工具03 Webpack模块热重载(HMR)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用<a href="https://webpack.js.org/configuration/dev-server/#devserver" target="_blank" rel="noopener"><code>webpack-dev-server</code></a> 实现的Hot Moudle Replacement（HMR）让我们在开发时修改代码并保存后，不必手动刷新浏览器，而是让浏览器通过新的模块替换老的模块。这样可以让我们在保证当前页面状态的前提下，让新的代码生效，就如同在Chrome的控制台修改CSS样式一样。</p>
+<a id="more"></a>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>安装<code>webpack-dev-server</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install webpack-dev-server --save-dev</span><br></pre></td></tr></table></figure>
+<p>在<code>webpack.config.js</code>中进行配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  contentBase: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">  host: <span class="string">'localhost'</span>,</span><br><span class="line">  compress: <span class="literal">true</span>,</span><br><span class="line">  port: <span class="number">8080</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>contentBase</code>：服务器基本运行路径</li>
+<li><code>host</code>：服务器运行地址</li>
+<li><code>compress</code>：服务器压缩式，一般为<code>true</code></li>
+<li><code>port</code>：服务运行端口</li>
+</ul>
+<p>在<code>package.json</code>中定义相关命令：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"dev"</span>: <span class="string">"webpack-dev-server --hot --open"</span>,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>然后执行<code>npm run dev</code>就可以开启webpack的服务，并且实现模块热重载，并且自动打开浏览器。</p>
+<p>增加<code>--open</code>属性可以自动打开浏览器。</p>
+<h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><p>原来只是在各种Cli工具中使用了模块热重载，知道是利用了Webpack的HMR特性，但是它是怎么实现的却不了解。今天在清理收藏夹攒的知识时看到了饿了么前端专栏的<a href="https://zhuanlan.zhihu.com/p/30669007" target="_blank" rel="noopener">这篇文章Webpack HMR 原理解析</a>，写的非常好，简单易懂，把道理也说的很明白。</p>
+<p><img src="http://image.oldzhou.cn/FjAWv8-u5cSSC1-0mOBQb1HfWw9V" alt=""></p>
+<p>上图展示了从修改代码到模块热更新完成的一个周期：</p>
+<h3 id="第一步：Webpack在watch模式下打包更改的文件到内存中（对应图中的①②③）"><a href="#第一步：Webpack在watch模式下打包更改的文件到内存中（对应图中的①②③）" class="headerlink" title="第一步：Webpack在watch模式下打包更改的文件到内存中（对应图中的①②③）"></a>第一步：Webpack在<code>watch</code>模式下打包更改的文件到内存中（对应图中的①②③）</h3><p>Webpack-dev-middleware调用Webpack的API对文件系统watch，监听到文件变化时，根据配置文件对模块重新编译打包，将打包后的代码以JavaScript对象的形式保存在<strong>内存</strong>中。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-middleware/lib/Shared.js</span></span><br><span class="line"><span class="keyword">if</span> (!options.lazy) &#123;</span><br><span class="line">  <span class="keyword">var</span> watching = compiler.watch(options.watchOptions, share.handleCompilerCallback);</span><br><span class="line">  context.watching = watching;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Webpack会将打包的文件保存在内存中，而不是打包到<code>output.path</code>目录下，是因为访问内存中的代码比访问文件系统中的代码更快，也减少了写入文件的开销。这个过程利用了<a href="https://github.com/webpack/memory-fs" target="_blank" rel="noopener">memory-fs</a>这个库，它提供了一个简单的基于内存的文件系统，所有数据都保存在JavaScript对象中。</p>
+<p>图中的第③步也是对文件变化的监控，只不过这一步监听的不是代码，而是在配置文件制定的静态文件目录下的静态文件的变化（当配置文件中配置了<code>devServer.watchContentBase</code>为<code>true</code>的时候），当静态文件发生变化时通知浏览器对应用进行刷新（注意是浏览器刷新，而非HRM）</p>
+<h3 id="第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）"><a href="#第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）" class="headerlink" title="第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）"></a>第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）</h3><p>浏览器端和服务端之间是通过Websocket长连接进行通信的，利用的是<a href="https://github.com/sockjs/sockjs-client" target="_blank" rel="noopener">sockjs</a>建立的。通过Websocket长连接，webpack-dev-Server将编译打包的各个阶段状态告知浏览器（包括第③步中监听的静态文件的变化）。</p>
+<p>同时webpack-dev-Server调用Webpack的API监听complie的<code>done</code>事件，在编译完成后，webpack-dev-Server通过<code>_sendStatus</code>方法将编译打包后的新模块的<strong>hash值</strong>发送给浏览器，后面的步骤都会利用这个hash值来进行模块热替换。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/lib/Server.js</span></span><br><span class="line">compiler.plugin(<span class="string">'done'</span>, (stats) =&gt; &#123;</span><br><span class="line">  <span class="comment">// stats.hash 是最新打包文件的 hash 值，发送给浏览器</span></span><br><span class="line">  <span class="keyword">this</span>._sendStats(<span class="keyword">this</span>.sockets, stats.toJson(clientStats));</span><br><span class="line">  <span class="keyword">this</span>._stats = stats;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">Server.prototype._sendStats = <span class="function"><span class="keyword">function</span> (<span class="params">sockets, stats, force</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!force &amp;&amp; stats &amp;&amp;</span><br><span class="line">  (!stats.errors || stats.errors.length === <span class="number">0</span>) &amp;&amp; stats.assets &amp;&amp;</span><br><span class="line">  stats.assets.every(<span class="function"><span class="params">asset</span> =&gt;</span> !asset.emitted)</span><br><span class="line">  ) &#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'still-ok'</span>); </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 调用 sockWrite 方法将 hash 值通过 websocket 发送到浏览器端</span></span><br><span class="line">  <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'hash'</span>, stats.hash);</span><br><span class="line">  <span class="keyword">if</span> (stats.errors.length &gt; <span class="number">0</span>) &#123; </span><br><span class="line">    <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'errors'</span>, stats.errors); </span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (stats.warnings.length &gt; <span class="number">0</span>) &#123; </span><br><span class="line">    <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'warnings'</span>, stats.warnings); </span><br><span class="line">  &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">    <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'ok'</span>); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="第三步：webpack-dev-server-client接收到服务端消息做出响应（对应⑤⑪）"><a href="#第三步：webpack-dev-server-client接收到服务端消息做出响应（对应⑤⑪）" class="headerlink" title="第三步：webpack-dev-server/client接收到服务端消息做出响应（对应⑤⑪）"></a>第三步：webpack-dev-server/client接收到服务端消息做出响应（对应⑤⑪）</h3><p>webpack-dev-server/client端并不能够请求更新的代码，也不会执行热更模块操作，而是在接收到通过长连接收到的服务端的消息后，对信息进行处理，而具体的更新操作又交回给了Webpack。</p>
+<p>webpack/hot/dev-server的工作就是根据webpack-dev-server/client传给它的信息以及dev-server的配置决定是刷新浏览器呢还是进行模块热更新。当然如果仅仅是刷新浏览器，也就没有后面那些步骤了。</p>
+<p>我们并没有在业务代码里添加Websocket客户端的代码，也没有在<code>webpack.config.js</code>中的<code>entry</code>属性中添加新的入口文件，那么<code>bundle.js</code>中的接受Websocket信息的代码是从哪来的呢？答案是webpack-dev-server会自动修改Webpack配置中的<code>entry</code>属性，在里面添加了webpck-dev-client的代码。</p>
+<p>具体来看，webpack-dev-server/client接收到<code>type</code>为<code>hash</code>的消息后会将<code>hash</code>保存起来，接收到<code>type</code>为<code>ok</code>的消息后会执行<code>relooad</code>操作，在<code>reload</code>操作中会根据<code>hot</code>的配置是刷新浏览器还是执行热更新（HMR）:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/client/index.js</span></span><br><span class="line">hash: <span class="function"><span class="keyword">function</span> <span class="title">msgHash</span>(<span class="params">hash</span>) </span>&#123;</span><br><span class="line">    currentHash = hash;</span><br><span class="line">&#125;,</span><br><span class="line">ok: <span class="function"><span class="keyword">function</span> <span class="title">msgOk</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    reloadApp();</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reloadApp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">if</span> (hot) &#123;</span><br><span class="line">    log.info(<span class="string">'[WDS] App hot update...'</span>);</span><br><span class="line">    <span class="keyword">const</span> hotEmitter = <span class="built_in">require</span>(<span class="string">'webpack/hot/emitter'</span>);</span><br><span class="line">    hotEmitter.emit(<span class="string">'webpackHotUpdate'</span>, currentHash);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    log.info(<span class="string">'[WDS] App updated. Reloading...'</span>);</span><br><span class="line">    self.location.reload();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，webpack-dev-server/client首先将接收到的<code>hash</code>值存储到<code>currentHash</code>变量中，当接收到<code>ok</code>消息后调用<code>reloadApp</code>方法，在其内部根据<code>hot</code>配置，决定是调用<code>webpack/hot/emitter</code>将最新的<code>hash</code>值发送给Webpack执行热更新，还是直接调用<code>location.reload</code>刷新页面。</p>
+<h3 id="第四步：Webpack接收新的hash值并请求模块代码（对应⑥⑦⑧⑨）"><a href="#第四步：Webpack接收新的hash值并请求模块代码（对应⑥⑦⑧⑨）" class="headerlink" title="第四步：Webpack接收新的hash值并请求模块代码（对应⑥⑦⑧⑨）"></a>第四步：Webpack接收新的<code>hash</code>值并请求模块代码（对应⑥⑦⑧⑨）</h3><p>首先webpack/hot/dev-server监听上一步webpack-dev-server/client发送的<code>webpackHotUpdate</code>消息，然后调用webpack/lib/HotModuleReplacement.runtime（简称HMR runtime），HMR runtime是客户端HMR的<strong>中枢</strong>，它首先通过JsonpMainTemplate.runtime调用<code>hotDownloadManifest</code>方法向server端发送JSONP请求，检查是否有更新的文件，如果有的话服务端返回一个JSON响应，包含了所有要更新的模块的hash值。</p>
+<p>获取到更新列表后，该模块通过<code>hotDownloadUpdateChunk</code>再次发送JSONP请求，获取到最新的模块代码，并返回给HMR runtime。</p>
+<p>上面为了获取最新的Hash值和最新的代码，HMR runtime向服务端发送了两次Ajax请求，为什么不在第三步的Websocket长连接中发送给浏览器呢？可能的原因：</p>
+<p>（1）包括了<strong>功能模块的解耦</strong>，webpack-dev-server/client只负责消息的传递而不负责新模块的拉取，HRM runtime来负责获取新代码</p>
+<p>（2）可以使用webpack-hot-middleware来代替webpack-dev-server实现HMR，webpack-hot-middleware没有使用Websocket，而是使用<a href="https://www.ruanyifeng.com/blog/2017/05/server-sent_events.html" target="_blank" rel="noopener">EventSource</a>来实现客户端与服务端通信。</p>
+<h3 id="第五步：HMR-runtime对模块进行热更新（对应⑩）"><a href="#第五步：HMR-runtime对模块进行热更新（对应⑩）" class="headerlink" title="第五步：HMR runtime对模块进行热更新（对应⑩）"></a>第五步：HMR runtime对模块进行热更新（对应⑩）</h3><p>HMR runtime会对新旧模块进行对比，决定是否更新模块，在决定更新模块后，检查模块之间的依赖关系，更新模块的同时更新模块间的依赖引用。</p>
+<p>这一切都发生在HMR runtime的<code>hotApply</code>方法中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/lib/HotModuleReplacement.runtime</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotApply</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">var</span> idx;</span><br><span class="line">  <span class="keyword">var</span> queue = outdatedModules.slice();</span><br><span class="line">  <span class="keyword">while</span> (queue.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    moduleId = queue.pop();</span><br><span class="line">    <span class="built_in">module</span> = installedModules[moduleId];</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// remove module from cache</span></span><br><span class="line">    <span class="keyword">delete</span> installedModules[moduleId];</span><br><span class="line">    <span class="comment">// when disposing there is no need to call dispose handler</span></span><br><span class="line">    <span class="keyword">delete</span> outdatedDependencies[moduleId];</span><br><span class="line">    <span class="comment">// remove "parents" references from all children</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; <span class="built_in">module</span>.children.length; j++) &#123;</span><br><span class="line">      <span class="keyword">var</span> child = installedModules[<span class="built_in">module</span>.children[j]];</span><br><span class="line">      <span class="keyword">if</span> (!child) <span class="keyword">continue</span>;</span><br><span class="line">      idx = child.parents.indexOf(moduleId);</span><br><span class="line">      <span class="keyword">if</span> (idx &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        child.parents.splice(idx, <span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// insert new code</span></span><br><span class="line">  <span class="keyword">for</span> (moduleId <span class="keyword">in</span> appliedUpdate) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.hasOwnProperty.call(appliedUpdate, moduleId)) &#123;</span><br><span class="line">      modules[moduleId] = appliedUpdate[moduleId];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>hotApply</code>方法主要分为了三个阶段：</p>
+<ol>
+<li>找出陈旧的模块<code>outdatedModules</code>和依赖<code>outdatedDependencies</code></li>
+<li>从缓存中删除过期的模块和依赖</li>
+<li>将新的模块和依赖添加到<code>moudles</code>中，当下次调用<code>_webpack_require</code>方法时就获取到新的代码</li>
+</ol>
+<p>如果HMR失败后，回退到<code>live reload</code>操作，也就是进行浏览器刷新来获取最新打包代码，相关的代码在dev-server中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.hot.check(<span class="literal">true</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">updatedModules</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!updatedModules) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">window</span>.location.reload();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;).</span><br><span class="line"><span class="keyword">catch</span> (<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> status = <span class="built_in">module</span>.hot.status();</span><br><span class="line">  <span class="keyword">if</span> ([<span class="string">"abort"</span>, <span class="string">"fail"</span>].indexOf(status) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">window</span>.location.reload();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="第六步：业务代码改造"><a href="#第六步：业务代码改造" class="headerlink" title="第六步：业务代码改造"></a>第六步：业务代码改造</h3><p>当新的模块代替老的模块后，旧的业务代码并不能知道代码发生变化，所以需要在业务代码的入口调用HMR的<code>accept</code>方法，添加模块更新后的处理函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">module</span>.hot) &#123;</span><br><span class="line">  <span class="built_in">module</span>.hot.accept(<span class="string">'./hello.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 更新后的处理函数</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://webpack.docschina.org/guides/hot-module-replacement/#-hmr/" target="_blank" rel="noopener">模块热替换@webpack</a></li>
+<li><a href="https://github.com/webpack/webpack-dev-server" target="_blank" rel="noopener">webpack/webpack-dev-server@github</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/30669007" target="_blank" rel="noopener">Webpack HMR 原理解析@知乎</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Webpack/" rel="tag"># Webpack</a>
+          
+            <a href="/tags/HMR/" rel="tag"># HMR</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/17/03 读书笔记/03 ES6标准入门/09 ES6标准入门(Promise对象)/" rel="next" title="09 ES6标准入门(Promise对象)">
+                <i class="fa fa-chevron-left"></i> 09 ES6标准入门(Promise对象)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/07/05 全栈开发/全栈01 Koa2+Vue2+MySQL 全栈的入门尝试/" rel="prev" title="全栈01 Koa2+Vue2+MySQL 全栈的入门尝试">
+                全栈01 Koa2+Vue2+MySQL 全栈的入门尝试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理解析"><span class="nav-number">2.</span> <span class="nav-text">原理解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：Webpack在watch模式下打包更改的文件到内存中（对应图中的①②③）"><span class="nav-number">2.1.</span> <span class="nav-text">第一步：Webpack在watch模式下打包更改的文件到内存中（对应图中的①②③）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）"><span class="nav-number">2.2.</span> <span class="nav-text">第二步：webpack-dev-Server通知浏览器端文件发生变化（对应④）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步：webpack-dev-server-client接收到服务端消息做出响应（对应⑤⑪）"><span class="nav-number">2.3.</span> <span class="nav-text">第三步：webpack-dev-server/client接收到服务端消息做出响应（对应⑤⑪）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四步：Webpack接收新的hash值并请求模块代码（对应⑥⑦⑧⑨）"><span class="nav-number">2.4.</span> <span class="nav-text">第四步：Webpack接收新的hash值并请求模块代码（对应⑥⑦⑧⑨）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五步：HMR-runtime对模块进行热更新（对应⑩）"><span class="nav-number">2.5.</span> <span class="nav-text">第五步：HMR runtime对模块进行热更新（对应⑩）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第六步：业务代码改造"><span class="nav-number">2.6.</span> <span class="nav-text">第六步：业务代码改造</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

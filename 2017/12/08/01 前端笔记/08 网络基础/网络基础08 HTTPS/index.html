@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="HTTPS学习笔记。">
+<meta name="keywords" content="对称加密,非对称加密,HTTPS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络基础08 HTTPS">
+<meta property="og:url" content="http://oldzhou.cn/2017/12/08/01 前端笔记/08 网络基础/网络基础08 HTTPS/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="HTTPS学习笔记。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/FjSUtFehKucfBIg_sI3TOGl4Zl4J">
+<meta property="og:image" content="http://image.oldzhou.cn/FuCbT4h2bs8S_pH6cVtuyiCQFCTz">
+<meta property="og:updated_time" content="2019-09-26T08:02:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络基础08 HTTPS">
+<meta name="twitter:description" content="HTTPS学习笔记。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/FjSUtFehKucfBIg_sI3TOGl4Zl4J">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2017/12/08/01 前端笔记/08 网络基础/网络基础08 HTTPS/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>网络基础08 HTTPS | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2017/12/08/01 前端笔记/08 网络基础/网络基础08 HTTPS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">网络基础08 HTTPS
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-08 11:54:30" itemprop="dateCreated datePublished" datetime="2017-12-08T11:54:30+00:00">2017-12-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-26 08:02:51" itemprop="dateModified" datetime="2019-09-26T08:02:51+00:00">2019-09-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络基础/" itemprop="url" rel="index"><span itemprop="name">网络基础</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/12/08/01 前端笔记/08 网络基础/网络基础08 HTTPS/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/12/08/01 前端笔记/08 网络基础/网络基础08 HTTPS/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>HTTPS学习笔记。</p>
+<a id="more"></a>
+<h2 id="SSL-TLS协议"><a href="#SSL-TLS协议" class="headerlink" title="SSL/TLS协议"></a>SSL/TLS协议</h2><p>HTTPS（HTTP Secure）是HTTP加上加密、认证和完整性保护。不是一种新的协议，只是在HTTP通信接口部分用了SSL和TLS协议代替，也就是说在HTTP与TCP之间增加了SSL，HTTP与SSL通信，再由SSL与TCP通信。</p>
+<p>TLS是SSL协议的升级版， 目前应用最广泛的是TLS1.0和SSL3.0。</p>
+<p>不使用SSL/TLS的HTTP通信，就是不加密的通信。所有信息明文传播，带来了三大风险：</p>
+<ol>
+<li>窃听风险（eavesdropping）：第三方可以获知通信内容。</li>
+<li>篡改风险（tampering）：第三方可以修改通信内容。</li>
+<li>冒充风险（pretending）：第三方可以冒充他人身份参与通信。</li>
+</ol>
+<p>SSL/TLS协议是为了解决这三大风险而设计的，希望达到：</p>
+<ol>
+<li>所有信息都是加密传播，第三方无法窃听。</li>
+<li>具有校验机制，一旦被篡改，通信双方会立刻发现。</li>
+<li>配备身份证书，防止身份被冒充。</li>
+</ol>
+<p>SSL/TLS协议的基本思路是采用了公开密钥加密法，客户端首先向服务器索要公钥，然后用公钥加密信息，服务器收到密文后，用自己的私钥解密。</p>
+<p>这里面有两个问题：</p>
+<p><strong>（1）如何保证公钥不被篡改</strong></p>
+<p>将公钥放在CA机构颁发的数字证书中，客户端收到服务器的公钥时会使CA机构内置在浏览器中的公钥进行验证。因此只要数字证书是可信的，公钥就是可信的</p>
+<p><strong>（2）公钥加密计算量太大，如何减少耗用时间</strong></p>
+<p>在建立连接阶段使用公开密钥加密计算，生成一个“对话密钥”，在随后的通话期间信息由“对话密钥”进行共享密钥加密。共享密钥加密是对称加密，运算速度很快，而服务器公钥只用于加密“对话密钥”本身，这样就减少了加密运算的时间。</p>
+<h2 id="HTTPS的工作模式"><a href="#HTTPS的工作模式" class="headerlink" title="HTTPS的工作模式"></a>HTTPS的工作模式</h2><p>非对称加密在性能上不如对称加密，所以HTTPS采取了对称加密和非对称加密相结合的工作模式：<strong>公钥私钥主要用于传输对称加密的秘钥，而真正的双方大数据量的通信都是通过对称加密进行的</strong>。</p>
+<p>非对称加密需要通过证书和权威机构来验证公钥的合法性。</p>
+<h2 id="HTTPS的握手机制"><a href="#HTTPS的握手机制" class="headerlink" title="HTTPS的握手机制"></a>HTTPS的握手机制</h2><p>HTTPS的握手相当于SSL/TLS协议的握手和TCP协议的握手，这里主要介绍的是SSL/TLS的握手。</p>
+<p>SSL/TLS的握手阶段设涉及四次通信，这四次通信都是明文的：</p>
+<p>（1）客户端发出请求（ClientHello）</p>
+<p>客户端先想服务器发出加密通信的请求，提供一些基本信息，比如支持的TLS/SSL版本、用于生成“对话密钥”的<strong>随机数</strong>，支持的加密方法等。</p>
+<p>（2）服务器回应（ServerHello）</p>
+<p>服务器收到客户端请求后，向客户端发出回应，包含用于协商建立SSL通信的信息，比如确认使用的加密通信加密版本，<strong>服务器证书（包含服务器的公钥）</strong>、确认使用的加密方法、服务器生成的用来生成“对话密钥“的<strong>随机数</strong></p>
+<p>此外，如果服务器需要确认客户端身份，就会再包含一项请求，要求客户端提供“客户端证书”。比如金融机构往往只允许认证客户连入自己的网络，就会想正式客户提供USB密钥，里面包含了一张客户端证书。</p>
+<p>（3）客户端回应</p>
+<p>客户端收到服务器的回应后，首先验证服务器证书，如果证书不是可信机构颁布，或者证书的域名与实际域名不一致，或者证书已经过期，就会想访问者显示警告，由其选择是否还要继续通信。</p>
+<p>如果证书没有问题，客户端就会从证书中取出服务器的公钥，然后向服务器发送下面三项信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 一个随机数（pre-master-key)。这个随机数会用服务器公钥加密</span><br><span class="line">2. 编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送</span><br><span class="line">3. 客户端握手结束通知，表示客户端的握手阶段结束。这一项同时也是前面发送的所有内容的<span class="built_in">hash</span>值，用来供服务器校验</span><br></pre></td></tr></table></figure>
+<p>到此为止，握手阶段已经有了三个随机数，随后，双方就会用实现商定的加密方法，用着三个随机数各自生成用于本次会话加密的同一把“会话密钥”。为什么一定要用三个随机数呢？</p>
+<blockquote>
+<p>SSL协议中的证书是静态的，因此十分有必要引入一种随机因素来保证每次会话协商出来的密钥的随机性。所以不管是客户端还是服务器，都需要随机数，这样每次会话生成的密钥才不会每次都一样。</p>
+<p>对于RSA密钥交换算法来说，pre-master-key本身是一个随机数，再加上Hello消息中的随机数，三个随机数通过密钥到初七最终导出一个对称密钥。</p>
+<p>SSL协议不信任每个主机都能产生完全随机的随机数，如果随机数不随机，那么对话密钥就有可能被猜出来。而三个随机数一同生成的密钥就不容易被猜出来了，一个伪随机可能完全不随机，可是三个伪随机就十分接近随机了，每增加一个自由度，随机性增加的可不是一。</p>
+</blockquote>
+<p>此外，如果在第二步服务器要求客户端提供证书，那么客户端在这一步还会发送证书及相关信息。</p>
+<p>（4）服务器的最后回应</p>
+<p>服务器收到客户端的第三个随机数pre-master-key后，计算生成本次会话用的“会话密钥”，然后向客户端发最后发送下面信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 编码改变通知，表示表示随后的信息都将用双方商定的加密方法和密钥发送</span><br><span class="line">2. 服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的<span class="built_in">hash</span>值，用来供客户端校验。</span><br></pre></td></tr></table></figure>
+<p>至此，整个握手阶段全部结束，接下来客户端与服务器进入加密通信，就是完全使用HTTP协议，只不过使用“对话密钥”加密内容。</p>
+<p><img src="http://image.oldzhou.cn/FjSUtFehKucfBIg_sI3TOGl4Zl4J" alt=""></p>
+<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>公开密钥加密还有一个问题：每个服务器都可以生成自己的私钥和公钥，客户端并没有办法确定自己接收到到的公钥是否真的是目标网站的公钥，还是被替换过。</p>
+<p>即：如何证明服务器下发的公钥没有被替换？</p>
+<p>现在通用的解决方法就是通过数字证书认证机构（Certificate Authority，CA）颁发的公开密钥证书来解决这个问题。</p>
+<p>CA会为提交申请的服务器的公钥做认证，CA利用自己的私钥，对服务器的公钥和一些相关信息一起加密，生成数字证书（Digital Certificate）。这样服务器在建立HTTPS连接时不再直接下发公钥，而是下发包含着服务器公钥（经过CA私钥加密过的）的数字证书。</p>
+<p>浏览器会将CA的公开密钥事先内置到浏览器当中（避免了这个证书在传递中出现的问题）。所以客户端收到信息后，会利用CA的公钥解密数字证书，拿到服务器的真实的公钥。</p>
+<p>拿到真实的公钥后，客户端（浏览器）会根据内置的“证书管理器”来验证公钥是否真的属于目标网站</p>
+<p><img src="http://image.oldzhou.cn/FuCbT4h2bs8S_pH6cVtuyiCQFCTz" alt=""></p>
+<p>客户端的“证书管理器”有`受信任的根证书办法机构”列表，客户端会根据这个列表，查看解开数字证书的公钥是否在列表内。</p>
+<p>如果证书不是可信机构颁布，或者证书的域名与实际域名不一致，或者证书已经过期，就会想访问者显示警告，由其选择是否还要继续通信。</p>
+<h2 id="SSL延迟"><a href="#SSL延迟" class="headerlink" title="SSL延迟"></a>SSL延迟</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP耗时 = TCP握手(3次)</span><br><span class="line"></span><br><span class="line">HTTPS耗时 = TCP握手(3次) + SSL握手</span><br></pre></td></tr></table></figure>
+<p>HTTPS肯定比HTTP耗时，这就叫SSL延迟。</p>
+<p>从运行结果可以看到，SSL握手的耗时大概是TCP握手的三倍。也就是说，在建立连接的阶段，HTTPS连接比HTTP连接要长3倍的时间，具体数字取决于CPU的快慢和网络状况。</p>
+<p>所以，如果是对安全性要求不高的场合，为了提高网页性能，建议不要采用保密强度很高的数字证书。一般场合下，1024位的证书已经足够了，2048位和4096位的证书将进一步延长SSL握手的耗时。</p>
+<h2 id="升级HTTPS"><a href="#升级HTTPS" class="headerlink" title="升级HTTPS"></a>升级HTTPS</h2><h3 id="（1）获取证书"><a href="#（1）获取证书" class="headerlink" title="（1）获取证书"></a>（1）获取证书</h3><p>升级到HTTPS协议的第一步，就是要获得一张证书。</p>
+<p>证书是一个二进制文件，里面包含经过认证的网站公钥和一些元数据，要从经销商购买。</p>
+<ul>
+<li>GoGetSSL.com</li>
+<li>SSLs.com</li>
+<li>SSLmate.com</li>
+</ul>
+<p>证书有很多类型，首先分为三种认证级别。</p>
+<ul>
+<li>域名认证（Domain Validation）：最低级别认证，可以确认申请人拥有这个域名。对于这种证书，浏览器会在地址栏显示一把锁。</li>
+<li>公司认证（Company Validation）：确认域名所有人是哪一家公司，证书里面会包含公司信息。</li>
+<li>扩展认证（Extended Validation）：最高级别的认证，浏览器地址栏会显示公司名。</li>
+</ul>
+<p>还分为三种覆盖范围。</p>
+<ul>
+<li>单域名证书：只能用于单一域名，<code>foo.com</code>的证书不能用于<code>www.foo.com</code></li>
+<li>通配符证书：可以用于某个域名及其所有一级子域名，比如<code>*.foo.com</code>的证书可以用于<code>foo.com</code>，也可以用于<code>www.foo.com</code></li>
+<li>多域名证书：可以用于多个域名，比如<code>foo.com</code>和<code>bar.com</code></li>
+</ul>
+<p>认证级别越高、覆盖范围越广的证书，价格越贵。还有一个免费证书的选择。为了推广HTTPS协议，电子前哨基金会EFF成立了<code>Let&#39;s Encrypt</code>，提供免费证书（教程和工具）。</p>
+<p>拿到证书以后，可以用SSL Certificate Check检查一下，信息是否正确。</p>
+<h3 id="（2）安装证书"><a href="#（2）安装证书" class="headerlink" title="（2）安装证书"></a>（2）安装证书</h3><p>证书可以放在<code>/etc/ssl</code>目录（Linux 系统），然后根据你使用的Web服务器进行配置。</p>
+<h3 id="（3）修改链接（前端主要的工作都在此）"><a href="#（3）修改链接（前端主要的工作都在此）" class="headerlink" title="（3）修改链接（前端主要的工作都在此）"></a>（3）修改链接（前端主要的工作都在此）</h3><p>网页加载的HTTP资源，要全部改成HTTPS链接。<strong>因为加密网页内如果有非加密的资源，浏览器是不会加载那些资源的。</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://foo.com/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面这行加载命令，有两种改法：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 改法一 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://foo.com/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 改法二 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//foo.com/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中，改法二会根据当前网页的协议，加载相同协议的外部资源，更灵活一些。</p>
+<p>另外，如果页面头部用到了<code>rel=&quot;canonical&quot;</code>，也要改成HTTPS网址。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"canonical"</span> <span class="attr">href</span>=<span class="string">"https://foo.com/bar.html"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="（4）301重定向"><a href="#（4）301重定向" class="headerlink" title="（4）301重定向"></a>（4）<code>301</code>重定向</h3><p>下一步，修改Web服务器的配置文件，使用<code>301</code>重定向，将HTTP协议的访问导向HTTPS协议。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> domain.com www.domain.com;</span><br><span class="line">  <span class="attribute">return</span> <span class="number">301</span> https://domain.com<span class="variable">$request_uri</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="HTTPS的七个误解"><a href="#HTTPS的七个误解" class="headerlink" title="HTTPS的七个误解"></a>HTTPS的七个误解</h2><p>（1）HTTPS无法缓存</p>
+<p>许多人以为，出于安全考虑，浏览器不会在本地保存HTTPS缓存。实际上，只要在HTTP头中使用特定命令，HTTPS是可以缓存的。</p>
+<p>（2）SSL证书很贵</p>
+<p>如果你在网上搜一下，就会发现很多便宜的SSL证书，大概10美元一年，这和一个<code>.com</code>域名的年费差不多。而且事实上，还能找到免费的SSL证书。</p>
+<p>（3）HTTPS站点必须有独享的IP地址</p>
+<p>每个IP地址只能安装一张SSL证书，这是毫无疑问的。但是，如果你使用子域名通配符SSL证书（wildcard SSL certificate，价格大约是每年125美元），就能在一个IP地址上部署多个HTTPS子域名。</p>
+<p>比如，<code>https://www.httpwatch.com</code>和<code>https://store.httpwatch.com</code>，就共享同一个IP地址。</p>
+<p>（4）转移服务器时要购买新证书</p>
+<p>IS的做法是生成一个可以转移的<code>.pfx</code>文件，并加以密码保护。将这个文件传入其他服务器，将可以继续使用原来的SSL证书了。</p>
+<p>（5）HTTPS太慢</p>
+<p>第一次打开网页的时候，HTTPS协议会比HTTP协议慢一点，这是因为读取和验证SSL证书的时间。</p>
+<p>但是，一旦有效的HTTPS连接建立起来，再刷新网页，两种协议几乎没有区别。</p>
+<p>（6）有了HTTPS，Cookie和查询字符串就安全了</p>
+<p>虽然无法直接从HTTPS数据中读取Cookie和查询字符串，但是你仍然需要使它们的值变得难以预测。</p>
+<p>（7）只有注册登录页，才需要HTTPS</p>
+<p>这种想法很普遍。人们觉得，HTTPS可以保护用户的密码，此外就不需要了。在Twitter和Facebook上，劫持其他人的Session是非常容易的。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html" target="_blank" rel="noopener">SSL/TLS协议运行机制的概述@阮一峰的网络日志</a></li>
+<li><a href="https://www.infoq.cn/article/bZTED-LPHd1JVQqFk2ql" target="_blank" rel="noopener">HTTPS 协议：点外卖的过程原来这么复杂！@infoQ</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2011/02/seven_myths_about_https.html" target="_blank" rel="noopener">HTTPS的七个误解（译文）@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/09/ssl-latency.html" target="_blank" rel="noopener">SSL延迟有多大？@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/08/migrate-from-http-to-https.html" target="_blank" rel="noopener">HTTPS 升级指南@阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html" target="_blank" rel="noopener">数字签名是什么？@阮一峰的网络日志</a></li>
+<li>第七章 确保Web安全的HTTPS@《图解HTTP》</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/对称加密/" rel="tag"># 对称加密</a>
+          
+            <a href="/tags/非对称加密/" rel="tag"># 非对称加密</a>
+          
+            <a href="/tags/HTTPS/" rel="tag"># HTTPS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/07/01 前端笔记/05 算法/01 算法基础/算法基础01 常用排序算法/" rel="next" title="算法基础01 常用排序算法">
+                <i class="fa fa-chevron-left"></i> 算法基础01 常用排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/08/01 前端笔记/05 算法/02 算法练习/算法练习01 将一个JS数组彻底打乱顺序/" rel="prev" title="算法练习01 将一个JS数组彻底打乱顺序">
+                算法练习01 将一个JS数组彻底打乱顺序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL-TLS协议"><span class="nav-number">1.</span> <span class="nav-text">SSL/TLS协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS的工作模式"><span class="nav-number">2.</span> <span class="nav-text">HTTPS的工作模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS的握手机制"><span class="nav-number">3.</span> <span class="nav-text">HTTPS的握手机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字证书"><span class="nav-number">4.</span> <span class="nav-text">数字证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL延迟"><span class="nav-number">5.</span> <span class="nav-text">SSL延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级HTTPS"><span class="nav-number">6.</span> <span class="nav-text">升级HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）获取证书"><span class="nav-number">6.1.</span> <span class="nav-text">（1）获取证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）安装证书"><span class="nav-number">6.2.</span> <span class="nav-text">（2）安装证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）修改链接（前端主要的工作都在此）"><span class="nav-number">6.3.</span> <span class="nav-text">（3）修改链接（前端主要的工作都在此）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（4）301重定向"><span class="nav-number">6.4.</span> <span class="nav-text">（4）301重定向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS的七个误解"><span class="nav-number">7.</span> <span class="nav-text">HTTPS的七个误解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

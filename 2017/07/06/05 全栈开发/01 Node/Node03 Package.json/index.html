@@ -606,7 +606,7 @@
 <li><code>dependencies</code>表示我们要在生产环境下使用该依赖，</li>
 <li><code>devDependencies</code>则表示我们仅在开发环境使用该依赖。</li>
 </ul>
-<p>举个例子，我要用<code>webpack</code>构建代码，所以在开发环节，它是必需的，但对普通用户来说，它是不必要的，所以安装`webpack时，我要执行：</p>
+<p>举个例子，我要用Webpack构建代码，所以在开发环节，它是必需的，但对普通用户来说，它是不必要的，所以安装Wbpack时，我要执行：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install webpack --save-dev</span><br></pre></td></tr></table></figure>
 <h3 id="5-2-版本号"><a href="#5-2-版本号" class="headerlink" title="5.2 版本号"></a>5.2 版本号</h3><p>版本号 <code>major.minor.patch</code> ：其中：</p>
 <ul>
@@ -630,6 +630,11 @@
 <p>如果你需要在程序中做版本匹配，手写是不是很麻烦，其实<a href="https://github.com/npm/node-semver#functions" target="_blank" rel="noopener">npm提供了一个现成的匹配版本号的工具</a></p>
 <h3 id="5-3-区别"><a href="#5-3-区别" class="headerlink" title="5.3 区别"></a>5.3 区别</h3><p>在做项目的时候，两者可以认为没有实质的区别，但是在发布npm包的时候二者区别很大：<code>dependencies</code>下的模块会作为依赖，一起被下载；<code>devDependencies</code>下面的模块就不会自动下载了</p>
 <p>一般来说，开发时依赖的东西需要安装在<code>devDependencies</code>字段中，比如转义用的<code>babel</code>，打包用的<code>webpack</code>等，如果发布后还需要使用的则要安装在<code>dependencies</code>，比如<code>vue</code>、<code>vue-router</code>等</p>
+<blockquote>
+<p>（2019.10.16）</p>
+<p>今天发现之前的理解有些片面，这二者在<code>install</code>的时候有差别，默认的<code>npm install</code>会同时安装<code>devDependencies</code>和<code>dependencies</code>的依赖，但是如果是发布到服务器上，依赖环境也会安装在服务器，那么可以执行<code>npm install -production</code>，那么只会安装<code>dependencies</code>下的依赖，<code>install</code>的速度会更快。</p>
+<p>但是在Webpack打包<code>build</code>文件时，并不会因为模块处于<code>devDependencies</code>就不会打包，也不会因为模块处于<code>dependencies</code>就一定打包，是否打包决定于是否在代码中引入<code>import</code>。只要<code>import</code>了，无论模块写在哪里，都会被打包。但是如果<code>import</code>之后，模块并没有使用，模块也会被打包，这就是Tree Shaking的作用，移除引入后但是没有使用到的代码。</p>
+</blockquote>
 <h2 id="6-其他字段"><a href="#6-其他字段" class="headerlink" title="6 其他字段"></a>6 其他字段</h2><h3 id="6-1-main字段"><a href="#6-1-main字段" class="headerlink" title="6.1 main字段"></a>6.1 <code>main</code>字段</h3><p><code>main</code>字段指定了加载的入口文件，<code>require(&#39;moduleName&#39;)</code>就会加载这个文件。这个字段的默认值是模块根目录下面的<code>index.js</code></p>
 <h3 id="6-2-cinfig字段"><a href="#6-2-cinfig字段" class="headerlink" title="6.2 cinfig字段"></a>6.2 <code>cinfig</code>字段</h3><p>用于添加命令行的环境变量，例如：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span> : <span class="string">"foo"</span>,</span><br><span class="line">  <span class="string">"config"</span> : &#123; <span class="string">"port"</span> : <span class="string">"8080"</span> &#125;,</span><br><span class="line">  <span class="string">"scripts"</span> : &#123; <span class="string">"start"</span> : <span class="string">"node server.js"</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -726,8 +731,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/04/01 前端笔记/08 网络基础/网络基础02 HTTP缓存/" rel="prev" title="网络基础02 HTTP缓存">
-                网络基础02 HTTP缓存 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/24/01 前端笔记/02 JavaScript/01 语言理解/JS语言理解07 this的理解/" rel="prev" title="JS语言理解07 this的理解">
+                JS语言理解07 this的理解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -804,7 +809,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-count">142</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -855,7 +860,17 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1130,7 +1145,135 @@
                     
                       
                     
-                    <span class="site-state-item-count">131</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

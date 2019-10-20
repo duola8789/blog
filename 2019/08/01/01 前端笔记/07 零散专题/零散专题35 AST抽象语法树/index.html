@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="AST抽象语法树学习笔记。">
+<meta name="keywords" content="Babel,AST">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零散专题35 AST抽象语法树">
+<meta property="og:url" content="http://oldzhou.cn/2019/08/01/01 前端笔记/07 零散专题/零散专题35 AST抽象语法树/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="AST抽象语法树学习笔记。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/FghfGt6-abAekpIk3IZQeCdRiPae">
+<meta property="og:image" content="http://image.oldzhou.cn/Ft_l0slhgR-hd7KdFjWqAbxgnnwZ">
+<meta property="og:image" content="http://image.oldzhou.cn/FlH29OFwifeYWhw62_PkenyIHObl">
+<meta property="og:image" content="http://image.oldzhou.cn/FnTKobs0WWza3GzqHS2np0f0j6DH">
+<meta property="og:updated_time" content="2019-08-08T18:27:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零散专题35 AST抽象语法树">
+<meta name="twitter:description" content="AST抽象语法树学习笔记。">
+<meta name="twitter:image" content="http://image.oldzhou.cn/FghfGt6-abAekpIk3IZQeCdRiPae">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/08/01/01 前端笔记/07 零散专题/零散专题35 AST抽象语法树/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>零散专题35 AST抽象语法树 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/08/01/01 前端笔记/07 零散专题/零散专题35 AST抽象语法树/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">零散专题35 AST抽象语法树
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-01 17:53:56" itemprop="dateCreated datePublished" datetime="2019-08-01T17:53:56+00:00">2019-08-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-08 18:27:34" itemprop="dateModified" datetime="2019-08-08T18:27:34+00:00">2019-08-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/零散专题/" itemprop="url" rel="index"><span itemprop="name">零散专题</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/01/01 前端笔记/07 零散专题/零散专题35 AST抽象语法树/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/08/01/01 前端笔记/07 零散专题/零散专题35 AST抽象语法树/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>AST抽象语法树学习笔记。</p>
+<a id="more"></a>
+<h2 id="什么是抽象语法树"><a href="#什么是抽象语法树" class="headerlink" title="什么是抽象语法树"></a>什么是抽象语法树</h2><p>抽象语法树（abstract syntax tree，AST，或者简称语法树）是源代码的抽象语法结构的树状表现形式，它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。</p>
+<p>之所以说是抽象的，是因为这里的语法并不会表示出真实语法中出现的每个细节，比如嵌套括号被隐含在树结构中，并不会以节点的形式呈现出来。而类似于<code>if...else</code>这样的条件语句，可以使用两个分支的节点来表示。</p>
+<p>比如下面这段代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (b !== <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (a &gt; b) &#123;</span><br><span class="line">      a = a - b</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      b = b - a</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a;</span><br></pre></td></tr></table></figure>
+<p>它的对应的抽象语法树如下：</p>
+<p><img src="http://image.oldzhou.cn/FghfGt6-abAekpIk3IZQeCdRiPae" alt=""></p>
+<p>可以通过<a href="https://astexplorer.net" target="_blank" rel="noopener">astexplorer</a>这个网站，将我们输入的代码转换为AST展示出来，可以展示为书结构，也可以直接以JSON格式展示，比如在左侧输入<code>let a = 123;</code>，对应的语法树：</p>
+<p><img src="http://image.oldzhou.cn/Ft_l0slhgR-hd7KdFjWqAbxgnnwZ" alt=""></p>
+<p>也可以直接输入JSON：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"type"</span>: <span class="string">"Program"</span>,</span><br><span class="line">  <span class="string">"start"</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="string">"end"</span>: <span class="number">12</span>,</span><br><span class="line">  <span class="string">"body"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"type"</span>: <span class="string">"VariableDeclaration"</span>,</span><br><span class="line">      <span class="string">"start"</span>: <span class="number">0</span>,</span><br><span class="line">      <span class="string">"end"</span>: <span class="number">12</span>,</span><br><span class="line">      <span class="string">"declarations"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">"type"</span>: <span class="string">"VariableDeclarator"</span>,</span><br><span class="line">          <span class="string">"start"</span>: <span class="number">4</span>,</span><br><span class="line">          <span class="string">"end"</span>: <span class="number">11</span>,</span><br><span class="line">          <span class="string">"id"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">            <span class="string">"start"</span>: <span class="number">4</span>,</span><br><span class="line">            <span class="string">"end"</span>: <span class="number">5</span>,</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"a"</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"init"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"Literal"</span>,</span><br><span class="line">            <span class="string">"start"</span>: <span class="number">8</span>,</span><br><span class="line">            <span class="string">"end"</span>: <span class="number">11</span>,</span><br><span class="line">            <span class="string">"value"</span>: <span class="number">123</span>,</span><br><span class="line">            <span class="string">"raw"</span>: <span class="string">"123"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="string">"kind"</span>: <span class="string">"let"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"sourceType"</span>: <span class="string">"module"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>语法树中每个元素可以成为一个节点（node），类型包括：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(parameter) node: </span><br><span class="line">Identifier | SimpleLiteral | RegExpLiteral | Program | FunctionDeclaration | FunctionExpression |</span><br><span class="line">ArrowFunctionExpression | SwitchCase | CatchClause | VariableDeclarator | ExpressionStatement |</span><br><span class="line">BlockStatement | EmptyStatement | DebuggerStatement | WithStatement | ReturnStatement |</span><br><span class="line">LabeledStatement | BreakStatement | ContinueStatement | IfStatement | SwitchStatement | ThrowStatement | </span><br><span class="line">TryStatement | WhileStatement | DoWhileStatement | ForStatement | ForInStatement | ForOfStatement |</span><br><span class="line">VariableDeclaration | ClassDeclaration | ThisExpression | ArrayExpression | ObjectExpression |</span><br><span class="line">YieldExpression | UnaryExpression | UpdateExpression | BinaryExpression | AssignmentExpression |</span><br><span class="line">LogicalExpression | MemberExpression | ConditionalExpression | SimpleCallExpression | NewExpression |</span><br><span class="line">SequenceExpression | TemplateLiteral | TaggedTemplateExpression | ClassExpression | MetaProperty |</span><br><span class="line">AwaitExpression | Property | AssignmentProperty | Super | TemplateElement | SpreadElement |</span><br><span class="line">ObjectPattern | ArrayPattern | RestElement | AssignmentPattern | ClassBody | MethodDefinition |</span><br><span class="line">ImportDeclaration | ExportNamedDeclaration | ExportDefaultDeclaration | ExportAllDeclaration |</span><br><span class="line">ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier | ExportSpecifier</span><br></pre></td></tr></table></figure>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>平时我们好像从来没有接触过AST，但是实际上它的适用场景一直相伴左右，比如：</p>
+<ul>
+<li>JS反编译，语法解析</li>
+<li>Babel编译ES6语法</li>
+<li>代码高亮</li>
+<li>关键字匹配</li>
+<li>作用域判断</li>
+<li>代码压缩</li>
+</ul>
+<h2 id="AST分析"><a href="#AST分析" class="headerlink" title="AST分析"></a>AST分析</h2><p>使用刚才提到的<a href="https://astexplorer.net/" target="_blank" rel="noopener">astexplorer</a>这个网站，解析<code>1 + 2 * 3</code>，得到的AST语法树</p>
+<p><img src="http://image.oldzhou.cn/FlH29OFwifeYWhw62_PkenyIHObl" alt=""></p>
+<p>从语法树我们开出来，<code>body</code>里面的<code>exporession</code>（表达式）是<code>BinaryExpress</code>（二院表达式），<code>start</code>和<code>end</code>标识了我们这个表达式字符的起止位置，<code>operator</code>是<code>+</code>，然后<code>left</code>属性的值是一个<code>Literal</code>字面量，<code>value</code>是<code>2</code>，<code>right</code>属性的值又是另外一个<code>BinaryExpress</code>，<code>left</code>的值是<code>2</code>，<code>operator</code>是<code>*</code>，<code>right</code>右侧值是<code>3</code></p>
+<p>这样，通过一个树状结构，将我们输入的表达式明明白白展示出来了。</p>
+<p>将表达式添加一个括号，变成<code>(1 + 2) * 3</code>，得到的新的语法树：</p>
+<p><img src="http://image.oldzhou.cn/FnTKobs0WWza3GzqHS2np0f0j6DH" alt=""></p>
+<p>可以看出来，<code>left</code>值变为了一个<code>BinaryExpress</code>，<code>operator</code>是<code>*</code>，<code>right</code>值是<code>3</code>。</p>
+<p>比较两个表达式的语法树，可以发现：</p>
+<ol>
+<li>在确定类型为<code>ExpressionSatatement</code>后，会按照代码执行的先后顺序，将表达式<code>BinaryExpression</code>分解为<code>left</code>、<code>operator</code>、<code>right</code>三部分</li>
+<li>每部分都标明了类型、起止位置、值等信息</li>
+<li>标明了操作符类型</li>
+</ol>
+<p>再来看一下常用的箭头函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fn = <span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>AST的JSON结果：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"type"</span>: <span class="string">"Program"</span>,</span><br><span class="line">  <span class="string">"start"</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="string">"end"</span>: <span class="number">40</span>,</span><br><span class="line">  <span class="string">"body"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"type"</span>: <span class="string">"VariableDeclaration"</span>,</span><br><span class="line">      <span class="string">"start"</span>: <span class="number">0</span>,</span><br><span class="line">      <span class="string">"end"</span>: <span class="number">40</span>,</span><br><span class="line">      <span class="string">"declarations"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">"type"</span>: <span class="string">"VariableDeclarator"</span>,</span><br><span class="line">          <span class="string">"start"</span>: <span class="number">6</span>,</span><br><span class="line">          <span class="string">"end"</span>: <span class="number">39</span>,</span><br><span class="line">          <span class="string">"id"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">            <span class="string">"start"</span>: <span class="number">6</span>,</span><br><span class="line">            <span class="string">"end"</span>: <span class="number">8</span>,</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"fn"</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"init"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"ArrowFunctionExpression"</span>,</span><br><span class="line">            <span class="string">"start"</span>: <span class="number">11</span>,</span><br><span class="line">            <span class="string">"end"</span>: <span class="number">39</span>,</span><br><span class="line">            <span class="string">"id"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="string">"expression"</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">"generator"</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">"params"</span>: [</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">                <span class="string">"start"</span>: <span class="number">12</span>,</span><br><span class="line">                <span class="string">"end"</span>: <span class="number">13</span>,</span><br><span class="line">                <span class="string">"name"</span>: <span class="string">"a"</span></span><br><span class="line">              &#125;,</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">                <span class="string">"start"</span>: <span class="number">15</span>,</span><br><span class="line">                <span class="string">"end"</span>: <span class="number">16</span>,</span><br><span class="line">                <span class="string">"name"</span>: <span class="string">"b"</span></span><br><span class="line">              &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"body"</span>: &#123;</span><br><span class="line">              <span class="string">"type"</span>: <span class="string">"BlockStatement"</span>,</span><br><span class="line">              <span class="string">"start"</span>: <span class="number">21</span>,</span><br><span class="line">              <span class="string">"end"</span>: <span class="number">39</span>,</span><br><span class="line">              <span class="string">"body"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="string">"type"</span>: <span class="string">"ReturnStatement"</span>,</span><br><span class="line">                  <span class="string">"start"</span>: <span class="number">25</span>,</span><br><span class="line">                  <span class="string">"end"</span>: <span class="number">37</span>,</span><br><span class="line">                  <span class="string">"argument"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"BinaryExpression"</span>,</span><br><span class="line">                    <span class="string">"start"</span>: <span class="number">32</span>,</span><br><span class="line">                    <span class="string">"end"</span>: <span class="number">37</span>,</span><br><span class="line">                    <span class="string">"left"</span>: &#123;</span><br><span class="line">                      <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">                      <span class="string">"start"</span>: <span class="number">32</span>,</span><br><span class="line">                      <span class="string">"end"</span>: <span class="number">33</span>,</span><br><span class="line">                      <span class="string">"name"</span>: <span class="string">"a"</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="string">"operator"</span>: <span class="string">"+"</span>,</span><br><span class="line">                    <span class="string">"right"</span>: &#123;</span><br><span class="line">                      <span class="string">"type"</span>: <span class="string">"Identifier"</span>,</span><br><span class="line">                      <span class="string">"start"</span>: <span class="number">36</span>,</span><br><span class="line">                      <span class="string">"end"</span>: <span class="number">37</span>,</span><br><span class="line">                      <span class="string">"name"</span>: <span class="string">"b"</span></span><br><span class="line">                    &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line">              ]</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="string">"kind"</span>: <span class="string">"const"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"sourceType"</span>: <span class="string">"module"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>耐下性子，仔细读一下语法树，其实也不难理解，首先<code>body</code>的<code>type</code>变为了<code>VariableDeclaration</code>，<code>declarations</code>是一个数组，首先声明了<code>fn</code>这个变量，然后在<code>init</code>里面是一个<code>type</code>为<code>ArrowFunctionExpression</code>的节点，里面有<code>params</code>、<code>body</code>、<code>ReturnStatement</code>等各种用来标识箭头函数的属性值，</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>从上面可以看出来，抽象语法树其实就是将一类标签转化成通用标识符，从而归纳出的一个类似于树形结构的语法树。</p>
+<p>那么这个过程是如何实现的呢？</p>
+<p>简单学习了一下，首先需要几个工具包用来解析JS语法、遍历树结构以及生成新的树结构：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> esprima = <span class="built_in">require</span>(<span class="string">'esprima'</span>); <span class="comment">// 解析js的语法的包</span></span><br><span class="line"><span class="keyword">const</span> estraverse = <span class="built_in">require</span>(<span class="string">'estraverse'</span>); <span class="comment">// 遍历树的包</span></span><br><span class="line"><span class="keyword">const</span> escodegen = <span class="built_in">require</span>(<span class="string">'escodegen'</span>); <span class="comment">// 生成新的树的包</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> code = <span class="string">`function getAST()&#123;&#125;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//解析js的语法</span></span><br><span class="line"><span class="keyword">let</span> tree = esprima.parseScript(code);</span><br><span class="line"><span class="comment">//遍历树</span></span><br><span class="line">estraverse.traverse(tree, &#123;</span><br><span class="line">  enter(node) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'enter: '</span> + node.type);</span><br><span class="line">  &#125;,</span><br><span class="line">  leave(node) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'leave: '</span> + node.type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成新的树</span></span><br><span class="line"><span class="keyword">let</span> r = escodegen.generate(tree);</span><br><span class="line"><span class="built_in">console</span>.log(r);</span><br></pre></td></tr></table></figure>
+<p>通过遍历、修改抽象语法树，我们可以去改变任何输出结果，也就是说，在编译的过程中，借助抽象语法树，我们可以去改变原来的输入，得到想要的结果。</p>
+<p>这也就是Babel转义JavaScript代码的原理。</p>
+<h2 id="关于Babel"><a href="#关于Babel" class="headerlink" title="关于Babel"></a>关于Babel</h2><p>Babel使用一个基于ESTree并修改过的AST，它的内核说明文档可以在<a href="https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md" target="_blank" rel="noopener">这里</a>找到。</p>
+<p>Babel的三个主要处理步骤分别是： 解析（parse），转换（transform），生成（generate）。</p>
+<p>（1）解析</p>
+<p>接受代码并输出AST，这个步骤又分为两个阶段：词法分析（Lexical Aanalysis）和语法分析（Syntactic Analysis）</p>
+<p>词法分析阶段把字符串形式的代码转换为令牌流，可以将令牌看做一个扁平的语法片段数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">n * n;</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">  &#123; <span class="attr">type</span>: &#123; ... &#125;, <span class="attr">value</span>: <span class="string">"n"</span>, <span class="attr">start</span>: <span class="number">0</span>, <span class="attr">end</span>: <span class="number">1</span>, <span class="attr">loc</span>: &#123; ... &#125; &#125;,</span><br><span class="line">  &#123; <span class="attr">type</span>: &#123; ... &#125;, <span class="attr">value</span>: <span class="string">"*"</span>, <span class="attr">start</span>: <span class="number">2</span>, <span class="attr">end</span>: <span class="number">3</span>, <span class="attr">loc</span>: &#123; ... &#125; &#125;,</span><br><span class="line">  &#123; <span class="attr">type</span>: &#123; ... &#125;, <span class="attr">value</span>: <span class="string">"n"</span>, <span class="attr">start</span>: <span class="number">4</span>, <span class="attr">end</span>: <span class="number">5</span>, <span class="attr">loc</span>: &#123; ... &#125; &#125;,</span><br><span class="line">  ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>其中每一个<code>type</code>都有一组数形来描述该令牌，和AST节点一样也有<code>start</code>、<code>end</code>等属性：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  type: &#123;</span><br><span class="line">    label: <span class="string">'name'</span>,</span><br><span class="line">    keyword: <span class="literal">undefined</span>,</span><br><span class="line">    beforeExpr: <span class="literal">false</span>,</span><br><span class="line">    startsExpr: <span class="literal">true</span>,</span><br><span class="line">    rightAssociative: <span class="literal">false</span>,</span><br><span class="line">    isLoop: <span class="literal">false</span>,</span><br><span class="line">    isAssign: <span class="literal">false</span>,</span><br><span class="line">    prefix: <span class="literal">false</span>,</span><br><span class="line">    postfix: <span class="literal">false</span>,</span><br><span class="line">    binop: <span class="literal">null</span>,</span><br><span class="line">    updateContext: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>语法分析阶段会吧一个令牌转换成AST的形式，这个阶段会使用令牌中的信息把他们转换成一个AST的表述结构，便于后续操作</p>
+<p>（2）转换</p>
+<p>接受AST并对其进行遍历，此过程中对节点进行添加、更新和移除等操作。这是Babel最复杂的过程，也是Babel插件接入工作的部分。</p>
+<p>（3）生成</p>
+<p>深度优先遍历将经过一系列转换后的AST，并将其转换成字符串形式的代码，同时还会创建源码映射。</p>
+<h2 id="单元测试覆盖率"><a href="#单元测试覆盖率" class="headerlink" title="单元测试覆盖率"></a>单元测试覆盖率</h2><p>JavaScript单元测试覆盖率统计方法的核心思想，是在源代码响应的位置注入设定的统计代码，当执行测试代码的时候，代码运行到注入的地方，就会执行对应的统计代码，生成覆盖率统计报告。大概步骤如下：</p>
+<p>（1）对源代码进行语法分析、解析，然后生成抽象语法树</p>
+<p>（2）在语法树相应的位置注入统计代码。</p>
+<p>在程序执行到这个位置的时候对相应的全局变量赋值，确保执行之后能够根据全局变量知道代码的执行流程。</p>
+<p>（3）通过注入统计代码的抽象语法树，生成对应的JavaScript代码</p>
+<p>（4）将生成好的JavaScript代码交给执行环境（Node或者浏览器）运行</p>
+<p>（5）执行单元测试，产生的统计信息，放到全局变量里面。</p>
+<p>（6）根据全局变量中的覆盖率信息生成特定格式的报告。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>大致学习了一下AST的知识，并没有很深入，只是了解到AST是对源代码的一种树状结构的表示形式，可以用来在编译阶段对代码进行处理。Babel之所以能够实现JavaScript的转换，就是利用了AST，经历了解析、转换、生成三个步骤，其中转换是最复杂的步骤，各种Babel的插件也是在这个步骤中发挥作用。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://zh.wikipedia.org/zh-hans/%E6%8A%BD%E8%B1%A1%E8%AA%9E%E6%B3%95%E6%A8%B9" target="_blank" rel="noopener">抽象语法树@维基百科</a></li>
+<li><a href="http://jartto.wang/2018/11/17/about-ast/" target="_blank" rel="noopener">AST 抽象语法树@jartto</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/61780633" target="_blank" rel="noopener">Babel 插件有啥用？@知乎</a></li>
+<li><a href="https://segmentfault.com/a/1190000010838845" target="_blank" rel="noopener">代码测试覆盖率分析@segmentfault</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Babel/" rel="tag"># Babel</a>
+          
+            <a href="/tags/AST/" rel="tag"># AST</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/31/01 前端笔记/13 源码学习/源码学习01 Axios/" rel="next" title="源码学习01 Axios">
+                <i class="fa fa-chevron-left"></i> 源码学习01 Axios
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/05/01 前端笔记/05 算法/02 算法练习/算法练习08 用栈实现队列/" rel="prev" title="算法练习08 用栈实现队列">
+                算法练习08 用栈实现队列 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是抽象语法树"><span class="nav-number">1.</span> <span class="nav-text">什么是抽象语法树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AST分析"><span class="nav-number">3.</span> <span class="nav-text">AST分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">4.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Babel"><span class="nav-number">5.</span> <span class="nav-text">关于Babel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单元测试覆盖率"><span class="nav-number">6.</span> <span class="nav-text">单元测试覆盖率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

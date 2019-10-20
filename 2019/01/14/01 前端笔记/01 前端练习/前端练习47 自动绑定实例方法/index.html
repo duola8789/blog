@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="不负好时光">
 <meta property="og:description" content="利用Proxy自动绑定实例方法">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-27T01:53:09.855Z">
+<meta property="og:updated_time" content="2019-01-14T11:31:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="前端练习47 自动绑定实例方法">
 <meta name="twitter:description" content="利用Proxy自动绑定实例方法">
@@ -421,22 +421,6 @@
             
 
             
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-27 01:53:09" itemprop="dateModified" datetime="2019-06-27T01:53:09+00:00">2019-06-27</time>
-              
-            
           </span>
 
           
@@ -520,7 +504,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> BoundPerson = autoBind(Person)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> lucy = <span class="keyword">new</span> BoundPerson(<span class="string">'Lucy'</span>)</span><br><span class="line"><span class="keyword">const</span> sayHi = lucy.sayHi</span><br><span class="line">sayHi() <span class="comment">// =&gt; I am Lucy.</span></span><br></pre></td></tr></table></figure>
 <p>注意，如果<code>autoBind</code>以后给原来的类新增方法，也会自动反映在实例上，例如：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.sayGood = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`I am <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>. I am good!`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sayGood = lucy.sayGood</span><br><span class="line">sayGood() <span class="comment">// =&gt; I am Lucy. I am good!</span></span><br></pre></td></tr></table></figure>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>一上来我就想到了可以使用Proxy来拦截<code>new</code>的操作符，后来又试了试用<code>extends</code>方法，都可以实现一半，但是后一半，也就是“自动反映在实力上”这个要求没办法实现</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>一上来我就想到了可以使用Proxy来拦截<code>new</code>的操作符，后来又试了试用<code>extends</code>方法，都可以实现一半，但是后一半，也就是“自动反映在实例上”这个要求没办法实现</p>
 <p>先讲一下我用Proxy的实现，利用<code>handler.construct</code>方法，拦截了<code>new</code>的操作</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> autoBind = <span class="function">(<span class="params">ToBindClass</span>) =&gt;</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(ToBindClass, &#123;</span><br><span class="line">  construct(targets, argus, newTarget) &#123;</span><br><span class="line">    <span class="keyword">const</span> self = <span class="keyword">new</span> targets(...argus);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Object</span>.getOwnPropertyNames(targets.prototype).forEach(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">      self[v] = targets.prototype[v].bind(<span class="keyword">new</span> targets(...argus))</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> self</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>在构造函数的方法中，使用了<code>Object.getOwnPropertyNames(targets.prototype)</code>对原型上的方法遍历进行绑定</p>
@@ -675,7 +659,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-count">142</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -726,7 +710,17 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1001,7 +995,135 @@
                     
                       
                     
-                    <span class="site-state-item-count">131</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

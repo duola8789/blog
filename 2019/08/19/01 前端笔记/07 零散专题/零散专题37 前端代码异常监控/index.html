@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo-new.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前端代码异常监控学习笔记，原文地址：前端代码异常监控实战@掘金">
+<meta name="keywords" content="异常,错误">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零散专题37 前端代码异常监控">
+<meta property="og:url" content="http://oldzhou.cn/2019/08/19/01 前端笔记/07 零散专题/零散专题37 前端代码异常监控/index.html">
+<meta property="og:site_name" content="不负好时光">
+<meta property="og:description" content="前端代码异常监控学习笔记，原文地址：前端代码异常监控实战@掘金">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.oldzhou.cn/Ftp2y1nmZgI3pE7Xz5wrWVgL-EWm">
+<meta property="og:image" content="http://image.oldzhou.cn/Fu_UmdAwoJjcaMJB2P2ENnHDg1U5">
+<meta property="og:image" content="http://image.oldzhou.cn/FhrTjuRG1jfMzCO_p7v31kpebtGH">
+<meta property="og:image" content="http://image.oldzhou.cn/FtQua5g2ZSu0LUQrQZWb_0Kb7VB_">
+<meta property="og:image" content="http://image.oldzhou.cn/Fis3U4auwmAXnKs6iFbvscW_ELRP">
+<meta property="og:image" content="http://image.oldzhou.cn/FuKxlzPhNC_YhUR9tc-t9d5YPfOz">
+<meta property="og:image" content="http://image.oldzhou.cn/Fhic8RI9Tk8BNrQ2khwZiymjhV1z">
+<meta property="og:image" content="http://image.oldzhou.cn/FgNP1nfPuZ4An38Ce6-Fewbx20IX">
+<meta property="og:image" content="http://image.oldzhou.cn/FhrLIY86IS994zAlH11QFZG8PhHO">
+<meta property="og:image" content="http://image.oldzhou.cn/FursulV7GxoU9F3LV2KLZl4d5EcR">
+<meta property="og:image" content="http://image.oldzhou.cn/FhrQHyNW2KSMEaZ2IT1fB3kj3_0s">
+<meta property="og:image" content="http://image.oldzhou.cn/Fka4JA5E_3OF5noy0t_mKk6CsTLK">
+<meta property="og:image" content="http://image.oldzhou.cn/FkVJHU_OtPUcWEW6dgSJS8ET6xaH">
+<meta property="og:image" content="http://image.oldzhou.cn/Fj67X2tn_c-svj8N1dJk1-M6lmzb">
+<meta property="og:image" content="http://image.oldzhou.cn/FmOZxU4fiqwt4QC9-_1ueWurqM0n">
+<meta property="og:image" content="http://image.oldzhou.cn/FhBgl9XxbXjXfGVaQbM-0uwS4p2t">
+<meta property="og:image" content="http://image.oldzhou.cn/FvrncCMKQCfVcH21j0KXAKkxG81-">
+<meta property="og:updated_time" content="2019-08-19T16:39:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零散专题37 前端代码异常监控">
+<meta name="twitter:description" content="前端代码异常监控学习笔记，原文地址：前端代码异常监控实战@掘金">
+<meta name="twitter:image" content="http://image.oldzhou.cn/Ftp2y1nmZgI3pE7Xz5wrWVgL-EWm">
+
+
+
+
+
+
+  <link rel="canonical" href="http://oldzhou.cn/2019/08/19/01 前端笔记/07 零散专题/零散专题37 前端代码异常监控/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>零散专题37 前端代码异常监控 | 不负好时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不负好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">没什么才华，就剩一点坚持</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="http://www.oldzhou.cn/pages/page1.html" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://oldzhou.cn/2019/08/19/01 前端笔记/07 零散专题/零散专题37 前端代码异常监控/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="哆啦斯基周">
+      <meta itemprop="description" content="一个大龄前端程序员的技术博客">
+      <meta itemprop="image" content="/images/avatar3.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不负好时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">零散专题37 前端代码异常监控
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+         
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-19 16:39:49 / 修改时间：16:39:51" itemprop="dateCreated datePublished" datetime="2019-08-19T16:39:49+00:00">2019-08-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/零散专题/" itemprop="url" rel="index"><span itemprop="name">零散专题</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/19/01 前端笔记/07 零散专题/零散专题37 前端代码异常监控/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/08/19/01 前端笔记/07 零散专题/零散专题37 前端代码异常监控/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前端代码异常监控学习笔记，原文地址：<a href="https://juejin.im/entry/5a30e14d51882554bd510bea" target="_blank" rel="noopener">前端代码异常监控实战@掘金</a></p>
+<a id="more"></a>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>JavaScript中的异常并不会导致JavaScript引擎崩溃，最多只会让当前执行的任务停止。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(error);</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">'不会执行'</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">'继续执行'</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Ftp2y1nmZgI3pE7Xz5wrWVgL-EWm" alt=""></p>
+<p>在对错误及哦啊本进行上报之前，需要对异常进行处理，程序首先要感知到脚本错误的发生，然后再进行异常上报</p>
+<p>我们需要处理的错误根据导致的原因分类有以下几种：</p>
+<ol>
+<li>语法错误</li>
+<li>运行时错误</li>
+<li>网络请求错误</li>
+<li><code>iframe</code>中的错误</li>
+</ol>
+<p>根据抛出错误的代码所属的任务队列可以分为：</p>
+<ol>
+<li>同步错误</li>
+<li>异步错误（非Promise）</li>
+<li>Promise错误</li>
+</ol>
+<h3 id="try-catch异常处理"><a href="#try-catch异常处理" class="headerlink" title="try...catch异常处理"></a><code>try...catch</code>异常处理</h3><p>通过使用<code>try...catch</code>结构包裹代码，当<code>try</code>代码块发生错误时，<code>catch</code>能捕获到错误的信息，页面可以继续执行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error); <span class="comment">// 运行时错误</span></span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕捉到了'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Fu_UmdAwoJjcaMJB2P2ENnHDg1U5" alt=""></p>
+<p>但是<code>try...catch</code>处理异常的能力有限，<strong>只能捕获到运行时非异步错误，对于语法错误和异步错误都捕捉不到</strong>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'error'</span>; <span class="comment">// 语法错误，少了半个括号</span></span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕捉到了'</span>, e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FhrTjuRG1jfMzCO_p7v31kpebtGH" alt=""></p>
+<p>异步错误：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(error);  <span class="comment">// 异步错误</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕捉到了'</span>, e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FtQua5g2ZSu0LUQrQZWb_0Kb7VB_" alt=""></p>
+<h3 id="error事件"><a href="#error事件" class="headerlink" title="error事件"></a><code>error</code>事件</h3><p>可以在<code>window.onerror</code>事件中捕获异常，它的捕获异常能力优于<code>try...catch</code>，主要原因在于：</p>
+<ol>
+<li><code>window.onerror</code>是全局捕获，而<code>try...catch</code>针对的是具体的代码块</li>
+<li><strong><code>window.onerror</code>可以捕获同步错误以及异步错误</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到了错误'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(&#123;msg, url, row, col ,error&#125;);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>同步错误：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(error); <span class="comment">// 同步错误</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Fis3U4auwmAXnKs6iFbvscW_ELRP" alt=""></p>
+<p>异步错误：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error); <span class="comment">// 异步错误</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FuKxlzPhNC_YhUR9tc-t9d5YPfOz" alt=""></p>
+<p>但是<code>window.onerror</code>也无法捕获语法错误。所以在实际使用时，<strong>一般使用<code>onerror</code>来捕获预料之外的错误，<code>try...catch</code>用来在可预见情况下监控特定的情况，二者需要结合使用。</strong></p>
+<p>有几点需要注意</p>
+<p>（1）<code>window.onerror</code>只有在返回<code>true</code>的时候，异常才不会向上抛出，否则即使捕获到了异常，控制台还是会显示<code>Uncaught Error</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到了错误'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(&#123;msg, url, row, col ,error&#125;);</span><br><span class="line">  <span class="comment">// return true;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(error);</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Fhic8RI9Tk8BNrQ2khwZiymjhV1z" alt=""></p>
+<p>（2）包含<code>window.onerror</code>代码的脚本最好写在所有脚本的最前面，如果放在某些脚本的后面，那么发生错误就无法捕获</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(error);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(<span class="string">'捕获到了错误'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(&#123;msg, url, row, col ,error&#125;);</span></span><br><span class="line"><span class="javascript">  <span class="comment">// return true;</span></span></span><br><span class="line"><span class="undefined">&#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FgNP1nfPuZ4An38Ce6-Fewbx20IX" alt=""></p>
+<p>（3）<code>window.onerror</code>无法捕获网络异常的错误</p>
+<p>例如当图片加载失败发返回<code>404</code>的异常时，<code>onerror</code>是捕获不到的：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(<span class="string">'捕获到了错误'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(&#123;msg, url, row, col ,error&#125;);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">&#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"./404.jpg"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FhrLIY86IS994zAlH11QFZG8PhHO" alt=""></p>
+<p>这是因为网络请求的错误不会事件冒泡，所以必须在捕获阶段去捕获异常：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.addEventListener(<span class="string">'error'</span>, e =&gt; &#123;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(<span class="string">'捕获到了错误'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(e);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">&#125;, <span class="literal">true</span>)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"./404.jpg"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FursulV7GxoU9F3LV2KLZl4d5EcR" alt=""></p>
+<p>虽然可以捕获到网络请求的异常，但是无法具体判断HTTP的状态和返回码，需要配合服务端日志以及对网络请求进行拦截进行排查分析才可以。</p>
+<h3 id="unhandledrejection"><a href="#unhandledrejection" class="headerlink" title="unhandledrejection"></a><code>unhandledrejection</code></h3><p><code>try..catch</code>和<code>window.onerror</code>都无法捕获在Promise中抛出的错误：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到Promise的错误'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">console</span>.log(error))</span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到Promise的错误'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FhrQHyNW2KSMEaZ2IT1fB3kj3_0s" alt=""></p>
+<p>对于Promise来说，虽然可以再每一个实例后面添加<code>catch</code>来捕获特定的实例中抛出的错误，但是通过<code>unhandledrejection</code>来全局捕获异常也是非常必要的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'unhandledrejection'</span>, e =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到Promise的错误'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(e);</span><br><span class="line">  e.preventDefault();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">console</span>.log(error))</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Fka4JA5E_3OF5noy0t_mKk6CsTLK" alt=""></p>
+<p>当然如果异常在Promise的实例中进行了捕获，那么在<code>unhandledrejection</code>中就捕获不到了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'unhandledrejection'</span>, e =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'全部捕获到了'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(e);</span><br><span class="line">  e.preventDefault();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">console</span>.log(error)).catch(<span class="function"><span class="params">e</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'实例中捕获到了'</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FkVJHU_OtPUcWEW6dgSJS8ET6xaH" alt=""></p>
+<h2 id="iframe中的错误"><a href="#iframe中的错误" class="headerlink" title="iframe中的错误"></a><code>iframe</code>中的错误</h2><p>如果页面中使用了<code>&lt;iframe&gt;</code>，需要对引入的<code>&lt;iframe&gt;</code>进行异常监控，否则如果引入的页面出现问题，内容显示不出来，但是我们却一无所知。</p>
+<p>父窗口直接使用<code>window.error</code>是无法直接捕获<code>&lt;iframe&gt;</code>中的错误的，需要分下面几种情况进行处理：</p>
+<p>（1）<code>&lt;iframe&gt;</code>页面与当前页面同域名的话，可以直接给<code>&lt;iframe&gt;</code>添加<code>onerror</code>事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.frames[<span class="number">0</span>].onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error </span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到了iframe中的错误'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(&#123;</span><br><span class="line">    msg,  url,  row, col, error</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/Fj67X2tn_c-svj8N1dJk1-M6lmzb" alt=""></p>
+<p>（2）如果嵌入的<code>&lt;iframe&gt;</code>中的页面与当前页面不是同一个域名，那么上面的方法就行不通了。如果我们拥有<code>&lt;iframe&gt;</code>的控制权的话，可以通过与<code>&lt;iframe&gt;</code>通信的方式将异常信息发送给主页面，通信的方式很多，比如<code>postMessage</code>事件等</p>
+<p>在<code>iframe</code>中发送消息，注意需要使用<code>window.top</code>进行发送，不能直接使用<code>window</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// iframe 中</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">window</span>.top !== <span class="built_in">window</span>) &#123;</span><br><span class="line">    top.postMessage(e, <span class="string">'http://localhost:63342/demos/demo36-瀑布流/瀑布流-Flex.html'</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(error); <span class="comment">// 错误</span></span><br></pre></td></tr></table></figure>
+<p>在主页面中需要监听<code>message</code>事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>, (e) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'捕获到了iframe中的错误'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(e.data);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FmOZxU4fiqwt4QC9-_1ueWurqM0n" alt=""></p>
+<p>（3）<code>&lt;iframe&gt;</code>的域名非同源，并且自己没有控制权，那么除了看控制台之外，没有办法捕获。</p>
+<h2 id="异常上报"><a href="#异常上报" class="headerlink" title="异常上报"></a>异常上报</h2><p>监控拿到报错信息后，需要将捕获到的错误信息上报到信息收集平台上，常用的上报方法有两种：</p>
+<ol>
+<li>通过Ajax发送数据</li>
+<li>通过动态创建<code>&lt;img&gt;</code>标签</li>
+</ol>
+<p>通过Ajax发送数据就是平常的调用接口的形式进行上报即可，而动态创建<code>&lt;img&gt;</code>标签主要是根据信息收集平台的要求，将<code>&lt;img&gt;</code>的<code>src</code>属性拼接指定的错误信息即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">report</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> reportUrl = <span class="string">'http://xxxx/report'</span>;</span><br><span class="line">  <span class="keyword">new</span> Image().src = reportUrl + <span class="string">'?error='</span> + error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Script-Error"><a href="#Script-Error" class="headerlink" title="Script Error"></a>Script Error</h2><p>在线上的版本，静态资源一般会放在CDN，会导致长访问的页面与脚本来自不同的域名，，如果没有额外的配置，就会产生<code>Script Error</code></p>
+<p><img src="http://image.oldzhou.cn/FhBgl9XxbXjXfGVaQbM-0uwS4p2t" alt=""></p>
+<p>这是因为浏览器同源策略导致的，浏览器出于安全性的考虑，当页面引用非同域名的外部脚本文件发生错误时，当前页面是没有权利知道报错信息的，取而代之的是输出<code>Script Error</code></p>
+<p>解决方法就是为页面上的<code>&lt;script&gt;</code>标签添加<code>crossOrigin</code>属性，可以取值<code>anonymous</code>和<code>use-credentials</code>，如果没有属性值或者非法属性值，会被浏览器默认做<code>anonymous</code>，它的作用有三个：</p>
+<ol>
+<li>让浏览器启动CORS访问检查，检查HTTP响应头的<code>Access-Control-Allow-Origin</code></li>
+<li>对于传统<code>&lt;script&gt;</code>需要跨域获取的JS资源，暴露其报错的详细信息</li>
+<li>对于<code>module script</code>，控制用于跨域请求的凭据模式</li>
+</ol>
+<p>同时服务端需要在返回的响应头中<code>Access-Control-Allow-Origin</code>为对应的域名</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// http://localhost:8080/index.html</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">msg, url, row, col, error</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'我知道错误了，也知道错误信息'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(&#123;</span></span><br><span class="line"><span class="undefined">      msg,  url,  row, col, error</span></span><br><span class="line"><span class="undefined">    &#125;)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://localhost:8081/test.js"</span> <span class="attr">crossorigin</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">// http://localhost:8081/test.js</span><br><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">  console.log(error);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><img src="http://image.oldzhou.cn/FvrncCMKQCfVcH21j0KXAKkxG81-" alt=""></p>
+<p>这样就可以获得外域脚本的详细的报错信息了，对于JSONP来跨域的时候遇到的错误可以据此解决：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">script.crossOrigin = <span class="string">'anonymous'</span>;</span><br><span class="line">script.src = url;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(script);</span><br></pre></td></tr></table></figure>
+<p>如果使用的第三方库加载异步脚本时，如果没有提供<code>crossOrigin</code>的能力时，可以劫持<code>document.createElement</code>，在动态生成的脚本上添加<code>crossOrigin</code>字段，但是这种方式<br>有一定风险，需要谨慎使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.createElement = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> fn = <span class="built_in">document</span>.createElement.bind(<span class="built_in">document</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> result = fn(type);</span><br><span class="line">    <span class="keyword">if</span>(type === <span class="string">'script'</span>) &#123;</span><br><span class="line">      result.crossOrigin = <span class="string">'anonymous'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<h2 id="压缩代码如何定位到脚本异常位置"><a href="#压缩代码如何定位到脚本异常位置" class="headerlink" title="压缩代码如何定位到脚本异常位置"></a>压缩代码如何定位到脚本异常位置</h2><p>线上的代码都经过了压缩、合并处理，当收到一条报错的信息的时候，可能根本没有办法直接获知变量代表什么、位置在哪里，此时的错误日志是无效的。</p>
+<p>解决方法就是利用sourceamp来定位到错误代码的具体位置，详细内容参考<a href="https://github.com/joeyguo/blog/issues/14" target="_blank" rel="noopener">《脚本错误量极致优化-让脚本错误一目了然》</a>，最理想的方案可以尝试Sentry开源方案</p>
+<h2 id="收集信息太多"><a href="#收集信息太多" class="headerlink" title="收集信息太多"></a>收集信息太多</h2><p>可以给网站设置采集率：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Reporter.send = <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 只采集 30%</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Math</span>.random() &lt; <span class="number">0.3</span>) &#123;</span><br><span class="line">    send(data)      <span class="comment">// 上报错误信息</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个采集率可以通过具体实际的情况来设定，方法多样化，可以使用一个随机数，也可以具体根据用户的某些特征来进行判定。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>异常捕获有三种常用的方式<code>try...catch</code>、<code>window.onerror</code>、<code>unhandledrejection</code>，它们都没有办法捕获语法错误，所以在写代码的时候尽量通过IDE的提示和ESLint的检查避免语法错误</p>
+<ul>
+<li><code>try...catch</code>可以捕获同步错误，无法捕获网络错误、异步错误和Promise的错误</li>
+<li><code>window.onerror</code>可以捕获同步错误、异步错误，需要在事件捕获阶段捕获网络错误（但是信息不详细），无法捕获Promise的错误</li>
+<li><code>unhandledrejection</code>专门用来捕获没有在Promise实例的<code>catch</code>中捕获的Promise中抛出的错误</li>
+</ul>
+<p>使用的时候一般：</p>
+<ul>
+<li>使用<code>window.onerror</code>来捕获全局的同步错误、异步错误</li>
+<li>用<code>unhandledrejection</code>来捕获全局的Promise错误</li>
+<li>用<code>try...catch</code>来在预见情况下捕获特定的错误</li>
+</ul>
+<p><code>&lt;iframe&gt;</code>中的错误如果是同源页面，可以直接为其添加<code>onerror</code>事件，如果是非同源但是有控制权，可以通过<code>postMessage</code>传递错误，如果是非同源也无控制权，那么无能为力。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://juejin.im/entry/5a30e14d51882554bd510bea" target="_blank" rel="noopener">前端代码异常监控实战@掘金</a></li>
+<li><a href="https://github.com/rainjay/blog/issues/1" target="_blank" rel="noopener">关于 script 标签你应该知道的@Github</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+
+
+    
+
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="哆啦斯基周 wechat" style="width: 200px; max-width: 100%;">
+  <div>我的公众号，看心情更新，欢迎订阅！</div>
+</div>
+
+      </div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/异常/" rel="tag"># 异常</a>
+          
+            <a href="/tags/错误/" rel="tag"># 错误</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/19/01 前端笔记/09 HTML+CSS/HTML+CSS37 镂空遮罩/" rel="next" title="HTML+CSS37 镂空遮罩">
+                <i class="fa fa-chevron-left"></i> HTML+CSS37 镂空遮罩
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/08/03 读书笔记/09 算法图解/" rel="prev" title="算法图解">
+                算法图解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar3.png" alt="哆啦斯基周">
+            
+              <p class="site-author-name" itemprop="name">哆啦斯基周</p>
+              <p class="site-description motion-element" itemprop="description">一个大龄前端程序员的技术博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">142</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/duola8789" title="GitHub &rarr; https://github.com/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:duola8789@126.com" title="E-Mail &rarr; mailto:duola8789@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/zhouhaozhouhao" title="Weibo &rarr; https://weibo.com/zhouhaozhouhao" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/duola8789" title="CSDN &rarr; https://blog.csdn.net/duola8789" rel="noopener" target="_blank"><i class="fa fa-fw fa-rss-square"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常处理"><span class="nav-number">1.</span> <span class="nav-text">异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#try-catch异常处理"><span class="nav-number">1.1.</span> <span class="nav-text">try...catch异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error事件"><span class="nav-number">1.2.</span> <span class="nav-text">error事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unhandledrejection"><span class="nav-number">1.3.</span> <span class="nav-text">unhandledrejection</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iframe中的错误"><span class="nav-number">2.</span> <span class="nav-text">iframe中的错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常上报"><span class="nav-number">3.</span> <span class="nav-text">异常上报</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Script-Error"><span class="nav-number">4.</span> <span class="nav-text">Script Error</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩代码如何定位到脚本异常位置"><span class="nav-number">5.</span> <span class="nav-text">压缩代码如何定位到脚本异常位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#收集信息太多"><span class="nav-number">6.</span> <span class="nav-text">收集信息太多</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">哆啦斯基周</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'Fg5UsXV9f7m1xb1SioXny6QN-gzGzoHsz',
+    appKey: 'DLV7a4oTpQynJCIelKn3L7Ja',
+    placeholder: '大侠留步，请留下您宝贵的意见',
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
