@@ -54,7 +54,6 @@ setImmediate(() => {
 ```
 但是如果在一个I/O回调中，那一定是`setImmediate`先执行，因为`poll`阶段后面就是`check`阶段。
 
-
 ## `poll`阶段
 
 这个阶段主要有两个功能：
@@ -74,7 +73,9 @@ setImmediate(() => {
 
 ## `process.nextTick()`
 
-从语义角度来看，`setImmediate`应该与`process.nextTick()`名字调换。`process.nextTick()`会在各个阶段之间进行，一旦执行就要直到nextTick队列被清空，才会进入到下一个事件阶段。
+从语义角度来看，`setImmediate`应该与`process.nextTick()`名字调换。`process.nextTick()`会在各个阶段之间进行，准确的说，是在当前阶段的尾部执行。一旦执行就要直到nextTick队列被清空，才会进入到下一个事件阶段。
+
+**`nextTick`会在异步任务之前执行**。
 
 如果递归调用，会导致Event Loop卡死。
 
@@ -98,8 +99,7 @@ Event Loop在每个阶段都有一个任务队列，当执行到某个阶段时�
 
 浏览器环境和Node环境下，Microtask任务队列的执行时机不同：浏览器的Microtask在事件循环的Macrotask执行完成后执行，Node中Microtask会在各个循环阶段之间执行。
 
-## 练习
-
+## 练习1
 
 下面的代码在浏览器和Node环境下执行的结果各是什么：
 
@@ -145,7 +145,77 @@ promise2
 
 ![](http://image.oldzhou.cn/FroBUsdEOgcaYS5P2jNE_to0Zh5v)
 
+## 练习2
+
+```JS
+process.nextTick(function A() {
+  console.log(1);
+  process.nextTick(function B() {
+    console.log(2);
+  });
+});
+
+setTimeout(function timeout() {
+  console.log('TIMEOUT FIRED');
+})
+```
+
+结果是：
+
+```
+1
+2
+TIMEOUT FIRED
+```
+
+这是因为`process.nextTick`会在每个阶段之间进行，也可以理解为在所有阶段之前进行，它会在所有异步任务之前进行，而且其队列清空之前会持续执行。
+
+## 练习3
+
+```JS
+setImmediate(function A() {
+  console.log(1);
+  setImmediate(function B() {
+    console.log(2);
+  });
+});
+
+setTimeout(function timeout() {
+  console.log('TIMEOUT FIRED');
+}, 0);
+```
+
+上面代码中，`1`和`TIMEOUT FIRED`哪个先执行是不确定的，运行结果可能是`1--TIMEOUT FIRED--2`，也可能是`TIMEOUT FIRED--1--2`。
+
+但是如果放在了一个I/O回调中，执行顺序就是确定的：
+
+```JS
+const fs = require('fs');
+
+fs.readFile('readme.md', err => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  setImmediate(function A() {
+    console.log(1);
+    setImmediate(function B() {
+      console.log(2);
+    });
+  });
+
+  setTimeout(function timeout() {
+    console.log('TIMEOUT FIRED');
+  }, 0);
+});
+```
+
+在一个I/O回调中，那一定是`setImmediate`先执行，因为`poll`阶段后面就是`check`阶段。
+
+
+
 ## 参考
 
 - [深入理解js事件循环机制（Node.js篇）@lunnelv](http://lynnelv.github.io/js-event-loop-nodejs)
 - [Node.js 事件循环，定时器和 process.nextTick()@Node.js文档](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)
+- [JavaScript 运行机制详解：再谈Event Loop@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
