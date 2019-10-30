@@ -1,5 +1,5 @@
 ---
-title: Vue源码01 详解 vue 的 diff 算法
+title: Vue源码02 详解 vue 的 diff 算法
 top: false
 date: 2019-08-09 17:46:54
 updated: 2019-08-09 17:46:55
