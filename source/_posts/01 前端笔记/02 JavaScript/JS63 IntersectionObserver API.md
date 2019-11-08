@@ -14,8 +14,6 @@ Intersection Observer API 学习笔记。
 
 ## 元素可见性
 
-## 元素可见性
-
 页面的可见性可以用`document.visibilityState`或者`document.hidden`获得，通过`document.visibilitychange`来监听页面可见性的变化，但是对于页面的元素的可见性却只能手动通过位置判断。
 
 例如下面这个例子
