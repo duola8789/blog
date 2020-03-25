@@ -17,6 +17,26 @@ Nginx是一个强大的轻量级的高性能网页服务器、反向代理服务
 
 在介绍下面的使用Nginx进行跨域之前，需要对Nginx的一些基本知识有所了解。
 
+# 安装
+
+## Mac系统下
+
+需要借助`homebrew`来安装，可以通过`brew -v`来查看是否安装了homebrew，如果没有安装，则通过终端命令安装
+
+```BASH
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+安装成功就可以直接使用`homebrew`来安装Nginx：
+
+```BASH
+brew install nginx
+```
+
+安装完成后，主页的`index`文件在`/usr/local/var/www`目录下，对应的配置文件在`/usr/local/etc/nginx/nginx.conf`目录下
+
+然后使用`nginx`命令就可以启动Nginx，默认`8080`端口
+
 ## 基本命令
 
 使用Nginx的命令需要首先定位到`nginx.exe`所在的目录（Windows系统）
@@ -28,7 +48,7 @@ Nginx的一些基本命令：
 nginx -v
 
 # 启动
-start nginx
+nginx
 
 # 停止
 nginx -s stop  # 快速停止Nginx，可能并不保存相关信息
@@ -452,6 +472,7 @@ server {
 
 # 参考
 
+- [MAC下安装nginx@segmentfault](https://segmentfault.com/a/1190000016020328)
 - [nginx服务器安装及配置文件详解@Sean's Note](http://seanlook.com/2015/05/17/nginx-install-and-config/)
 - [nginx反向代理服务器的工作原理@CSDN](https://blog.csdn.net/ywl570717586/article/details/51556912)
 - [nginx配置location总结及rewrite规则写法@segmentfault](https://segmentfault.com/a/1190000002797606)
