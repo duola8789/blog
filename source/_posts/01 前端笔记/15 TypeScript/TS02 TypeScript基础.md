@@ -2,7 +2,7 @@
 title: TS02 TypeScript基础
 top: false
 date: 2019-12-12 14:37:00
-updated: 2019-12-12 14:37:00
+updated: 2020-03-25 14:12:33
 tags:
 - TypeScript
 categories: TypeScript
@@ -12,7 +12,7 @@ TypeScript基础学习笔记，学习完了可以凑合着用了。
 
 <!-- more -->
 
-## 安装
+# 安装
 
 全局安装TypeScript命令行工具
 
@@ -28,7 +28,7 @@ tsc hello.ts
 
 TypeScript编写的文件后缀名是`.ts`，用TypeScript编写React应用时文件后缀名是`.tsx`
 
-## Hello TypeScript
+# Hello TypeScript
 
 ```JS
 function sayHello(person: string) {
@@ -64,10 +64,9 @@ src/hello.ts:5:22 - error TS2345: Argument of type '123' is not assignable to pa
 
 但是仍然会生成编译结果。如果需要在报错时终止JS文件的生成，可以在`tsconfig.json`中配置`noEmitOnError`，关于`tsconfig.json`后面单独学习。
 
+# 原始数据类型
 
-## 原始数据类型
-
-### 字符串 + 布尔值 + 数值
+## 字符串 + 布尔值 + 数值
 
 JavaScript中数据分为原始数据类型和对象类型，原始数据类型有六种（布尔值、数值、字符串、`null`、`undfined`和`Symbol`），对于前三者类型的定义如下：
 
@@ -79,7 +78,36 @@ let msg: string = 'hello'
 
 注意，类型的定义都是针对字面量的，使用构造函数（例如`new Boolean()`）创建出的变量类型时对象，而非基本类型
 
-### 空值`void`
+## 空值`void`
+
+### JavaScript中的`void`
+
+JavaScript中的`void`是一个运算符，用于计算它右边的表达式，无论表达式是什么、结果返回什么，`void`总是返回`undefined`
+
+它的作用是，由于一个变量被赋值为`undefined`后，它总是可以被覆盖，所以可以使用`void`来确保可以始终返回`undefined`
+
+借用这个特性，我们可以实现下面几种效果：
+
+（1）调用立即执行函数：
+
+```
+void function(){
+    console.log(123)
+}()
+```
+
+（2）在函数中调用一个回调函数，但是不返回这个会带哦函数的值：
+
+```JS
+// returning something else than undefined would crash the app
+function middleware(nextCallback) {
+  if(conditionApplies()) {
+    return void nextCallback();
+  }
+}
+```
+
+### TypeScript中的`void`
 
 JavaScript中没有空值的概念，而在TypeScript中使用`void`表示没有任何返回值的函数：
 
@@ -138,7 +166,7 @@ anyThing.myName.setFirstName('Cat');
 
 变量在声明时，如果**没有指定类型并且没有赋值**，那么就会被认为是任意类型
 
-## 类型推论
+# 类型推论
 
 如果一个变量声明时，没有指定类型吗，但是**进行了赋值**，那么TypeScript会依照类型推论的规则推导出一个类型
 
@@ -158,7 +186,7 @@ msg = 7;
 // index.ts(2,1): error TS2322: Type 'number' is not assignable to type 'string'.
 ```
 
-## 联合类型（Union Types）
+# 联合类型（Union Types）
 
 联合类型表示取值可以为多种类型中的一种，使用`|`来分割每个类型
 
@@ -172,9 +200,9 @@ myFavoriteNumber = 7;
 
 联合类型在赋值时也会根据类型推论被确定类型
 
-## 对象的类型：接口
+# 对象的类型：接口
 
-### 接口定义
+## 接口定义
 
 在TypeScript中，我们使用接口（Interfaces）来定义对象的类型。
 
@@ -198,7 +226,7 @@ const tom: Person = {
 
 接口名首字母大写。
 
-### 可选属性
+## 可选属性
 
 使用了接口的变量属性数目必须和接口完全一致，不能多也不能少，也就是说，赋值的时候，**变量的形状必须和接口的形状完全保持一致**。
 
@@ -217,7 +245,7 @@ let tom: Person = {
 
 这个时候接口中的可选属性是可以在变量中不存在的，但是仍然不允许添加不存在的属性，并且可选属性的类型（如果存在）仍需要和接口中属性的类型一致。
 
-### 任意属性
+## 任意属性
 
 如果希望一个接口允许有任意的属性，可以使用`[propName: string]`来定义：
 
@@ -236,7 +264,7 @@ let tom: Person = {
 
 使用`[propName: string]`，定义了任意属性（属性名类型为`string`）的类型为`any`，要注意的是，**一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的子集**
 
-### 只读属性
+## 只读属性
 
 可以在接口的属性前添加`readonly`，定义此属性是只读的，不能为此属性赋值
 
@@ -253,11 +281,11 @@ tom.name = 'jerry';
 // Cannot assign to 'name' because it is a read-only property.
 ```
 
-## 数组的类型
+# 数组的类型
 
 数组类型有多重定义方法：
 
-### `类型 + 方括号`表示法
+## `类型 + 方括号`表示法
 
 这是最简的表达式方法，适用于值都是基本类型的数组：
 
@@ -274,7 +302,7 @@ arr.push('8');
 let list: any[] = ['xcatliu', 25, { website: 'http://xcatliu.com' }];
 ```
 
-### 数组泛型
+## 数组泛型
 
 也可以使用数组泛型（Array Generic）`Array<elemType>`来表示数组：
 
@@ -282,7 +310,7 @@ let list: any[] = ['xcatliu', 25, { website: 'http://xcatliu.com' }];
 let arr: Array<number> = [1, 2, 3];
 ```
 
-### 用接口表示数组
+## 用接口表示数组
 
 因为数组实际上是特殊的对象，所以可以使用接口来描述数组：
 
@@ -295,7 +323,7 @@ let fibonacci: NumberArray = [1, 1, 2, 3, 5];
 
 `[index: number]`限定的是索引的类型是数字的成员（实际上貌似使用`propName`代替`index`也可以成功）
 
-### 复合数组
+## 复合数组
 
 前面的几种方法都定义的是数组成员是基本类型的数组，如果数组的成员是对象的话，只需要借助接口来实现就好：
 
@@ -310,7 +338,7 @@ let arr: Array<Item> = [
 ];
 ```
 
-### 类数组
+## 类数组
 
 类数组并不是数组，不能用普通的数组的方式来描述，而应该使用接口：
 
@@ -344,11 +372,11 @@ interface IArguments {
 
 这些内置对象在后面学习。
 
-## 函数的类型
+# 函数的类型
 
 一个函数有输入也有输出，输入和输出的类型都需要进行限制
 
-### 函数声明
+## 函数声明
 
 函数参数的个数也会被限定
 
@@ -358,7 +386,7 @@ function sum(x: number, y: number): number {
 }
 ```
 
-### 函数表达式
+## 函数表达式
 
 如果将上面的函数声明改写为函数表达式，是这样：
 
@@ -380,7 +408,7 @@ const sum: (x: number, y: number) => number = (x: number, y: number): number => 
 
 实际上对`sum`的类型的限制及限制了函数的输入，也限制了函数的输出。
 
-### 用接口定义函数类型
+## 用接口定义函数类型
 
 也可以用接口来定义函数类型：
 
@@ -394,7 +422,7 @@ const sum: sumFn = (x, y) => x + y;
 
 接口的属性名为对应的函数输入参数类型，属性值为函数输出的参数类型。
 
-### 可选参数
+## 可选参数
 
 和接口的可选属性一样，函数的参数后面添加`?`表示这个参数时可选参数，要注意的是，可选参数必须接在必须参数的后面，也就是说，**可选参数后面不能出必须参数了**。
 
@@ -411,7 +439,7 @@ let tomcat = buildName('Tom', 'Cat');
 let tom = buildName('Tom');
 ```
 
-### 默认参数
+## 默认参数
 
 和ES6中的函数的默认参数一样，TypeScript中也可以给函数的参数添加默认值。
 
@@ -433,7 +461,7 @@ const sum: sumFn = (x, y) => x + y;
 // Error:(9, 15) TS2371: A parameter initializer is only allowed in a function or constructor implementation.
 ```
 
-### 剩余参数
+## 剩余参数
 
 ES6中的剩余参数需要使用数组类型来定义（因为它就是一个数组）
 
@@ -450,7 +478,7 @@ push(a, 1, 2, 3);
 
 要注意，剩余参数只能在参数的末尾出现。
 
-### 函数重载
+## 函数重载
 
 一个函数接受不同数量或者类型的参数，做出不同的处理，这种现象就是函数重载。
 
@@ -486,8 +514,7 @@ function reverse(x: number | string): number | string {
 
 注意，TypeScript会从最前面的函数开始匹配，所以需要优先把精确定义写在前面
 
-
-## 类型断言
+# 类型断言
 
 类型断言（Type Assertion）用来手动指定一个值的类型，一般用在联合类型中，将一个不确定类型的变量指定为联合类型中的一种
 
@@ -523,9 +550,9 @@ function getLength(something: string | number): number {
 
 要注意类型断言不是类型转换，不允许将类型断言为一个联合类型中不存在的类型
 
-## 声明文件
+# 声明文件
 
-### 声明语句
+## 声明语句
 
 当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能
 
@@ -546,7 +573,7 @@ jQuery('#foo');
 
 上面的`declare var`就是声明语句，它并没有定义一个变量，只是定义了`jQuery`的类型，仅仅用于编译时的检查，编译结果中会删除。
 
-### 声明文件
+## 声明文件
 
 通常情况，我们会将声明语句放到单独的文件中（`jQuery.d.ts`），这个文件就是声明文件：
 
@@ -560,7 +587,7 @@ declare var jQuery: (selector: string) => any;
 
 如果无法解析，可以检查一下`tsconfig.json`中的`files`、`include`、`exclude`配置，确保包含了声明文件
 
-### 第三方声明文件
+## 第三方声明文件
 
 大部分热门的第三方库的声明文件都不需要我们自己定义了，我们可以直接使用`@types`统一管理第三方库的声明文件。
 
@@ -570,11 +597,11 @@ declare var jQuery: (selector: string) => any;
 npm install @types/jquery --save-dev
 ```
 
-### 书写声明文件
+## 书写声明文件
 
 如果第三方库没有提供声明文件，我们需要自己书写声明了，在不同的场景下，声明文件的内容和使用方式有所区别
 
-### 全部变量
+## 全部变量
 
 当通过`<script>`标签引入第三方库的时候，会注入全局变量，就像上面的例子一样。建议将声明文件和源码一起放到`scr`目录下
 
@@ -730,7 +757,7 @@ declare namespace jQuery {
 
 合并规则后面单独学习。
 
-### NPM包
+## NPM包
 
 ### 找到已存在的声明文件
 
@@ -857,7 +884,7 @@ declare enum Directions {
 }
 ```
 
-### UMD
+## UMD
 
 针对UMD格式的模块，使用`export as namespace`进行导出，一般使用时，都是先有了NPM包的声明文件，再基于它添加`export as namespace`语句，就可以将声明好的一个变量声明为全局变量：
 
@@ -873,7 +900,7 @@ declare namespace foo {
 }
 ```
 
-### 其他
+## 其他
 
 可以使用`declare global`来在已有的声明文件中扩展全局变量的类型：
 
@@ -893,7 +920,7 @@ export {};
 
 可以使用`declare module`来扩展模块插件
 
-### 自动生成声明文件
+## 自动生成声明文件
 
 如果库的源码本身就是TypeScript编写的，那么使用`tsc`来将`.ts`编译为JS的过程中，可以添加`declaration`选项（简写`-d`，同时生成`.d.ts`声明文件
 
@@ -921,7 +948,7 @@ export {};
 - `declarationsMap`，对每个`.d.ts`文件都生成对应的`.d.ts.map`（sourcemap）文件
 - `emitDeclarationOnly`，仅仅生成`.d.ts`文件，不生成`.js`文件
 
-### 发布声明文件
+## 发布声明文件
 
 如果是`tsc`命令自动生成的声明文件，不需要做任何其他配置，直接发布到NPM即可
 
@@ -931,7 +958,7 @@ export {};
 - 在项目根目录下，编写`index.d.ts`文件
 - 针对入口文件（`package.json`中的`main`字段指定的入口文件）编写一个同名不同后缀的`.d.ts`文件
 
-##  内置对象
+#  内置对象
 
 内置对象是指根据标准在全局作用域上存在的对象，主要分为以下几种：
 
@@ -990,6 +1017,7 @@ Node.js不是内置对象，如果要使用TypeScript写Node.js，需要引入�
 npm install @types/node --save-dev
 ```
 
-## 参考
+# 参考
 
 - [TypeScript入门教程](https://ts.xcatliu.com/)
+- [JavaScript和TypeScript中的void@segmentfault](https://segmentfault.com/a/1190000020368426)
