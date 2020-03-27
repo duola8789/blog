@@ -1,11 +1,11 @@
 ---
-title: 10 You-need-to-know-css
+title: HTML+CSS36 You-need-to-know-css
 top: false
 date: 2019-06-30 08:58:00
 updated: 2019-08-13 16:39:12
-tags: 
+tags:
 - CSS
-categories: 读书笔记
+categories: HTML+CSS
 ---
 
 CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/You-need-to-know-css/#/)进行练习。
