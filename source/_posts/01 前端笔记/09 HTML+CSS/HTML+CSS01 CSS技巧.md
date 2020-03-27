@@ -1,5 +1,5 @@
 ---
-title: HTML+CSS36 You-need-to-know-css
+title: HTML+CSS01 CSS技巧
 top: false
 date: 2019-06-30 08:58:00
 updated: 2019-08-13 16:39:12
@@ -8,11 +8,11 @@ tags:
 categories: HTML+CSS
 ---
 
-CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/You-need-to-know-css/#/)进行练习。
+各种CSS效果
 
 <!-- more -->
 
-## 透明边框
+# 透明边框
 
 默认情况下，背景的颜色会延伸至边框下层，所以如果边框设置为透明色，会被背景色覆盖掉。
 
@@ -33,9 +33,9 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 > - [半透明边框@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/translucent-borders)
 > - [background-clip@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip)
 
-## 多重边框
+# 多重边框
 
-### `box-shadow`
+## `box-shadow`
 
 `box-shadow`用来产生阴影效果，如果只给出两个数值，那么浏览器解析为`x`方向偏移量和`y`方向偏移量；如果给出第三个值，将被解释为模糊半径的大小；如果给出第四个值，将被监事未扩展半径的大小。
 
@@ -103,8 +103,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 
 优点是很容易实现2条以上的边框，且可以实现圆角边框，缺点是无法实现非实线的边框。
 
-
-### `outline` + `outline-offset`
+## `outline` + `outline-offset`
 
 `outline`可以设置一个或者或者多个单独轮廓属性，轮廓不占据空间（`box-shadow`和`border`都占据空间）
 
@@ -131,7 +130,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 > - [outline@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline)
 > - [outline-offset@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline-offset)
 
-## 边框内圆角
+# 边框内圆角
 
 要实现的效果：
 
@@ -177,9 +176,9 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 > 参考：
 > - [边框内圆角@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/inner-rounding)
 
-## 背景定位
+# 背景定位
 
-### [`background-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
+## [`background-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
 
 ![](http://image.oldzhou.cn/FrnFBglSd0nXpgo1VAOqqMONVf8R)
 
@@ -219,7 +218,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 }
 ```
 
-### [`background-origin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
+## [`background-origin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
 
 刚才也提到了，`background-position`指定的位置是相对于由`background-origin`定义的位置图层的。`background-origin`规定了背景图片的属性的原点位置与容器的关系（与`background-clip`类似）
 
@@ -247,7 +246,7 @@ CSS练习项目，每天练一练。前期按照[CSS Tricks](https://lhammer.cn/
 > - [background-position@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position)
 > - [background-origin@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-origin)
 
-## 条纹进度条
+# 条纹进度条
 
 可以使用`background`的`repeating-linear-gradient`属性，来生成一个静态的进度条，再结合动画属性，实现动态的进度条样式。
 
@@ -311,7 +310,7 @@ background-size: 16px;
 
 在就将角度倾斜，通过`animation`控制`background-position`，就可以实现动起来的效果了：
 
-```
+```CSS
 .inner:after {
   background: linear-gradient(90deg, blue 50%, red 0);
   background-size: 16px;
@@ -330,7 +329,7 @@ background-size: 16px;
 
 但是如果要是倾斜45度就出现问题了
 
-```
+```CSS
 .inner:after {
   background: linear-gradient(45deg, blue 50%, red 0);
   background-size: 16px;
@@ -356,13 +355,23 @@ background: repeating-linear-gradient(90deg, blue 0 ,blue 50%, red 50%, red 100%
 }
 ```
 
+（2019-10.21更新）之前理解有错误，其实`repeating-linear-gradient`就等于`linear-gradient` + `background-repeat` + `background-size`，因为之前用的是百分比来确定色款其实体现不出来，上面的代码不用`repeating-linear-gradient`而是直接使用`linear-gradient`也是可以直接实现的。
+
+如果改用`px`，就可以舍弃`background-size`，直接使用`repeating-linear-gradient`实现：
+
+```CSS
+.inner:after {
+  background: repeating-linear-gradient(45deg, black 0, black 5px, darkgoldenrod 0, darkgoldenrod 10px);
+}
+```
+
 > 参考：
 > - [条纹背景@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/stripes-background?id=%e8%bf%9b%e5%ba%a6%e6%9d%a1)
 > - [linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
 > - [repeating-linear-gradient@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/repeating-linear-gradient)
 > - [聊一聊CSS3的渐变——gradient@掘金](https://juejin.im/post/5bc2fb09f265da0ac55e75e7)
 
-## 不规则卡片
+# 不规则卡片
 
 想要实现这样的卡片：
 
@@ -420,7 +429,7 @@ background: repeating-linear-gradient(90deg, blue 0 ,blue 50%, red 50%, red 100%
 > - [radial-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/radial-gradient)
 > - [border-style@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style)
 
-## 圆和椭圆
+# 圆和椭圆
 
 一般我们会使用`border-radius`实现圆角效果，但是实际上使用`border-radius`可以实现圆、椭圆、半圆等各种圆形的效果。
 
@@ -434,7 +443,7 @@ border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px
 
 
 ```
-border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 右下角水平圆角半径大小 左下角水平圆角半径大小
+border-radius: 左上角水平圆角半径大小 右上角水平圆角半径大小 右下角水平圆角半径大小 左下角水平圆角半径大小
                / 左上角垂直圆角半径大小 右上角垂直圆角半径大小 右下角垂直圆角半径大小 左下角垂直圆角半径大小
 ```
 
@@ -457,12 +466,12 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 
 ![](http://image.oldzhou.cn/FoVIGXokiPMOlo0NCPkoEfgpEZ_k)
 
-> ## 参考
+> 参考
 > - [圆与椭圆@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/ellipse)
 > - [秋月何时了，CSS3 border-radius知多少@鑫空间鑫生活](https://www.zhangxinxu.com/wordpress/2015/11/css3-border-radius-tips/)
 > - [border-radius@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius)
 
-## 四边形
+# 四边形
 
 ![](http://image.oldzhou.cn/FlxewVHNLJBvvy_PXSu1Z4ob5dWP)
 
@@ -578,13 +587,13 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
 
 简直太强大了。
 
-> ## 参考
+> 参考
 > - [parallel四边形@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/parallelogram)
 > - [skew()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function/skew)
 > - [clip-path@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
 > - [css3中-webkit-transform 的 skew 如何使用？@知乎](https://www.zhihu.com/question/21725826/answer/19247715)
 
-## 切角效果
+# 切角效果
 
 想实现下面这两种切角效果
 
@@ -650,11 +659,11 @@ border-radius: 上角水平圆角半径大小 右上角水平圆角半径大小 
   }
 ```
 
-> ## 参考
+> 参考
 > - [切角效果@You-need-to-know-css](https://lhammer.cn/You-need-to-know-css/#/zh-cn/bevel-corners)
 > - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
 
-## 使用一个`div`实现进度条
+# 使用一个`div`实现进度条
 
 ```CSS
 .bar {
@@ -712,8 +721,84 @@ background-size: 100% auto, var(--p) auto;
 
 ![](http://image.oldzhou.cn/Fsj-gmkm0X6fDXcs-3u-aFKTRdrn)
 
-> ## 参考
+> 参考
 > - [你未必知道的49个CSS知识点@掘金](https://juejin.im/post/5d3eca78e51d4561cb5dde12#heading-37)
 > - [linear-gradient()@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient)
 > - [background-size@MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size)
 > - [radial-gradient()@MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
+
+# 空心圆环
+
+想到了四种方法来实现空心圆环：
+
+（1）使用标签嵌套（或者伪元素）
+
+```CSS
+.circle {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  background: red;
+  border-radius: 50%;
+}
+
+.circle::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130px;
+  height: 130px;
+  transform: translate(-50%, -50%);
+  background: darkcyan;
+  border-radius: 50%;
+}
+```
+
+使用标签嵌套和微元素原理一样，缺点是需要设置背景色与整体的背景色一致，并非完全的空心圆环
+
+（2）使用`border-radius`
+
+```CSS
+.circle {
+  width: 150px;
+  height: 150px;
+  background: transparent;
+  border: 10px solid red;
+  border-radius: 50%;
+}
+```
+
+元素本身是透明背景，边框有颜色
+
+
+（3）使用`box-shadow`
+
+```CSS
+.circle {
+  margin-left: 10px;
+  width: 130px;
+  height: 130px;
+  background: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 0 10px red;
+}
+```
+
+与上一种方案类似
+
+（4）使用`radial-gradient`
+
+```CSS
+.outer4 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle closest-side, transparent 65px, red 65px);
+  border-radius: 50%;
+}
+```
+
+（5）`outline`
+
+使用`outline`是无法实现的，因为`border-radius`不能影响`outline`
