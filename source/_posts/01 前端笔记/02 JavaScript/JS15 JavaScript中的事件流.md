@@ -1,5 +1,5 @@
 ---
-title: JS14 平滑滚动
+title: JS15 JavaScript中的事件流
 top: false
 date: 2017-06-21 10:08:04
 updated: 2020-06-07 20:22:03
