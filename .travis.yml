@@ -19,7 +19,7 @@ deploy:
     branch: master
 
 script:
-  - hexo clean && hexo generate
+  - hexo clean && hexo g -d
 
 notifications:
   email:
