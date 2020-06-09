@@ -2,11 +2,13 @@
 title: 网络基础08 HTTPS
 top: false
 date: 2017-12-08 11:54:30
-updated: 2019-09-26 08:02:51
+updated: 2020-06-09 15:01:16
 tags:
 - 对称加密
 - 非对称加密
 - HTTPS
+- CSP
+- 混合内容
 categories: 网络基础
 ---
 
@@ -14,7 +16,7 @@ HTTPS学习笔记。
 
 <!-- more -->
 
-## SSL/TLS协议
+# SSL/TLS协议
 
 HTTPS（HTTP Secure）是HTTP加上加密、认证和完整性保护。不是一种新的协议，只是在HTTP通信接口部分用了SSL和TLS协议代替，也就是说在HTTP与TCP之间增加了SSL，HTTP与SSL通信，再由SSL与TCP通信。
 
@@ -25,7 +27,7 @@ TLS是SSL协议的升级版， 目前应用最广泛的是TLS1.0和SSL3.0。
  1. 窃听风险（eavesdropping）：第三方可以获知通信内容。
  2. 篡改风险（tampering）：第三方可以修改通信内容。
  3. 冒充风险（pretending）：第三方可以冒充他人身份参与通信。
- 
+
 SSL/TLS协议是为了解决这三大风险而设计的，希望达到：
 
 1. 所有信息都是加密传播，第三方无法窃听。
@@ -44,13 +46,13 @@ SSL/TLS协议的基本思路是采用了公开密钥加密法，客户端首先�
 
 在建立连接阶段使用公开密钥加密计算，生成一个“对话密钥”，在随后的通话期间信息由“对话密钥”进行共享密钥加密。共享密钥加密是对称加密，运算速度很快，而服务器公钥只用于加密“对话密钥”本身，这样就减少了加密运算的时间。
 
-## HTTPS的工作模式
+# HTTPS的工作模式
 
 非对称加密在性能上不如对称加密，所以HTTPS采取了对称加密和非对称加密相结合的工作模式：**公钥私钥主要用于传输对称加密的秘钥，而真正的双方大数据量的通信都是通过对称加密进行的**。
 
 非对称加密需要通过证书和权威机构来验证公钥的合法性。
 
-## HTTPS的握手机制
+# HTTPS的握手机制
 
 HTTPS的握手相当于SSL/TLS协议的握手和TCP协议的握手，这里主要介绍的是SSL/TLS的握手。
 
@@ -81,9 +83,9 @@ SSL/TLS的握手阶段设涉及四次通信，这四次通信都是明文的：
 到此为止，握手阶段已经有了三个随机数，随后，双方就会用实现商定的加密方法，用着三个随机数各自生成用于本次会话加密的同一把“会话密钥”。为什么一定要用三个随机数呢？
 
 > SSL协议中的证书是静态的，因此十分有必要引入一种随机因素来保证每次会话协商出来的密钥的随机性。所以不管是客户端还是服务器，都需要随机数，这样每次会话生成的密钥才不会每次都一样。
-> 
+>
 > 对于RSA密钥交换算法来说，pre-master-key本身是一个随机数，再加上Hello消息中的随机数，三个随机数通过密钥到初七最终导出一个对称密钥。
-> 
+>
 > SSL协议不信任每个主机都能产生完全随机的随机数，如果随机数不随机，那么对话密钥就有可能被猜出来。而三个随机数一同生成的密钥就不容易被猜出来了，一个伪随机可能完全不随机，可是三个伪随机就十分接近随机了，每增加一个自由度，随机性增加的可不是一。
 
 此外，如果在第二步服务器要求客户端提供证书，那么客户端在这一步还会发送证书及相关信息。
@@ -101,11 +103,11 @@ SSL/TLS的握手阶段设涉及四次通信，这四次通信都是明文的：
 
 ![](http://image.oldzhou.cn/FjSUtFehKucfBIg_sI3TOGl4Zl4J)
 
-## 数字证书
+# 数字证书
 
 公开密钥加密还有一个问题：每个服务器都可以生成自己的私钥和公钥，客户端并没有办法确定自己接收到到的公钥是否真的是目标网站的公钥，还是被替换过。
 
-即：如何证明服务器下发的公钥没有被替换？
+即：**如何证明服务器下发的公钥没有被替换？**
 
 现在通用的解决方法就是通过数字证书认证机构（Certificate Authority，CA）颁发的公开密钥证书来解决这个问题。
 
@@ -121,7 +123,7 @@ CA会为提交申请的服务器的公钥做认证，CA利用自己的私钥，�
 
 如果证书不是可信机构颁布，或者证书的域名与实际域名不一致，或者证书已经过期，就会想访问者显示警告，由其选择是否还要继续通信。
 
-## SSL延迟
+# SSL延迟
 
 ```TEXT
 HTTP耗时 = TCP握手(3次)
@@ -135,9 +137,9 @@ HTTPS肯定比HTTP耗时，这就叫SSL延迟。
 
 所以，如果是对安全性要求不高的场合，为了提高网页性能，建议不要采用保密强度很高的数字证书。一般场合下，1024位的证书已经足够了，2048位和4096位的证书将进一步延长SSL握手的耗时。
 
-## 升级HTTPS
+# 升级HTTPS
 
-### （1）获取证书
+## （1）获取证书
 
 升级到HTTPS协议的第一步，就是要获得一张证书。
 
@@ -163,11 +165,11 @@ HTTPS肯定比HTTP耗时，这就叫SSL延迟。
 
 拿到证书以后，可以用SSL Certificate Check检查一下，信息是否正确。
 
-### （2）安装证书
+## （2）安装证书
 
 证书可以放在`/etc/ssl`目录（Linux 系统），然后根据你使用的Web服务器进行配置。
 
-### （3）修改链接（前端主要的工作都在此）
+## （3）修改链接（前端主要的工作都在此）
 
 网页加载的HTTP资源，要全部改成HTTPS链接。**因为加密网页内如果有非加密的资源，浏览器是不会加载那些资源的。**
 
@@ -190,7 +192,7 @@ HTTPS肯定比HTTP耗时，这就叫SSL延迟。
 ```HTML
 <link rel="canonical" href="https://foo.com/bar.html" />
 ```
-### （4）`301`重定向
+## （4）`301`重定向
 
 下一步，修改Web服务器的配置文件，使用`301`重定向，将HTTP协议的访问导向HTTPS协议。
 
@@ -201,7 +203,8 @@ server {
   return 301 https://domain.com$request_uri;
 }
 ```
-## HTTPS的七个误解
+
+# HTTPS的七个误解
 
 （1）HTTPS无法缓存
 
@@ -230,6 +233,105 @@ IS的做法是生成一个可以转移的`.pfx`文件，并加以密码保护。
 （6）有了HTTPS，Cookie和查询字符串就安全了
 
 虽然无法直接从HTTPS数据中读取Cookie和查询字符串，但是你仍然需要使它们的值变得难以预测。
+
+（7）只有注册登录页，才需要HTTPS
+
+这种想法很普遍。人们觉得，HTTPS可以保护用户的密码，此外就不需要了。在Twitter和Facebook上，劫持其他人的Session是非常容易的。
+
+# 混合内容
+
+初始前端页面通过HTTPS加载，但是其他资源（例如图像、视频、样式表、脚本）通过HTTP连接，这种情况称为混合内容。
+
+混合内容会降低HTTPS网站的安全性和用户体验，混入内容中HTTP请求容易遭受到中间人攻击
+
+混合内容分为两种：主动混合内容和被动混合内容。
+
+## 被动混合内容
+
+被动混合内容指的是不与页面其余部分进行交互的内容，从而使中间人攻击在拦截或更改改内容时能够执行的操作首先。
+
+被动混合内容包括图像、视频和音频内容，以及无法与页面其余部分进行交互的内容
+
+被动混合内容会为网站带来安全危险，例如攻击者可以拦截网站上的图像的HTTP请求，调换或者更换这些图像，另外攻击者可以使用混合内容请求跟踪用户，窥探用户隐私。
+
+对这些混合内容，大多数浏览器允许渲染此类型的内容，但是会显示警告：
+
+![](http://image.oldzhou.cn/FkA6VwAB-5grcMaSOPJ6ulbViqvH)
+
+要注意！！！**从2020年2月开始，Chrome80会将所有图像、视频、音频等混合内容自动升级为HTTPS**。即使在HTML中的`src`为HTTP，但是Chrome实际发出的请求会自动升级为HTTPS，如果对应的HTTPS资源不存在就会导致加载失败。
+
+
+## 主动混合内容
+
+主动混合内容作为整体与页面进行交互，并且几乎允许攻击者对页面进行任何操作。主动混合内容包括浏览器可下载和执行的脚本、样式表、iframe、flash资源及其他代码
+
+与被动混合内容相比，主动混合内容的威胁更大。攻击者可以拦截和重写主动内容，从而完全控制页面。攻击者可以更改页面任何内容，显示完全不同的内容、窃取密码、窃取cookie、将用户进行重定向等。
+
+鉴于这种威胁的严重性，大部分浏览器都默认阻止此类型的内容以保护用户
+
+![](http://image.oldzhou.cn/FvFKoWNld9AKUg2JaSOj5v2X3cMt)
+
+## 使用CSP应对混合内容
+
+内容安全政策（CSP）是一个多用途浏览器功能，可以用来管理大批量的混合内容。CSP报告机制可以用于跟踪网站上的混合内容，强制政策可以通过升级或组织混合内容。
+
+可以在服务器的响应中添加`Content-Security-Policy`或`Content-Security-Policy-Report-Only`响应头为页面启用这些功能，或者在页面的`<head>`部分使用`<meat>`标签设置`Content-Security-Policy`来启用CSP
+
+### 查找混合内容
+
+服务器的响应头中添加`Content-Security-Policy-Report-Only`指令，可以启用此功能，另CSP手机页面的混合内容
+
+```
+Content-Security-Policy-Report-Only: default-src https: 'unsafe-inline' 'unsafe-eval'; report-uri https://example.com/reportingEndpoint
+```
+
+### 升级不安全请求
+
+使用`upgrade-insecure-request`这个CSP指令来自动修正混合内容，它会让浏览器在进行网络请求之前升级不安全的网址，将HTTP请求自动升级为HTTPS请求
+
+可以通过服务器添加`Content-Security-Policy`响应头来开启：
+
+```
+Content-Security-Policy: upgrade-insecure-requests
+```
+
+也可以使用`<meta>`元素开启：
+
+```HTML
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+```
+
+`upgrade-insecure-request`会级联到`<iframe>`文档中，从而保护整个页面。
+
+### 组织所有混合内容
+
+在浏览器不支持`upgrade-insecure-request`指令的话，可以使用`block-all-mixed-content`这个CSP指令，命令浏览器不加载混合内容，所有混合内容资源请求均被阻止。
+
+这个选项也会级联到`<iframe>`文档中。
+
+开启方式可以通过服务器欠佳响应头开启：
+
+```
+Content-Security-Policy: block-all-mixed-content
+```
+
+也可以在页面中开启：
+
+```HTML
+<meta http-equiv="Content-Security-Policy" content="block-all-mixed-content">
+```
+
+# 参考
+
+- [SSL/TLS协议运行机制的概述@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)
+- [HTTPS 协议：点外卖的过程原来这么复杂！@infoQ](https://www.infoq.cn/article/bZTED-LPHd1JVQqFk2ql)
+- [HTTPS的七个误解（译文）@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2011/02/seven_myths_about_https.html)
+- [SSL延迟有多大？@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2014/09/ssl-latency.html)
+- [HTTPS 升级指南@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/08/migrate-from-http-to-https.html)
+- [数字签名是什么？@阮一峰的网络日志](http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html)
+- 第七章 确保Web安全的HTTPS@《图解HTTP》
+- [什么是混合内容？@Web.dev](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content?hl=zh-cn)
+- [防止混合内容@Web.dev](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content?hl=zh-cn)Cookie和查询字符串，但是你仍然需要使它们的值变得难以预测。
 
 （7）只有注册登录页，才需要HTTPS
 
