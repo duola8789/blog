@@ -2,30 +2,28 @@
 title: TS05 在Vue中使用TypeScript
 top: false
 date: 2020-01-14 20:00:40
-updated: 2020-01-14 20:00:44
+updated: 2020-06-22 18:22:19
 tags:
 - TypeScript
 - Vue
 categories: TypeScript
 ---
 
-搭了一个Vue + TypeScript的项目，下面是我的一些经验和笔记。
+使用Vue2.6 + TypeScript3.5.3创建了一个项目，下面是我的一些经验和笔记。
 
 <!-- more -->
 
-# 在Vue中使用TypeScript
-
-使用Vue + TypeScript创建了一个项目，准备在新的运营后台项目中使用，搭建过程总结如下。
+[toc]
 
 > （2020.01.07）其中有一些最佳实践可能会随着项目的逐渐迭代进行调整，请自行辨别可行性
 
-## 1 Vue-CLI支持
+# 1 Vue-CLI支持
 
 Vue-CLI内建了TypeScript工具支持，在新建项目时可以选择使用TypeScript扩展，包括了针对Vue Core的官方类型声明，还包括了Vue Router和Vuex提供了相应的声明文件
 
 使用Vue-CLI会自动创建`tsconfig.json`文件，基本上使用默认的配置文件就可以满足要求。
 
-## 2 改造组件
+# 2 改造组件
 
 使用TypeScript编写Vue单文件组件有两种方式，一种是通过`Vue.extend()`方法，另一种是基于类的Vue组件（在使用Vue-CLI创建项目的时候可以选择），我选择使用了后者，可以提供更优雅、更类似于JSX的书写体验。
 
@@ -46,7 +44,7 @@ export default class HelloVue extends Vue {
 
 要注意，虽然使用了`export default`，但是Class的名字还是最好准确定义，这样便于IDE和Lint工具进行追踪、提示。
 
-### 2.1 组件属性顺序
+## 2.1 组件属性顺序
 
 没有发现Lint和Prettier规则来强制规定组件内的属性顺序，所以约定好一个书写顺序，作为最佳实践
 
@@ -140,9 +138,9 @@ export default class App extends Vue {
 }
 ```
 
-### 2.2 相关API
+## 2.2 相关API
 
-#### （1）Data
+### （1）Data
 
 直接在Class定义即可（实际上就是[Class的新语法](https://es6.ruanyifeng.com/#docs/class#%E5%AE%9E%E4%BE%8B%E5%B1%9E%E6%80%A7%E7%9A%84%E6%96%B0%E5%86%99%E6%B3%95)，与在Class的`constructor`中定义相同）
 
@@ -155,7 +153,7 @@ export default class YourComponent extends Vue {
 }
 ```
 
-#### （2）计算属性
+### （2）计算属性
 
 计算属性采取使用`getter`的形式定义，在Class内部可以使用`get`和`set`关键字，设置某个属性的存值函数和取值函数：
 
@@ -174,7 +172,7 @@ export default class YourComponent extends Vue {
 
 同时定义`set`实现了对计算属性的赋值。
 
-#### （3）`@Prop`
+### （3）`@Prop`
 
 `@Prop`接受的参数就是原来在Vue中`props`中传入的参数
 
@@ -189,7 +187,7 @@ export default class YourComponent extends Vue {
 }
 ```
 
-#### （4）`@PropSync`
+### （4）`@PropSync`
 
 `@PropSync`与`Prop`类似，不同之处在于`@PropSync`会自动生成一个计算属性，计算属性的`getter`返回传入的Prop，计算属性的`setter`中会执行Vue中提倡的更新Prop的`emit:updatePropName`
 
@@ -232,7 +230,7 @@ export default {
 <hello-sync :my-prop="syncValue" @update:name="(name) => syncValue = name" />
 ```
 
-#### （5）定义方法
+### （5）定义方法
 
 定义方法与Data类型，直接在Class中定义方法即可：
 
@@ -245,7 +243,7 @@ export default class HelloChild extends Vue {
 }
 ```
 
-#### （6）`@Watch`
+### （6）`@Watch`
 
 使用`@Watch`定义侦听器，被装饰的函数就是侦听器执行方法：
 
@@ -259,7 +257,7 @@ export default class HelloChild extends Vue {
 }
 ```
 
-#### （7）`@Emit`
+### （7）`@Emit`
 
 想要触发父组件中定义在组件实例上的方法，需要使用`@Emit`装饰符。`@Emit`接受一个参数，是要触发的事件名，如果要出发的事件名和被装饰的方法同名，那么这个参数可以省略。`@Emit`返回值就是传递给事件的参数。
 
@@ -293,7 +291,7 @@ export default {
 }
 ```
 
-#### （8）`@Model`
+### （8）`@Model`
 
 一般用来在自定义的组件上使用`v-model`，自定义组件中包含可交互元素（例如`<input>`或者`<checkbox`），当组可交互元素绑定的值发生变化（`oninput`、`onchange`）时，会传递到父组件绑定的`v-model`属性上。
 
@@ -330,7 +328,7 @@ export default class HelloVModel extends Vue {
 
 实际上`Modal`和`.sync`修饰符都是Vue为了方便子组件同步数据到父组件而实现的语法糖。
 
-#### （9）`@Ref`
+### （9）`@Ref`
 
 当使用`ref`属性标记一个子组件或者HTML元素的时候，需要使用`@Ref`修饰符来找到标记的组件或元素。例如：
 
@@ -378,7 +376,7 @@ Error:(141, 16) TS2551: Property 'notify' does not exist on type 'Vue'. Did you 
 @Ref() readonly hello!: { notify: (from?: string) => {} };
 ```
 
-#### （10）`Mixins`
+### （10）`Mixins`
 
 `vue-property-decorator`的`Mixins`方法完全来源于`vue-class-component`，使用方法如下。首先创建一个Mixin：
 
@@ -411,7 +409,7 @@ import VisibleControlMixin from '@/mixins/visible-control-mixin';
 export default class MixinExample extends Mixins(VisibleControlMixin) {}
 ```
 
-#### （11）`@Inject`/`@Provide`
+### （11）`@Inject`/`@Provide`
 
 `provide`和`inject`主要的目的就是透传属性，从一个根节点`provide`一个属性，无论多远的一个子节点都可以通过`inject`获得这个属性，与React的Context特性非常类似
 
@@ -459,7 +457,7 @@ export default class InjectProvideChild extends Vue {
 
 所以暂时不推荐使用这两个装饰器。
 
-## 3 改造Vue Router
+# 3 改造Vue Router
 
 使用Vue CLI创建的TypeScript项目，Vue Router与TypeScript配合基本不再需要进行额外的处理，除了对组件内的路由钩子方法需要提前进行注册。
 
@@ -484,11 +482,11 @@ import '@/components/class-component-hooks';
 import router from './router';
 ```
 
-## 4 改造Vuex
+# 4 改造Vuex
 
 Vuex与TypeScript配合会复杂一些，并且体验也不算太好，需要安全额外的包实现与TypeScript的配合使用，有三种方案来帮助我们使用TypeScript版本的Vuex
 
-### 4.1 使用`vue-class-component`
+## 4.1 使用`vue-class-component`
 
 第一种方案是使用`vue-class-component`配合以前常常使用`mapState`等帮助方法：
 
@@ -513,7 +511,7 @@ export default class App extends Vue {
 
 这种方式的好处是可以通过`mapState`等方法将Store中定义的数据、方法一次性引入组件，确定就是这种『一次性』其实也还需要在组件内部再次定义，并且如果采用这种形式配合`vue-property-decorator`使用时，会将计算属性、方法等逻辑打乱。另外，通过这种方式调用Mutation和Action，也不是类型安全的（即没有办法校验我们传入的参数是否与Store中定义的`payload`类型相匹配
 
-### 4.2 使用`vuex-class`
+## 4.2 使用`vuex-class`
 
 第二种方案是[`vuex-class`](https://github.com/ktsn/vuex-class/)，它与上一种方案相同，并没有对Vuex的Store中的代码进行改造，而是在组件消费Store中的数据、方法时，提供了一些遍历的API，简化使用方法
 
@@ -560,7 +558,7 @@ export class MyComp extends Vue {
 
 这种方法虽然不能使用`mapState`等辅助函数，但是好在使用`@State`等装饰符集中导入，也还算清晰明了。但是缺点仍然是没有办法完全进行类型安全的Mutation和Action调用
 
-### 4.3 使用`vuex-module-decorators`
+## 4.3 使用`vuex-module-decorators`
 
 如果想要实现获得完全类型安全的Vuex，那么就需要使用[`vuex-module-decorators`](championswimmer/vuex-module-decorators)，它对Vuex的Store也进行了Class化的改造，引入了`VuexModule`和`@Mutation`等修饰符，让我们能够使用Class形式来编写Store
 
@@ -612,7 +610,7 @@ testStore.UPDATE_MESSAGE_ACTION();
 
 这种方案的好处就是能够获得类型安全，缺点就是对Store的也有比较大的改动，而且只能定义动态注册的命名空间下的模块，这也就意味着，如果想在根节点下注册全局状态时无法实现的（毕竟这个包的名字就是`vuex-module-decorators`）
 
-### 4.4 最终选择`vuex-class`
+## 4.4 最终选择`vuex-class`
 
 我选择了使用第二种方案，相比于第一种方案能够将组件内的逻辑几种，并且通过相关的修饰符能够显示的提醒代码的含义。相比于第三种方案编写复杂度也有了一定降低
 
@@ -620,9 +618,9 @@ testStore.UPDATE_MESSAGE_ACTION();
 
 具体的实践在我们『相关实践』部分会有更具体写的介绍。
 
-## 5 相关实践
+# 5 相关实践
 
-### 5.1 TypeScript类型校验
+## 5.1 TypeScript类型校验
 
 Vue-CLI使用的TypeScript插件是[`@vue/cli-plugin-typescript`](https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-typescript/README.md/)，它将`ts-loader`和[`fork-ts-checker-webpack-plugin`](https://github.com/TypeStrong/fork-ts-checker-webpack-plugin)配合使用，实现线程外的快速类型检查。
 
@@ -649,19 +647,19 @@ module.exports = {
 
 另外，在`tsconfig.json`中的`compilerOptions`选项中将`noImplicitAny`设定为`true`，这样如果编译器推导出的结果默认为`any`的话，编译器会报错。不推荐轻易使用`any`，除非有明确的理由。即使需要`any`也要现实的标注为`any`，这样才能享受到TypeScript的强类型提示的好处（更何况这不是一个就项目改造）
 
-### 5.2 Lint工具
+## 5.2 Lint工具
 
 配置比较高的Lint级别，可能会导致开发时的效率稍微降低，但是有助于项目的长期发展，以及良好的代码习惯的养成，也避免了保存代码时不提示，但是在Commit时一堆错误不好修改的问题。
 
 配置的Lint工具包括了：
 
-#### （1）ESLint
+### （1）ESLint
 
 使用了`plugin:vue/recommended`/`@vue/prettier`/`@vue/typescript`/`plugin:prettier/recommended`四个规则，使用`@typescript-eslint/parser`解析器对`.vue`文件和`.ts`文件都会进行校验（这些都是Vue CLI自动配置的）。
 
 同时在`vue.config.js`中配置了` lintOnSave: process.env.NODE_ENV === 'development' ? 'error' : 'false',` 让ESLint检测到错误时不仅在终端中提示，还会在浏览器界面上展示，同时中断编译过程
 
-#### （2）Prettier
+### （2）Prettier
 
 配置了Prettier，根据它提供的不多的选项进行了配置，有可能会与公司代码提交平台的规范有冲突，如果发现冲突后面再进行调整。
 
@@ -669,7 +667,7 @@ module.exports = {
 
 不过Prettier的问题相对比较好修复，IDE中配置好Prettier的插件后，可以一键进行修复。
 
-#### （3）StyleLint
+### （3）StyleLint
 
 对于样式文件使用StyleLint进行了检查，在`vue.config.js`中通过`configureWebpack`方法引入了StyleLint插件，对所有样式文件以及`.vue`单文件组件、HTML组件中的样式代码进行校验。
 
@@ -678,11 +676,11 @@ module.exports = {
 在`.stylelintrc.js`中定义了一些规则，也可能与公司的代码规范有冲突，后续进行调整。
 
 
-### 5.3 目录组织
+## 5.3 目录组织
 
 这部分也是我个人的尝试，带有一定个人喜好，希望在这个项目中验证是否可行。
 
-#### （1）`types.ts`文件
+### （1）`types.ts`文件
 
 一般来说，如果`.vue`文件或者其他的`.ts`文件，如果涉及到的类型不多不复杂，可以直接在文件中进行定义，但是如果对应的类型接口需要复用，或者比较多，最好将原来的文件变为目录，文件名改为`index`，里面配套添加`types.ts`文件，用来声明类型，例如有一个`example.ts`文件，如果需要定义的类型比较复杂，那么将这个文件替换为：
 
@@ -693,7 +691,7 @@ module.exports = {
   - types.ts
 ```
 
-#### （2）目录组织
+### （2）目录组织
 
 基本按照Vue CLI生成目录结构，各个插件的配置文件（例如`.eslintrc.js`、`.eslintignore`文件）、环境配置文件（例如`.env`）都放置在根目录，ElementUI定制样式文件放置在根目录下的`theme`目录，其余文件都放在`src`目录下。（`test`目录是单元测试文件的目录，暂时没有引入单测的计划，不过在业务空闲期可能会考虑使用Jest进行单元测试）
 
@@ -771,11 +769,11 @@ Vue CLI为我们配置了Webpack的Alias，`@`会指向`src`目录，所以导�
 
 现在的`common`目录下有两个组件，分别是`not-found`（对应404路由）和`menu`目录，不过这个目录的划分可能会比较主观，也会随着业务不同进行调整。
 
-### 5.4 命名
+## 5.4 命名
 
 这里的命名风格主要参考了[Vue的风格指南](https://cn.vuejs.org/v2/style-guide/index.html)和Element的实践
 
-#### （1）目录的命名
+### （1）目录的命名
 
 目录使用`kebab-case`格式进行命名，如果里面的主文件使用`index.ts`或者`index.vue`命名，如果有子组件则放到与`index`平级的`components`目录下，例如：
 
@@ -798,7 +796,7 @@ Vue CLI为我们配置了Webpack的Alias，`@`会指向`src`目录，所以导�
 
 这样做的好处是，当进入一个目录后，一眼就能看出主文件是哪一个，对应的组件在哪里。缺点就是当在IDE中打开多个文件时，每个代码文件的文件名为防止重名会变得很长，不太便于切换。
 
-#### （2）组件的命名
+### （2）组件的命名
 
 如果组件不以目录的形式存在，而是一个单独的组件，则使用`kebab-case`格式进行命名，例如`user-store.ts`、`user-list.vue`。
 
@@ -832,7 +830,7 @@ export default class UserList extends Vue {
 
 这样做的好处是符合HTML和JS的语言规范，但是就是当我在组件里想要找到`UserList`时会习惯的直接搜索`Userlist`却搜不到。
 
-#### （3）变量的命名
+### （3）变量的命名
 
 变量的命名由ESLint控制，要求使用驼峰拼写法，这也和公司准入平台的要求是一致的。
 
@@ -853,7 +851,7 @@ export default class UserList extends Vue {
 </script>
 ```
 
-#### （4）接口的命名
+### （4）接口的命名
 
 此处指的接口是TypeScript中的`interface`，命名应遵循`PascalCase`规则：
 
@@ -863,7 +861,7 @@ export interface RootState {
 }
 ```
 
-### 5.5 类型
+## 5.5 类型
 
 为了充分享受TypeScript带来的强类型的好处，提高项目的可维护性和代码质量，我在项目中开启了`noImplicitAny`，即所有的隐式的`any`类型都不不被允许的。
 
@@ -871,11 +869,11 @@ export interface RootState {
 
 谨慎使用`any`类型，对于`as`断言的使用也要仔细考虑是否合理。
 
-### 5.6 路由
+## 5.6 路由
 
 路由的目录是`./src/router`，`index.ts`是实际进行路由组装的地方，在`modules`中按照目录对路由进行了分割代理，分割的维度也可以认为是按照导航的一级目录。在`router-guards.ts`中定义路由守卫相关的功能。
 
-#### （1）按模块组织路由
+### （1）按模块组织路由
 
 在`modules`中，每个模块是一个`.ts`文件，具体的业务模块都在这里定义，例如我定义了一个`base-knowledge.ts`模块，里面的路由都是与『基础知识』相关的路由定义，路由对象的类型直接使用了`vue-router`定义的`RouteConfig`
 > 要善于利用第三方包已经定义好的类型，具体可以在IDE中按住`alt`点击进入其类型声明文件，选择使用。
@@ -905,7 +903,7 @@ export default baseKnowledgeRoutes;
 
 > 如果业务复杂，或者需要再嵌套子路由，后续可以在`modules`中再换按照目录进行划分，组织形式类似
 
-#### （2）路由汇总
+### （2）路由汇总
 
 在`./src/router/index.ts`中对各个模块进行汇总，汇总的方式就是采取结构赋值的形式，同时将一些公用的、有特定顺序的路由（例如`404`）插入到最终的`routes`对象中：
 
@@ -936,7 +934,7 @@ const router = new VueRouter({ routes });
 
 同时路由守卫也是在这里进行组装的。
 
-#### （3）导航
+### （3）导航
 
 设置完路由后，大部分情况下需要在导航菜单中进行处理。项目中关于菜单的组件我放在了`./src/views/common/menu`目录下
 
@@ -986,12 +984,12 @@ const menuConfigs: MenuConfig[] = [
 
 > 我们的导航组件目录只支持二级导航
 
-### 5.7 Vuex
+## 5.7 Vuex
 
 关于Vuex的代码都在`.src/store`目录中，目录分为了三个部分，`index.ts`组装Store，不负责具体的实现，`root-sotre`来定义根Store的具体实现，`modules`中按目录实现各个模块的Store
 
 
-#### （1）Store目录划分
+### （1）Store目录划分
 
 在`root-store`中定义根Store的具体实现，在`modules`里面按目录定义各模块的Store的实现，每个模块目录建议以`模块名-store`命名，导出时根节点的Store将各个属性分别导出，插入到`index.ts`中`new Vuex.Store`的各个属性中，子模块的Stroe直接将模块整体插入到`new Vuex.Store`的`modules`属性中，属性名（即命名空间）以模块名命名：
 
@@ -1015,7 +1013,7 @@ export default new Vuex.Store({
 });
 ```
 
-#### （2）Store的实现
+### （2）Store的实现
 
 根Store（以及其他每个Module的Store）都应该包含三个文件：
 
@@ -1094,7 +1092,8 @@ const actions: RootActions = {
 
 export default { state, getters, mutations, actions };
 ```
-#### （3）什么数据需要存到Store中
+
+### （3）什么数据需要存到Store中
 
 需要共享的全局数据自不必说，需要存到Store中，而且一般要放到`root-store`中
 
@@ -1105,7 +1104,7 @@ export default { state, getters, mutations, actions };
 - `User`展示的详情数据在`UserList`中已经完全具备，`User`不需要再通过网络请求获取数据，那么`UserList`的数据建议放到Store中，在Action中将数据`commit`到`state`中
 - 如果情况相反，则不建议将`UserList`的数据建议放到Store中，不需要`commit`，直接`return`返回的数据
 
-#### （4）缓存
+### （4）缓存
 
 对于`root-store`中的数据应该有全局缓存的功能，如果请求的数据短期内不变，就不必再次发送网络请求，简单做的话就是对`root-store`中的每个请求进行判断，如果State中数据已经存在则直接返回该数据
 
@@ -1118,9 +1117,9 @@ export default { state, getters, mutations, actions };
 
 这一块我还没有进行处理，后面有了具体的实践经验再来补充。
 
-### 5.8 网络请求处理
+## 5.8 网络请求处理
 
-#### （1）Axios的封装
+### （1）Axios的封装
 
 项目的网络工具选了最主流的Axios，在`utiles/network-helper`中进行了处理，这个目录下除了`types.ts`是类型声明文件，`index.ts`是具体实现的主文件，`loading-counter.ts`是用来对全局Loading进行处理的方法。
 
@@ -1130,13 +1129,13 @@ export default { state, getters, mutations, actions };
 
 要注意的是，对错误的拦截，如果是网络异常导致的错误，拦截器会进行提示后，将错误对象`reject`，在`main.ts`的`Vue.config.errorHandler`统一处理，如果是业务返回的错误码，会在拦截器中进行提示，错误对象会`resolve`，响应结果在业务代码中处理（单不需要处理Loading和提示错误了）
 
-#### （2）全局Loading
+### （2）全局Loading
 
 `loading-counter.ts`中定义了`LoadingCounter`这个类，并导出了一个实例，在Axios的成功的请求拦截器中Loading数`+1`，失败的请求拦截器不作处理，在成功或失败的响应拦截器中Loading数`-1`，并提供了`clearLoading`方法强制清除Loading，
 
 这个方案的优点就是不需要再网络请求时反复的添加Loading的处理逻辑，缺点就是只能默认添加全屏的Loading，而且实现比较简单，没有经过复杂项目的验证，可能由于欠考虑导致什么潜在的问题。
 
-#### （3）Mock数据
+### （3）Mock数据
 
 前端Mock数据选择了使用[Yapi](https://hellosean1025.github.io/yapi/index.html)来完成（[内网地址](http://yapi.baidu-int.com/group/10871)），让前端编写Mock数据能够更加轻松，它采用了[Mock.js](http://mockjs.com/)的语法，也可以自己编写Mock脚本来实现复杂数据的输出。
 
@@ -1144,9 +1143,9 @@ export default { state, getters, mutations, actions };
 
 理想状态时，在本地开发时，所有请求都应该是通过Mock完成的，这样有一些数据在测试环境也没有办法获取到真实反映（例如车辆接管数据，需要同步到Monitor，所以后端只返回一种结果），但是在Mock数据里我们就可以自由控制。
 
-### 5.9 样式
+## 5.9 样式
 
-#### （1）UI组件
+### （1）UI组件
 
 项目的UI组件仍然选择了[ElementUI](https://element.eleme.cn/#/zh-CN)，对于ElementUI的引入应该采取按需引入的方式，尽可能减少构建后的体积。可以直接使用Element为Vue Cli@3提供的[插件](https://github.com/ElementUI/vue-cli-plugin-element)，它会帮助我们完成ElementUI的按需引入。
 
@@ -1176,7 +1175,7 @@ module.exports = {
 
 > 在开发类似CRM的后台项目时，如果对样式有要求，尽量提前与UE/UI同学进行沟通，基于ElementUI的组件规范进行样式定制，尽量避免通过覆盖样式的方式来修改ElementUI的内置组件的样式。
 
-#### （2）样式规范
+### （2）样式规范
 
 前面提到了，项目会使用Stylelint对样式的编写进行规范，同时还有一些规范要遵守：
 
@@ -1191,7 +1190,7 @@ module.exports = {
 >
 >另外，避免（！）语意不明或者是错误的缩写。
 
-#### （3）自动导入全局样式变量
+### （3）自动导入全局样式变量
 
 样式预处理器选择使用了Less，在`/src/styles`下面声明了一些全局的样式文件，目前有三个：
 
@@ -1228,7 +1227,7 @@ function addStyleResource (rule) {
 如果后续需要导入更多的样式变量，那么只需要在`addStyleResource`的我`patterns`数组中添加对应的路径即可。
 
 
-### 5.10 环境变量和构建脚本
+## 5.10 环境变量和构建脚本
 
 根据不同的环境新建了几个`.env`文件，例如我们有线上（`production`）/开发（`development`）/测试（`staging`）三个环境，在各自的环境文件中（例如`.env.production`）配置`VUE_BASE_URL`等变量。
 
@@ -1249,7 +1248,7 @@ function addStyleResource (rule) {
 
 另外，配置了`pre-commit`的钩子，在每次提交前都会对改动的文件进行代码格式和规范的检查，不通过本地也无法提交，这样就缩短了代码质量的反馈链，不必等到Icode检查半天才告诉你不符合规范。
 
-### 5.11 Code Reivew
+## 5.11 Code Reivew
 
 Code Reivew是一个可以提升团队代码质量的手段，更重要的是，它也可以提高自己的代码水平，无论是你Review他人的代码，还是被别人Review代码。
 
@@ -1266,9 +1265,9 @@ Review他人代码时：
 3. 首先关注高层次问题（例如接口设计、函数分解等）
 4. 多打-2
 
-### 5.12 Todo
+## 5.12 Todo
 
-#### （1）Axios + Vuex的全局缓存
+### （1）Axios + Vuex的全局缓存
 
 前面提到了，需要考虑的问题：
 
@@ -1277,7 +1276,7 @@ Review他人代码时：
 3. 缓存控制的粒度，是以请求为粒度，还是URL作为更细的控制粒度？
 4. 当多个请求请求同一份资源的时候，后续请求如何处理？是直接忽略缓存发送多个请求（简单粗暴）？还是使用资源池配合监听订阅模式实现效率最大化（精致复杂）？
 
-#### （2）接口超时自动重试
+### （2）接口超时自动重试
 
 除了前面提到的，与Vuex的全局缓存相结合的问题，有时间再研究下接口超时自动重试的方案。
 
@@ -1302,7 +1301,7 @@ declare module '*.jpg';
 
 如果没有第一行，`axios.d.ts`中定义的接口就不会被合并进来，细节参考[TypeScript的文档](http://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-namespaces)吧
 
-#### （3）WebP图片引入
+### （3）WebP图片引入
 
 WebP是Google推出的图片格式，相比于PNG、JPG能够在保证图片质量的同时，大幅减小图片的体积，[兼容性](https://caniuse.com/#search=webp)如下：
 
@@ -1310,9 +1309,11 @@ WebP是Google推出的图片格式，相比于PNG、JPG能够在保证图片质�
 
 IE系列和Safari系列的兼容性需要处理，所以需要在引入WebP的同时实现优雅降级。
 
-#### （4）异常监控和上报
+### （4）异常监控和上报
 
-## 6 CLI工具
+### （5）图片压缩
+
+# 6 CLI工具
 
 将上面基本的配置和实践抽离成为了一个模板[vue-ts-template](https://github.com/duola8789/vue-ts-template)，预置的功能可以看项目的介绍。使用的时候可以直接将这个仓库`clone`下来使用。
 
@@ -1327,7 +1328,7 @@ npx vue-ts-cli-zh init [project_name]
 `init`跟着的`project_name`就是新创建的项目所在的目录名。
 
 
-## 7 常见问题
+# 7 常见问题
 
 （1）[Property 'xxx' has no initializer and is not definitely assigned in the constructor](https://devblogs.microsoft.com/typescript/announcing-typescript-2-7/#stricter-class-property-checks)
 
@@ -1410,7 +1411,7 @@ module.exports = {
 };
 ```
 
-## 参考
+# 参考
 
 - [搭建可用的Vue+TypeScript脚手架@卡少的沉淀博客](http://www.wlxadyl.cn/2018/12/06/build-ts-vue/)
 - [kaorun343/vue-property-decorator@Github](https://github.com/kaorun343/vue-property-decorator)
