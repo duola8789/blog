@@ -1,12 +1,12 @@
 ---
-title: 零散专题33 Nginx
+title: Nginx01 Nginx基础知识
 top: false
 date: 2019-06-23 21:09:33
 updated: 2020-03-25 14:38:32
 tags:
 - Nginx
 - 跨域
-categories: 其他
+categories: 全栈开发
 ---
 
 Nginx是一个强大的轻量级的高性能网页服务器、反向代理服务器和电子邮件代理服务器。作为负载均衡服务器，Nginx可以在内部直接支持Rails和PHP程序对外进行服务，也可以支持作为HTTP代理服务器对外进行服务。
