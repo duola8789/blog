@@ -13,8 +13,6 @@ categories: 全栈开发
 
 <!-- more -->
 
-[TOC]
-
 # `root`与`alias`的区别
 
 `root`与`alias`的区别主要在于Nginx如何解释`location`后面的路径的URI，这会使两者分别以不同的方式将请求映射到服务器文件上。具体来看：
